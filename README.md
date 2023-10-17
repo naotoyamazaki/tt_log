@@ -73,3 +73,6 @@ T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ
 
 ## 画面遷移図
 https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427%3A798&mode=design&t=umSI8iN5NjlZMfYl-1
+
+## ER図
+<a href="https://gyazo.com/e8f5ca02311a0d7e6ccc45a89e14daa2"><img src="https://i.gyazo.com/e8f5ca02311a0d7e6ccc45a89e14daa2.png" alt="Image from Gyazo" width="467"/></a>

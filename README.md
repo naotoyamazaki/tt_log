@@ -64,12 +64,18 @@ T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ
 また××と××(得点率が下位2つの技術)での得点率が低いので練習して質を上げていきましょう。技術の上達には1ヶ月〜3ヶ月ほどかかるので直近の大事な試合ではあまり使わないほうがいいかもしれません。」と表示。
 
 ### 使用予定技術
-* Ruby: 3.0系
-* Rails: 7.0系
+* 開発環境: Docker
+* サーバーサイド Ruby: 3.0系, Rails: 7.0系
 * ユーザ登録及び認証機能: Sorcery
 * マルチ検索・オートコンプリート機能: Stimulus Autocomplete（Rails7）
-* データベース: PostgreSQL
-* デプロイ: heroku
+* フロントエンド: Javascript
+* CSSフレームワーク: bootstrap5系
+* WebAPI: TwitterAPI
+* インフラ:
+  - Webアプリケーションサーバ: heroku
+  - データベースサーバ: PostgreSQL
+* その他:
+  - VCS: GitHub
 
 ## 画面遷移図
 https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427%3A798&mode=design&t=umSI8iN5NjlZMfYl-1

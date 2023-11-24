@@ -17,7 +17,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
-      - .:/rails
+      - .:/tt_log
+      - ./config/master.key:/rails/config/master.key
     ports:
       - "3000:3000"
     depends_on:

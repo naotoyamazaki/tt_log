@@ -305,7 +305,7 @@ DEPENDENCIES
   pg (~> 1.1)
   pry-byebug
   puma (>= 5.0)
-  rails (~> 7.1.1)
+  rails (~> 7.1.2)
   sassc-rails
   selenium-webdriver
   sorcery (~> 0.16.5)

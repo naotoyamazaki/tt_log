@@ -32,6 +32,8 @@ RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 RUN useradd rails --create-home --shell /bin/bash \
 && chown -R rails:rails /tt_log
 
+RUN gem install foreman
+
 USER rails:rails
 
 EXPOSE 3000

@@ -1,0 +1,15 @@
+{
+  "name": "tt_log",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:naotoyamazaki/tt_log.git",
+  "author": "naotoyamazaki <zakiyama5518@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "5.1.3"
+  },
+  "scripts": {
+    "build": "importmap pin-all",
+    "build:css": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --watch"
+  }
+}

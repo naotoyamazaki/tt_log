@@ -15,8 +15,9 @@ gem "bootsnap", require: false
 gem 'sorcery', '~> 0.16.5'
 gem 'pry-byebug'
 gem 'bootstrap', '~> 5.1.3'
+gem 'font-awesome-sass', '~> 5.12.0'
+gem 'jquery-rails'
 gem 'sassc-rails'
-#gem 'cssbundling-rails'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

@@ -1,20 +1,22 @@
 <header>
-  <nav class="navbar navbar-expand-lg navigation navbar-light bg-light">
-
-    <a class='navbar-brand' href='/'>
-      <%= image_tag 'logo.png' %>
-    </a>
-
-    <button class='navbar-toggler' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto main-nav align-items-center">
-        <li class="nav-item">
-          <%= link_to 'ログイン', login_path ,class: 'nav-link' %>
-        </li>
-      </ul>
+  <nav class="navbar navbar-expand-lg navigation navbar-light bg-success">
+    <div class="container-fluid">
+      <a class='navbar-brand mx-auto' href='/'>
+        <%= image_tag 'logo.png' %>
+      </a>
+      <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContentHeader' aria-controls='navbarSupportedContentHeader' aria-expanded='false' aria-label='Toggle navigation'>
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContentHeader">
+        <ul class="navbar-nav main-nav align-items-center">
+          <li class="nav-item">
+            <%= link_to '会員登録', new_user_path ,class: 'nav-link text-white' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'ログイン', login_path ,class: 'nav-link text-white' %>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 </header>

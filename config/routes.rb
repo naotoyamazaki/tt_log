@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  root "homes#index"
-  
+  root "homes#top"
+
   get 'login', to: 'user_sessions#new'
   post 'login', to: 'user_sessions#create'
   delete 'logout', to: 'user_sessions#destroy'

@@ -1,0 +1,16 @@
+<div class="bg-success p-3 my-4 mx-5" id="<%= dom_id match_info %>">
+  <div class="d-flex text-white align-items-center justify-content-around">
+    <div class="px-2">
+      <%= match_info.match_date %>
+    </div>
+    <div class="px-2">
+      <%= match_info.match_name %>
+    </div>
+    <div class="px-2">
+      <%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %>
+    </div>
+    <div class="px-2">
+      <%= link_to "試合分析詳細", match_info, class: "text-white" %>
+    </div>
+  </div>
+</div>

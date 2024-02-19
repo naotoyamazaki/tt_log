@@ -12,11 +12,11 @@
         <ul class='navbar-nav align-items-center'>
           <li class='nav-item dropdown dropdown-slide'>
             <a href='#' class='nav-link dropdown-toggle text-white' data-bs-toggle='dropdown'>
-              掲示板
+              試合分析
             </a>
             <div class='dropdown-menu dropdown-menu-right bg-success'>
-              <%= link_to '掲示板一覧', '#', class: 'dropdown-item text-white' %>
-              <%= link_to '掲示板作成', '#', class: 'dropdown-item text-white' %>
+              <%= link_to '分析一覧', match_infos_path, class: 'dropdown-item text-white' %>
+              <%= link_to '分析を開始', new_match_info_path, class: 'dropdown-item text-white' %>
             </div>
           </li>
           <li class='nav-item'>

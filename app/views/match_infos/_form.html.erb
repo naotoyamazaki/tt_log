@@ -1,0 +1,42 @@
+<%= form_with(model: match_info) do |form| %>
+  <% if match_info.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(match_info.errors.count, "error") %> prohibited this match_info from being saved:</h2>
+
+      <ul>
+        <% match_info.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :"日付", style: "display: block" %>
+    <%= form.date_field :match_date %>
+  </div>
+
+  <div>
+    <%= form.label :"大会名", style: "display: block" %>
+    <%= form.text_field :match_name %>
+  </div>
+
+  <div>
+    <%= form.label :"選手名", style: "display: block" %>
+    <%= form.text_field :player_name %>
+  </div>
+
+  <div>
+    <%= form.label :"対戦相手名", style: "display: block" %>
+    <%= form.text_field :opponent_name %>
+  </div>
+
+  <div>
+    <%= form.label :"メモ", style: "display: block" %>
+    <%= form.text_area :memo %>
+  </div>
+
+  <div>
+    <%= form.submit "試合を分析する" %>
+  </div>
+<% end %>

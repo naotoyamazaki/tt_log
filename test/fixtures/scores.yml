@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  match_info: one
+  batting_style: one
+  game: one
+  score: 1
+  lost_score: 1
+
+two:
+  match_info: two
+  batting_style: two
+  game: two
+  score: 1
+  lost_score: 1

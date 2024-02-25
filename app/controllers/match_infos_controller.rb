@@ -8,15 +8,23 @@ class MatchInfosController < ApplicationController
 
   # GET /match_infos/1 or /match_infos/1.json
   def show
+    @match_info = MatchInfo.find(params[:id])
+    @serve_scores = @match_info.scores.where(batting_style: 'serve')
+    @receive_scores = @match_info.scores.where(batting_style: 'receive')
   end
 
   # GET /match_infos/new
   def new
     @match_info = MatchInfo.new
+    @match_info.scores.build(batting_style: :serve)
+    @match_info.scores.build(batting_style: :receive)
   end
 
   # GET /match_infos/1/edit
   def edit
+    @match_info = MatchInfo.find(params[:id])
+    @serve_scores = @match_info.scores.where(batting_style: :serve)
+    @receive_scores = @match_info.scores.where(batting_style: :receive)
   end
 
   # POST /match_infos or /match_infos.json
@@ -41,9 +49,12 @@ class MatchInfosController < ApplicationController
 
   # PATCH/PUT /match_infos/1 or /match_infos/1.json
   def update
+    player = Player.find_or_create_by(player_name: params[:match_info][:player_name])
+    opponent = Player.find_or_create_by(player_name: params[:match_info][:opponent_name])
+  
     respond_to do |format|
-      if @match_info.update(match_info_params)
-        format.html { redirect_to match_info_url(@match_info), notice: "Match info was successfully updated." }
+      if @match_info.update(match_info_params.merge(player_id: player.id, opponent_id: opponent.id))
+        format.html { redirect_to @match_info, notice: "Match info was successfully updated." }
         format.json { render :show, status: :ok, location: @match_info }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -70,6 +81,6 @@ class MatchInfosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def match_info_params
-      params.require(:match_info).permit(:match_date, :match_name, :memo)
+      params.require(:match_info).permit(:match_date, :match_name, :memo, scores_attributes: [:id, :batting_style, :score, :lost_score])
     end
 end

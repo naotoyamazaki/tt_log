@@ -36,6 +36,32 @@
     <%= form.text_area :memo %>
   </div>
 
+  <% match_info.scores.each do |score| %>
+    <%= form.fields_for :scores, score do |score_form| %>
+      <%= score_form.select :batting_style, Score.batting_styles.keys.map { |style| [style.humanize, style] }, {}, { class: "form-control" } %>
+
+      <% if score.batting_style == "serve" %>
+        <div class="mb-3">
+          <%= score_form.label :score, "サーブの得点数" %>
+          <%= score_form.number_field :score, class: "form-control", min: 0 %>
+        </div>
+        <div class="mb-3">
+          <%= score_form.label :lost_score, "サーブの失点数" %>
+          <%= score_form.number_field :lost_score, class: "form-control", min: 0 %>
+        </div>
+      <% elsif score.batting_style == "receive" %>
+        <div class="mb-3">
+          <%= score_form.label :score, "レシーブの得点数" %>
+          <%= score_form.number_field :score, class: "form-control", min: 0 %>
+        </div>
+        <div class="mb-3">
+          <%= score_form.label :lost_score, "レシーブの失点数" %>
+          <%= score_form.number_field :lost_score, class: "form-control", min: 0 %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
   <div>
     <%= form.submit "試合を分析する" %>
   </div>

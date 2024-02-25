@@ -25,4 +25,20 @@
     <%= match_info.memo %>
   </p>
 
+  <p>サーブの得点率: <%= calculate_point_rate(@serve_scores) %> %</p>
+  <p>レシーブの得点率: <%= calculate_point_rate(@receive_scores) %> %</p>
+
+  <% serve_rate = calculate_point_rate(@serve_scores) %>
+<% receive_rate = calculate_point_rate(@receive_scores) %>
+
+<% if serve_rate >= 60 && receive_rate >= 40 %>
+  <p>サーブとレシーブどちらも安定しています。引き続きどちらもバランスよく練習していきましょう！</p>
+<% elsif serve_rate >= 60 && receive_rate < 40 %>
+  <p>サーブからの得点率が高いですね。ただレシーブからの得点率が少し低いのでレシーブからの展開を多めに練習していきましょう！</p>
+<% elsif serve_rate < 60 && receive_rate >= 40 %>
+  <p>レシーブからの得点率が高いですね。ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！</p>
+<% else %>
+  <p>サーブからもレシーブからもあまり得点できていませんね。相手がかなり格上だったのかもしれません。気を取り直して引き続き練習頑張っていきましょう！</p>
+<% end %>
+  
 </div>

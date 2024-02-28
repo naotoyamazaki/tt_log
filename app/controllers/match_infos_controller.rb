@@ -4,7 +4,8 @@ class MatchInfosController < ApplicationController
 
   # GET /match_infos or /match_infos.json
   def index
-    @match_infos = MatchInfo.all
+    @q = MatchInfo.ransack(params[:q])
+    @match_infos = @q.result.includes(:player, :opponent)
   end
 
   # GET /match_infos/1 or /match_infos/1.json

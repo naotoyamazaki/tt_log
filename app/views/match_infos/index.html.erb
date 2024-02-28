@@ -2,6 +2,24 @@
 
 <h1 class="center-text">試合分析一覧</h1>
 
+<%= search_form_for @q, html: { class: "row gx-0 align-items-center justify-content-center" } do |f| %>
+  <div class="col-auto">
+    <%= f.label :match_name_cont, "大会名", class: "visually-hidden" %>
+    <%= f.search_field :match_name_cont, class: "form-control", placeholder: "大会名" %>
+  </div>
+  <div class="col-auto">
+    <%= f.label :player_player_name_cont, "選手名", class: "visually-hidden" %>
+    <%= f.search_field :player_player_name_cont, class: "form-control", placeholder: "選手名" %>
+  </div>
+  <div class="col-auto">
+    <%= f.label :opponent_player_name_cont, "対戦相手名", class: "visually-hidden" %>
+    <%= f.search_field :opponent_player_name_cont, class: "form-control", placeholder: "対戦相手名" %>
+  </div>
+  <div class="col-auto">
+    <%= f.submit "検索", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
 <% if @match_infos.empty? %>
   <div class="d-flex justify-content-center">
     <p class="text-center">試合の分析データがありません。

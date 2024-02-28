@@ -1,5 +1,7 @@
 class Score < ApplicationRecord
   belongs_to :match_info
-  belongs_to :batting_style
-  belongs_to :game
+  belongs_to :game, optional: true
+
+  enum batting_style: { serve: 0, receive: 1}
+
 end

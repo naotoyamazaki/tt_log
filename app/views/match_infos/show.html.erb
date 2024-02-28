@@ -1,10 +1,14 @@
 <p style="color: green"><%= notice %></p>
 
+<h1 class="center-text">試合分析詳細</h1>
+
 <%= render partial: "match_info_detail", locals: { match_info: @match_info } %>
 
-<div>
-  <%= link_to "編集", edit_match_info_path(@match_info) %> |
-  <%= link_to "分析一覧ページへ", match_infos_path %>
+<div class="center-link">
+  <%= link_to "編集", edit_match_info_path(@match_info), class: "text-success" %> |
+  <%= link_to "分析一覧ページへ", match_infos_path, class: "text-success" %>
+</div>
 
-  <%= button_to "削除", @match_info, method: :delete %>
+<div class="center-button">
+  <%= button_to "削除", {action: "destroy", id: @match_info.id}, method: :delete, class: "btn delete-btn" %>
 </div>

@@ -1,0 +1,87 @@
+/* ページタイトル&分析ボタン */
+.center-text {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* ページ遷移リンク */
+.center-link {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 分析一覧ページ  index*/
+/* 分析開始ボタン */
+.btn-top-right {
+  position: absolute;
+  right: 20px;
+  top: 110px; /* ヘッダーの高さに応じて調整 */
+}
+
+/* 分析新規作成ページ  new/edit/show */
+/* フォーム全体をページの真ん中に配置する */
+.form-container {
+  width: 30%; /* 好みの幅に設定 */
+  margin: 0 auto; /* 中央揃え */
+}
+
+.show-container {
+  width: 30%; /* 好みの幅に設定 */
+  margin: 0 auto; /* 中央揃え */
+}
+
+/* フォームを横並びにする */
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px; /* 適宜調整 */
+}
+
+.column {
+  flex: 1;
+}
+/* 画面が小さい場合に縦並びに変更する */
+@media (max-width: 900px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
+/* メモの横幅を広げる */
+.wide-textarea {
+  width: 100%;
+}
+
+/* セレクトボックスのサイズ調整 */
+.medium-input {
+  width: 90px;
+}
+
+/* 得点数、失点数フォームのサイズ・カラー調整 */
+.small-input {
+  width: 70px;
+}
+
+.text-blue {
+  color: blue;
+}
+
+.text-red {
+  color: red;
+}
+
+/* 詳細ページ  show */
+.center-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-btn {
+  background-color: purple;
+  color: white;
+  border: none;
+  text-align: center;
+  margin-bottom: 20px;
+}

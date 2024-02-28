@@ -1,10 +1,10 @@
-<h1>Editing match info</h1>
+<h1 class="center-text">試合分析編集</h1>
 
-<%= render "form", match_info: @match_info %>
+<%= render "form_edit", match_info: @match_info %>
 
 <br>
 
-<div>
-  <%= link_to "Show this match info", @match_info %> |
-  <%= link_to "Back to match infos", match_infos_path %>
+<div class="center-link">
+  <%= link_to "試合分析詳細", @match_info, class: "text-success" %> |
+  <%= link_to "試合分析一覧", match_infos_path, class: "text-success" %>
 </div>

@@ -1,44 +1,62 @@
-<div id="<%= dom_id match_info %>">
+<div class="show-container">
+  <div id="<%= dom_id match_info %>">
 
-  <p>
-    <strong>選手名:</strong>
-    <%= match_info.player.player_name %>
-  </p>
+    <div class="row mb-3">
+      <div class="column">
+        <strong>日付:</strong>
+        <%= match_info.match_date %>
+      </div>
 
-  <p>
-    <strong>対戦相手名:</strong>
-    <%= match_info.opponent.player_name %>
-  </p>
+      <div class="column">
+        <strong>大会名:</strong>
+        <%= match_info.match_name %>
+      </div>
+    </div>
 
-  <p>
-    <strong>日付:</strong>
-    <%= match_info.match_date %>
-  </p>
+    <div class="row mb-3">
+      <div class="column">
+        <strong>選手名:</strong>
+        <%= match_info.player.player_name %>
+      </div>
 
-  <p>
-    <strong>大会名:</strong>
-    <%= match_info.match_name %>
-  </p>
+      <div class="column">
+        <strong>対戦相手名:</strong>
+        <%= match_info.opponent.player_name %>
+      </div>
+    </div>
 
-  <p>
-    <strong>Memo:</strong>
-    <%= match_info.memo %>
-  </p>
+    <p>
+      <strong>Memo:</strong>
+      <%= match_info.memo %>
+    </p>
+    
+    <div class="row mb-3">
+      <div class="column">
+        <strong>サーブの得点率:</strong>
+        <%= calculate_point_rate(@serve_scores) %> %</p>
+      </div>
 
-  <p>サーブの得点率: <%= calculate_point_rate(@serve_scores) %> %</p>
-  <p>レシーブの得点率: <%= calculate_point_rate(@receive_scores) %> %</p>
+      <div class="column">
+        <strong>レシーブの得点率:</strong>
+        <%= calculate_point_rate(@receive_scores) %> %</p>
+      </div>
+    </div>
 
-  <% serve_rate = calculate_point_rate(@serve_scores) %>
-<% receive_rate = calculate_point_rate(@receive_scores) %>
+    <% serve_rate = calculate_point_rate(@serve_scores) %>
+    <% receive_rate = calculate_point_rate(@receive_scores) %>
 
-<% if serve_rate >= 60 && receive_rate >= 40 %>
-  <p>サーブとレシーブどちらも安定しています。引き続きどちらもバランスよく練習していきましょう！</p>
-<% elsif serve_rate >= 60 && receive_rate < 40 %>
-  <p>サーブからの得点率が高いですね。ただレシーブからの得点率が少し低いのでレシーブからの展開を多めに練習していきましょう！</p>
-<% elsif serve_rate < 60 && receive_rate >= 40 %>
-  <p>レシーブからの得点率が高いですね。ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！</p>
-<% else %>
-  <p>サーブからもレシーブからもあまり得点できていませんね。相手がかなり格上だったのかもしれません。気を取り直して引き続き練習頑張っていきましょう！</p>
-<% end %>
-  
+    <% if serve_rate >= 60 && receive_rate >= 40 %>
+      <p>サーブとレシーブどちらも安定しています。
+      <br />引き続きどちらもバランスよく練習していきましょう！</p>
+    <% elsif serve_rate >= 60 && receive_rate < 40 %>
+      <p>サーブからの得点率が高いですね。
+      <br />ただレシーブからの得点率が少し低いのでレシーブからの展開を多めに練習していきましょう！</p>
+    <% elsif serve_rate < 60 && receive_rate >= 40 %>
+      <p>レシーブからの得点率が高いですね。
+      <br />ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！</p>
+    <% else %>
+      <p>サーブからもレシーブからもあまり得点できていませんね。
+      <br />相手がかなり格上だったのかもしれません。気を取り直して引き続き練習頑張っていきましょう！</p>
+    <% end %>
+  </div>
 </div>

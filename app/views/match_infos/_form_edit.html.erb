@@ -1,70 +1,80 @@
-<%= form_with(model: match_info) do |form| %>
-  <% if match_info.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(match_info.errors.count, "error") %> prohibited this match_info from being saved:</h2>
+<div class="form-container">
+  <%= form_with(model: match_info) do |form| %>
+    <% if match_info.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(match_info.errors.count, "error") %> prohibited this match_info from being saved:</h2>
 
-      <ul>
-        <% match_info.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+        <ul>
+          <% match_info.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="row mb-3">
+      <div class="column">
+        <%= form.label :"日付", style: "display: block" %>
+        <%= form.date_field :match_date %>
+      </div>
+
+      <div class="column">
+        <%= form.label :"大会名", style: "display: block" %>
+        <%= form.text_field :match_name %>
+      </div>
     </div>
-  <% end %>
 
-  <div>
-    <%= form.label :"日付", style: "display: block" %>
-    <%= form.date_field :match_date %>
-  </div>
+    <div class="row mb-3">
+      <div class="column">
+        <%= form.label :"選手名", style: "display: block" %>
+        <%= form.text_field :player_name %>
+      </div>
 
-  <div>
-    <%= form.label :"大会名", style: "display: block" %>
-    <%= form.text_field :match_name %>
-  </div>
+      <div class="column">
+        <%= form.label :"対戦相手名", style: "display: block" %>
+        <%= form.text_field :opponent_name %>
+      </div>
+    </div>
 
-  <div>
-    <%= form.label :"選手名", style: "display: block" %>
-    <%= form.text_field :player_name %>
-  </div>
+    <div class="column">
+      <%= form.label :"メモ", style: "display: block" %>
+      <%= form.text_area :memo, class: "wide-textarea" %>
+    </div>
 
-  <div>
-    <%= form.label :"対戦相手名", style: "display: block" %>
-    <%= form.text_field :opponent_name %>
-  </div>
+    <% if match_info.scores.present? %>
+      <%= form.fields_for :scores do |score_form| %>
+        <% if score_form.object.persisted? %>
+          <%= score_form.select :batting_style, [['サーブ', 'serve'], ['レシーブ', 'receive']], {}, { class: "form-control medium-input" } %>
 
-  <div>
-    <%= form.label :"メモ", style: "display: block" %>
-    <%= form.text_area :memo %>
-  </div>
-
-  <% if match_info.scores.present? %>
-    <%= form.fields_for :scores do |score_form| %>
-      <% if score_form.object.persisted? %>
-        <%= score_form.select :batting_style, Score.batting_styles.keys.map { |style| [style.humanize, style] }, {}, { class: "form-control" } %>
-
-        <% if score_form.object.batting_style == "serve" %>
-          <div class="mb-3">
-            <%= score_form.label :score, "サーブの得点数" %>
-            <%= score_form.number_field :score, class: "form-control", min: 0 %>
-          </div>
-          <div class="mb-3">
-            <%= score_form.label :lost_score, "サーブの失点数" %>
-            <%= score_form.number_field :lost_score, class: "form-control", min: 0 %>
-          </div>
-        <% elsif score_form.object.batting_style == "receive" %>
-          <div class="mb-3">
-            <%= score_form.label :score, "レシーブの得点数" %>
-            <%= score_form.number_field :score, class: "form-control", min: 0 %>
-          </div>
-          <div class="mb-3">
-            <%= score_form.label :lost_score, "レシーブの失点数" %>
-            <%= score_form.number_field :lost_score, class: "form-control", min: 0 %>
-          </div>
+          <% if score_form.object.batting_style == "serve" %>
+            <div class="row mb-3">
+              <div class="column">
+                <%= score_form.label :score, "得点数", class: "text-blue" %>
+                <%= score_form.number_field :score, class: "form-control small-input", min: 0 %>
+              </div>
+              <div class="column">
+                <%= score_form.label :lost_score, "失点数", class: "text-red" %>
+                <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0 %>
+              </div>
+            </div>
+          <% elsif score_form.object.batting_style == "receive" %>
+            <div class="row mb-3">
+              <div class="column">
+                <%= score_form.label :score, "得点数", class: "text-blue" %>
+                <%= score_form.number_field :score, class: "form-control small-input", min: 0 %>
+              </div>
+              <div class="column">
+                <%= score_form.label :lost_score, "失点数", class: "text-red" %>
+                <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0 %>
+              </div>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
 
-  <div>
-    <%= form.submit "試合を分析する" %>
-  </div>
-<% end %>
+    <div class="center-text">
+      <%= form.submit "試合を分析する", class: "btn btn-success text-white" %>
+    </div>
+  <% end %>
+</div>

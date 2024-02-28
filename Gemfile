@@ -15,6 +15,7 @@ gem "bootsnap", require: false
 gem 'sorcery', '~> 0.16.5'
 gem 'pry-byebug'
 gem 'cssbundling-rails'
+gem 'ransack'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

@@ -6,4 +6,21 @@ class MatchInfo < ApplicationRecord
   has_many :scores, dependent: :destroy
   accepts_nested_attributes_for :scores, update_only: true
   has_many :games
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["match_name", "player_id", "opponent_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["player"]
+  end
+
+    # Ransackのカスタムスコープを定義
+  def self.ransackable_scopes(auth_object = nil)
+    [:opponent_player_name_cont]
+  end
+
+  def self.opponent_player_name_cont(query)
+    joins(:opponent).where("players.player_name LIKE ?", "%#{query}%")
+  end
 end

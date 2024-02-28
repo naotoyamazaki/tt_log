@@ -13,7 +13,8 @@
     "nodemon": "^3.0.3",
     "postcss": "^8.4.35",
     "postcss-cli": "^11.0.0",
-    "sass": "^1.70.0"
+    "sass": "^1.70.0",
+    "stimulus-autocomplete": "^3.1.0"
   },
   "scripts": {
     "build": "importmap pin-all",

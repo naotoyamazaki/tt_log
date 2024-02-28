@@ -77,6 +77,11 @@ class MatchInfosController < ApplicationController
     end
   end
 
+  def autocomplete
+    @match_infos = MatchInfo.search(params[:term])
+    render json: @match_infos.map(&:name)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_match_info

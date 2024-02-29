@@ -35,13 +35,19 @@ class MatchInfosController < ApplicationController
   def create
     player = Player.find_or_create_by(player_name: params[:match_info][:player_name])
     opponent = Player.find_or_create_by(player_name: params[:match_info][:opponent_name])
-
+  
     @match_info = MatchInfo.new(match_info_params.merge(player_id: player.id, opponent_id: opponent.id))
-
+  
     @match_info.user = current_user
-
+  
     respond_to do |format|
       if @match_info.save
+        # Xへの投稿をユーザーが選択した場合のみ実行
+        if params[:match_info][:post_to_x] == "1"
+          message = "新しい試合分析データが作成され、Xに投稿されました!\n選手名: #{@match_info.player.player_name}、対戦相手: #{@match_info.opponent.player_name}、メモ: #{@match_info.memo}"
+          TwitterClient.post_to_twitter(message)
+        end
+
         format.html { redirect_to match_info_url(@match_info), notice: "試合分析データが作成されました。" }
         format.json { render :show, status: :created, location: @match_info }
       else
@@ -90,6 +96,6 @@ class MatchInfosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def match_info_params
-      params.require(:match_info).permit(:match_date, :match_name, :memo, scores_attributes: [:id, :batting_style, :score, :lost_score])
+      params.require(:match_info).permit(:match_date, :match_name, :memo , :post_to_x, scores_attributes: [:id, :batting_style, :score, :lost_score])
     end
 end

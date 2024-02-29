@@ -16,6 +16,8 @@ gem 'sorcery', '~> 0.16.5'
 gem 'pry-byebug'
 gem 'cssbundling-rails'
 gem 'ransack'
+gem 'twitter'
+gem 'dotenv-rails', groups: [:development, :test]
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

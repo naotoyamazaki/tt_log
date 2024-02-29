@@ -6,6 +6,7 @@ class MatchInfo < ApplicationRecord
   has_many :scores, dependent: :destroy
   accepts_nested_attributes_for :scores, update_only: true
   has_many :games
+  attr_accessor :post_to_x
 
   def self.ransackable_attributes(auth_object = nil)
     ["match_name", "player_id", "opponent_id"]

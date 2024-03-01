@@ -4,7 +4,7 @@ class MatchInfosController < ApplicationController
 
   # GET /match_infos or /match_infos.json
   def index
-    @q = MatchInfo.ransack(params[:q])
+    @q = current_user.match_infos.ransack(params[:q])
     @match_infos = @q.result.includes(:player, :opponent)
   end
 
@@ -78,7 +78,7 @@ class MatchInfosController < ApplicationController
     @match_info.destroy!
 
     respond_to do |format|
-      format.html { redirect_to match_infos_url, notice: "試合分析データが削除されました。" }
+      format.html { redirect_to match_infos_url, alert: "試合分析データが削除されました。" }
       format.json { head :no_content }
     end
   end
@@ -91,7 +91,9 @@ class MatchInfosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_match_info
-      @match_info = MatchInfo.find(params[:id])
+      @match_info = current_user.match_infos.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to match_infos_path, alert: "指定された投稿が見つかりません。"
     end
 
     # Only allow a list of trusted parameters through.

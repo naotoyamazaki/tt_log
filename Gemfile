@@ -18,6 +18,9 @@ gem 'cssbundling-rails'
 gem 'ransack'
 gem 'twitter'
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'net-imap'
+gem 'net-pop'
+gem 'net-smtp'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

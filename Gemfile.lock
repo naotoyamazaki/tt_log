@@ -330,6 +330,9 @@ DEPENDENCIES
   dotenv-rails
   importmap-rails
   jbuilder
+  net-imap
+  net-pop
+  net-smtp
   pg (~> 1.1)
   pry-byebug
   puma (>= 5.0)

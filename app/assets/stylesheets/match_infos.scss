@@ -105,4 +105,35 @@
     margin: 0 auto;
     /* 中央揃え */
   }
+
+  .form-container {
+    width: 100%; /* スマートフォンではフォームの幅を100%に */
+    padding: 0 15px; /* 左右のパディングを設定して中央寄せの見た目を整える */
+  }
+
+  .row {
+    flex-direction: column; /* 入力フィールドを縦並びに */
+    align-items: center; /* 中央寄せ */
+    margin: 0; /* マージンをリセット */
+  }
+
+  .column,
+  .wide-textarea,
+  .medium-input,
+  .small-input {
+    width: 100%; /* スマートフォン表示では幅を100%に */
+  }
+
+  .center-text,
+  .center-link,
+  .center-button {
+    text-align: center; /* テキスト、リンク、ボタンを中央寄せ */
+    width: 100%; /* 幅を100%に */
+    margin: 10px 0; /* 適宜マージンを設定 */
+  }
+
+  .number-input button {
+    /* スピンボタンのスタイル調整 */
+    margin: 0 5px; /* ボタンの間隔 */
+  }
 }

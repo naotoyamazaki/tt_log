@@ -22,10 +22,15 @@ T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ
 * 場面別での得点率の分析フォーマット
 * 場面別分析結果詳細
 * 試合ごとのマルチ検索・オートコンプリート機能
-* X(旧Twitter)での共有機能
 
 ### その後の機能
 * 技術別の得点率分析フォーマット
+* 1ゲームごとの分析フォーマット
+* パスワードリセット
+* マイページ更新
+* ログインの保持
+* デモログイン
+* X(旧Twitter)での共有機能
 
 ### 分析用データ
 * 場面別
@@ -47,6 +52,15 @@ T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ
   * フォアカウンター
   * バックカウンター
 
+* ゲーム別
+  * 1ゲーム目
+  * 2ゲーム目
+  * 3ゲーム目
+  * 4ゲーム目
+  * 5ゲーム目
+  * 6ゲーム目
+  * 7ゲーム目
+
 ## 機能の実装方針予定
 ### 場面別の分析とアドバイス機能について
   * サーブからの得点率が60％以上、レシーブからの得点率が40％以上の場合
@@ -63,13 +77,13 @@ T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ
 　  →「あなたは〇〇と〇〇(得点率が上位2つの技術)での得点率が高いです。どうすれば〇〇と〇〇が使える展開になるか考えて練習していきましょう。
 また××と××(得点率が下位2つの技術)での得点率が低いので練習して質を上げていきましょう。技術の上達には1ヶ月〜3ヶ月ほどかかるので直近の大事な試合ではあまり使わないほうがいいかもしれません。」と表示。
 
-### 使用予定技術
+### 使用技術
 * 開発環境: Docker
-* サーバーサイド Ruby: 3.0系, Rails: 7.0系
+* サーバーサイド Ruby: 3.2.2, Rails: 7.1.2
 * ユーザ登録及び認証機能: Sorcery
 * マルチ検索・オートコンプリート機能: Stimulus Autocomplete（Rails7）
-* フロントエンド: Javascript
-* CSSフレームワーク: bootstrap5系
+* フロントエンド: Javascript(importmap-railsによるモジュール管理)
+* CSSフレームワーク: bootstrap: 5.3.2(cssbundling-railsによる統合)
 * WebAPI: TwitterAPI
 * インフラ:
   - Webアプリケーションサーバ: heroku
@@ -79,7 +93,7 @@ T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ
   - CI/CD: GitHubActions
 
 ## 画面遷移図
-https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427%3A798&mode=design&t=umSI8iN5NjlZMfYl-1
+https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427-798&mode=design&t=rC1St5srpN7nLmEV-0
 
 ## ER図
-<a href="https://gyazo.com/0266cf4febae87c9761e8af2be2fe6d2"><img src="https://i.gyazo.com/0266cf4febae87c9761e8af2be2fe6d2.png" alt="Image from Gyazo" width="890"/></a>
+<a href="https://gyazo.com/dd5862a0051a980658eaa0fd3871a8a4"><img src="https://i.gyazo.com/dd5862a0051a980658eaa0fd3871a8a4.png" alt="Image from Gyazo" width="1042"/></a>

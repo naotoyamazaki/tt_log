@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class=" col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-      <h1 class="mt-4">ログイン</h1>
+      <h1 class="center-text">ログイン</h1>
       <%= form_with url: login_path, local: true do |f| %>
         <div class="form-group mb-3">
           <%= f.label :"メールアドレス" %>
@@ -11,12 +11,12 @@
           <%= f.label :"パスワード" %>
           <%= f.password_field :password, class: 'form-control' %>
         </div>
-        <div class="actions mb-3">
+        <div class="actions center-text">
           <%= f.submit 'ログイン', class: 'btn btn-success' %>
         </div>
       <% end %>
-      <div class='text-center mt-3'>
-        <%= link_to '登録ページへ', new_user_path, class: 'me-3 text-success' %>
+      <div class='center-link'>
+        <%= link_to '登録ページへ', new_user_path, class: 'text-success' %>
         <%# <%= link_to 'パスワードをお忘れの方はこちら', "#", class: 'text-success' %>
       </div>
     </div>

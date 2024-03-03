@@ -2,37 +2,26 @@
 
 <%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success text-white btn-center-below-h1" %>
 
-<%= search_form_for @q, html: { class: "d-flex flex-wrap justify-content-center" } do |f| %>
-  <div class="mb-2">
+<%= search_form_for @q, html: { class: "row justify-content-center" } do |f| %>
+  <div class="col-12 col-md-3 mb-2">
     <%= f.label :match_name_cont, "大会名", class: "visually-hidden" %>
-    <%= f.search_field :match_name_cont, class: "form-control form-control-sm", placeholder: "大会名", data: { 
-  controller: "autocomplete",
-  action: "autocomplete->input",
-  autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    <%= f.search_field :match_name_cont, class: "form-control form-control-sm", placeholder: "大会名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
   </div>
 
-  <div class="mb-2">
+  <div class="col-12 col-md-3 mb-2">
     <%= f.label :player_player_name_cont, "選手名", class: "visually-hidden" %>
-    <%= f.search_field :player_player_name_cont, class: "form-control form-control-sm", placeholder: "選手名", data: { 
-  controller: "autocomplete",
-  action: "autocomplete->input",
-  autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    <%= f.search_field :player_player_name_cont, class: "form-control form-control-sm", placeholder: "選手名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
   </div>
 
-  <div class="mb-2">
+  <div class="col-12 col-md-3 mb-2">
     <%= f.label :opponent_player_name_cont, "対戦相手名", class: "visually-hidden" %>
-    <%= f.search_field :opponent_player_name_cont, class: "form-control form-control-sm", placeholder: "対戦相手名", data: { 
-  controller: "autocomplete",
-  action: "autocomplete->input",
-  autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    <%= f.search_field :opponent_player_name_cont, class: "form-control form-control-sm", placeholder: "対戦相手名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
   </div>
 
-  <div class="mb-2">
+  <div class="col-12 col-md-auto mb-2">
     <%= f.submit "検索", class: "btn btn-primary btn-sm" %>
   </div>
 <% end %>
-
-
 
 <% if @match_infos.empty? %>
   <div class="d-flex justify-content-center">
@@ -40,7 +29,7 @@
     <br>試合分析をスタートしましょう。</p>
   </div>
 <% else %>
-  <div class="row d-flex flex-wrap justify-content-center" id="match_infos">
+  <div class="row d-flex flex-wrap justify-content-start" id="match_infos">
     <% @match_infos.each do |match_info| %>
       <%= render partial: "match_info_summary", locals: { match_info: match_info } %>
     <% end %>

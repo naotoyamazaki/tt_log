@@ -11,7 +11,7 @@
   autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
   </div>
 
-  <div class="me-2 mb-2">
+  <div class="mb-2">
     <%= f.label :player_player_name_cont, "選手名", class: "visually-hidden" %>
     <%= f.search_field :player_player_name_cont, class: "form-control form-control-sm", placeholder: "選手名", data: { 
   controller: "autocomplete",
@@ -19,7 +19,7 @@
   autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
   </div>
 
-  <div class="me-2 mb-2">
+  <div class="mb-2">
     <%= f.label :opponent_player_name_cont, "対戦相手名", class: "visually-hidden" %>
     <%= f.search_field :opponent_player_name_cont, class: "form-control form-control-sm", placeholder: "対戦相手名", data: { 
   controller: "autocomplete",

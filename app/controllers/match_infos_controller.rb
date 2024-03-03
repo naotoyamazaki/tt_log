@@ -5,7 +5,7 @@ class MatchInfosController < ApplicationController
   # GET /match_infos or /match_infos.json
   def index
     @q = current_user.match_infos.ransack(params[:q])
-    @match_infos = @q.result.includes(:player, :opponent)
+    @match_infos = @q.result.includes(:player, :opponent).order(created_at: :desc)
   end
 
   # GET /match_infos/1 or /match_infos/1.json

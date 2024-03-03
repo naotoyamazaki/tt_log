@@ -25,6 +25,20 @@
   /* 中央寄せ */
 }
 
+/* indexカードのデザイン調整*/
+.card-title {
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
+}
+
+.btn-light {
+  color: #000; /* ボタンのテキスト色を暗色に */
+  border-radius: .25rem; /* 角の丸みを調整 */
+}
+
 /* 分析新規作成ページ  new/edit/show */
 /* フォーム全体をページの真ん中に配置する */
 .form-container {
@@ -99,6 +113,10 @@
 }
 
 @media (max-width: 768px) {
+  .card-body {
+    padding: .5rem; /* カード内のパディングを調整 */
+  }
+
   .show-container {
     width: 60%;
     /* 好みの幅に設定 */

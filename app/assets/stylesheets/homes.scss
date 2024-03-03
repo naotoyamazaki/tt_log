@@ -17,13 +17,12 @@
 
     @media screen and (max-width: 767px) {
       .fw-bold {
-        font-size: 20px;
+        font-size: 1.25rem; // 20px相当をremで指定
       }
-
-      // ボタンのサイズを小さくするカスタムスタイル
+    
       .btn-lg {
-        font-size: 0.8rem; // フォントサイズを小さくする
-        padding: .375rem .75rem; // パディングを調整する
+        font-size: 1rem; // ボタンのフォントサイズを大きくする例
+        padding: .5rem 1rem; // パディングを少し大きくしてボタン自体のサイズを増やす
       }
     }
   }

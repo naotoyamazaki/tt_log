@@ -3,6 +3,7 @@
 @import "homes";
 @import "match_infos";
 
+/* PC向けのスタイル */
 html,
 body {
   height: 100%;
@@ -37,4 +38,34 @@ body {
   background-color: #f8d7da;
   color: #721c24;
   border-color: #f5c6cb;
+}
+
+/* スマートフォン向けのスタイル */
+@media (max-width: 768px) {
+
+  /* ヘッダー */
+  .logo img {
+    width: 150px;
+    /* ロゴの幅を小さくする */
+    height: auto;
+    /* アスペクト比を保つ */
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem;
+    /* ヘッダーの高さ（縦幅）を小さくする */
+  }
+
+  .navbar-brand {
+    flex-grow: 1;
+    /* ロゴを左に寄せる */
+    text-align: left;
+    /* テキストを左寄せにする（必要に応じて） */
+  }
+
+  .navbar-toggler {
+    flex-grow: 0;
+    /* トグルボタンの位置を調整 */
+  }
+
 }

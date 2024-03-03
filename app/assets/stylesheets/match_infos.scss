@@ -13,34 +13,60 @@
 
 /* 分析一覧ページ  index*/
 /* 分析開始ボタン */
-.btn-top-right {
-  position: absolute;
-  right: 20px;
-  top: 110px; /* ヘッダーの高さに応じて調整 */
+.btn-center-below-h1 {
+  display: block; // ブロック要素として表示
+  margin: 20px auto; // 上下のマージンを適宜設定し、自動で左右中央揃え
+  width: fit-content; // ボタンの内容に合わせて幅を自動調整
+}
+
+#match_infos {
+  width: 80%;
+  margin: 0 auto;
+  /* 中央寄せ */
+}
+
+/* indexカードのデザイン調整*/
+.card-title {
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
+}
+
+.btn-light {
+  color: #000; /* ボタンのテキスト色を暗色に */
+  border-radius: .25rem; /* 角の丸みを調整 */
 }
 
 /* 分析新規作成ページ  new/edit/show */
 /* フォーム全体をページの真ん中に配置する */
 .form-container {
-  width: 30%; /* 好みの幅に設定 */
-  margin: 0 auto; /* 中央揃え */
+  width: 30%;
+  /* 好みの幅に設定 */
+  margin: 0 auto;
+  /* 中央揃え */
 }
 
 .show-container {
-  width: 30%; /* 好みの幅に設定 */
-  margin: 0 auto; /* 中央揃え */
+  width: 30%;
+  /* 好みの幅に設定 */
+  margin: 0 auto;
+  /* 中央揃え */
 }
 
 /* フォームを横並びにする */
 .row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px; /* 適宜調整 */
+  margin-bottom: 20px;
+  /* 適宜調整 */
 }
 
 .column {
   flex: 1;
 }
+
 /* 画面が小さい場合に縦並びに変更する */
 @media (max-width: 900px) {
   .row {
@@ -84,4 +110,48 @@
   border: none;
   text-align: center;
   margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: .5rem; /* カード内のパディングを調整 */
+  }
+
+  .show-container {
+    width: 60%;
+    /* 好みの幅に設定 */
+    margin: 0 auto;
+    /* 中央揃え */
+  }
+
+  .form-container {
+    width: 100%; /* スマートフォンではフォームの幅を100%に */
+    padding: 0 15px; /* 左右のパディングを設定して中央寄せの見た目を整える */
+  }
+
+  .row {
+    flex-direction: column; /* 入力フィールドを縦並びに */
+    align-items: center; /* 中央寄せ */
+    margin: 0; /* マージンをリセット */
+  }
+
+  .column,
+  .wide-textarea,
+  .medium-input,
+  .small-input {
+    width: 100%; /* スマートフォン表示では幅を100%に */
+  }
+
+  .center-text,
+  .center-link,
+  .center-button {
+    text-align: center; /* テキスト、リンク、ボタンを中央寄せ */
+    width: 100%; /* 幅を100%に */
+    margin: 10px 0; /* 適宜マージンを設定 */
+  }
+
+  .number-input button {
+    /* スピンボタンのスタイル調整 */
+    margin: 0 5px; /* ボタンの間隔 */
+  }
 }

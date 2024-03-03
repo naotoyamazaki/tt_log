@@ -1,16 +1,10 @@
-<div class="bg-success p-3 my-4 mx-5" id="<%= dom_id match_info %>">
-  <div class="d-flex text-white align-items-center justify-content-around">
-    <div class="px-2">
-      <%= match_info.match_date %>
-    </div>
-    <div class="px-2">
-      <%= match_info.match_name %>
-    </div>
-    <div class="px-2">
-      <%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %>
-    </div>
-    <div class="px-2">
-      <%= link_to "試合分析詳細", match_info, class: "text-white" %>
+<div class="col-md-3 col-sm-4 my-3"> <!-- PCでは3列、スマホでは2列で表示 -->
+  <div class="card bg-success text-white h-100"> <!-- カードの高さを100%にする -->
+    <div class="card-body">
+    <h5 class="card-title"><%= match_info.match_name %></h5>
+    <p class="card-text"><%= match_info.match_date %></p>
+    <p class="card-text"><%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %></p>
+    <%= link_to "試合分析詳細", match_info, class: "btn btn-light mt-2" %>
     </div>
   </div>
 </div>

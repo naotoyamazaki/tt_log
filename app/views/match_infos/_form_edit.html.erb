@@ -50,28 +50,46 @@
             <div class="row mb-3">
               <div class="column">
                 <%= score_form.label :score, "得点数", class: "text-blue" %>
-                <%= score_form.number_field :score, class: "form-control small-input", min: 0 %>
+                <div class="number-input d-flex align-items-center">
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
+                  <%= score_form.number_field :score, class: "form-control small-input", min: 0, value: score_form.object.score || 0 %>
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
+                </div>
               </div>
               <div class="column">
                 <%= score_form.label :lost_score, "失点数", class: "text-red" %>
-                <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0 %>
+                <div class="number-input d-flex align-items-center">
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
+                  <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0, value: score_form.object.lost_score || 0 %>
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
+                </div>
               </div>
             </div>
           <% elsif score_form.object.batting_style == "receive" %>
+            <!-- 同様のコードを"receive"の場合にも適用 -->
             <div class="row mb-3">
               <div class="column">
                 <%= score_form.label :score, "得点数", class: "text-blue" %>
-                <%= score_form.number_field :score, class: "form-control small-input", min: 0 %>
+                <div class="number-input d-flex align-items-center">
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
+                  <%= score_form.number_field :score, class: "form-control small-input", min: 0, value: score_form.object.score || 0 %>
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
+                </div>
               </div>
               <div class="column">
                 <%= score_form.label :lost_score, "失点数", class: "text-red" %>
-                <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0 %>
+                <div class="number-input d-flex align-items-center">
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
+                  <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0, value: score_form.object.lost_score || 0 %>
+                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
+                </div>
               </div>
             </div>
           <% end %>
         <% end %>
       <% end %>
     <% end %>
+
 
     <%# <div class="center-text">
     <%= form.check_box :post_to_x %>

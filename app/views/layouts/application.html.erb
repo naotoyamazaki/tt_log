@@ -8,6 +8,23 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <%= favicon_link_tag asset_path('favicon-32x32.png') %>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:title" content="T.T.LOG | 卓球の試合分析ツール">
+    <meta property="og:description" content="あなたのプレーを分析します！">
+    <meta property="og:image" content="<%= image_url('line_thumbnail.jpg') %>">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<%= request.original_url %>">
+    <meta name="twitter:title" content="T.T.LOG | 卓球の試合分析ツール">
+    <meta name="twitter:description" content="あなたのプレーを分析します！">
+    <meta name="twitter:image" content="<%= image_url('twitter_thumbnail.jpg') %>">
+
   </head>
   <body>
     <div class="content-wrap">

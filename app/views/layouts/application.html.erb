@@ -25,6 +25,14 @@
     <meta name="twitter:description" content="あなたのプレーを分析します！">
     <meta name="twitter:image" content="<%= image_url('twitter_thumbnail.jpg') %>">
 
+    <!-- Googleアナリティクスtag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M1KP0X3X9X"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-M1KP0X3X9X');
+    </script>
   </head>
   <body>
     <div class="content-wrap">

@@ -21,6 +21,7 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem 'net-imap'
 gem 'net-pop'
 gem 'net-smtp'
+gem 'sitemap_generator'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

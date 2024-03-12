@@ -266,6 +266,8 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     simple_oauth (0.3.1)
+    sitemap_generator (6.3.0)
+      builder (~> 3.0)
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
@@ -339,6 +341,7 @@ DEPENDENCIES
   rails (= 7.1.2)
   ransack
   selenium-webdriver
+  sitemap_generator
   sorcery (~> 0.16.5)
   sprockets-rails
   stimulus-rails

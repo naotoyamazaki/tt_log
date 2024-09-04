@@ -4,10 +4,63 @@
       <br />苦手なプレーまでわかる試合分析ツール
     <br />
     <% if current_user %>
-      <%= link_to '分析スタート', new_match_info_path, class: "btn btn-success btn-lg mt-4" %>
+      <%= link_to '分析スタート', new_match_info_path, class: "btn text-white btn-lg mt-4" %>
     <% else %>
-      <%= link_to '分析スタート', new_user_path, class: "btn btn-success btn-lg mt-4" %>
+      <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn text-white btn-lg mt-4" %>
     <% end %>
     </h1>
   </div>
 </div>
+
+  <!-- T.T.LOGとは？ -->
+  <section style="background-color: #F0E7DA;">
+    <div class='container text-center'>
+      <h2 class="section-header">T.T.LOGとは？</h2>
+      <p>卓球を教えてくれるスクールやコーチは近年でとても増えましたが、あなたが出場した試合を見てしっかりアドバイスをくれるコーチはまだあまりいないと思います。T.T.LOGでは独自の分析フォーマットであなたの試合内容を数値化してアドバイスをくれます。それによって自身のプレーの強みや改善点を明確にすることができる卓球分析ツールです。</p>
+      <!-- ビジュアルやイメージビデオの埋め込みなど -->
+      <%= image_tag 'ttlog_image1.jpg', alt: 'T.T.LOGのイメージ画像' %>
+    </div>
+  </section>
+
+  <!-- こんな悩みはありませんか？ -->
+  <section style="background-color: #50C878; padding: 20px;">
+    <div class='container text-center'>
+      <h2 class="section-header">こんな悩みはありませんか？</h2>
+      <div class="chat-bubble left-bubble">たくさん練習しているのに試合でなかなか勝つことができない...</div>
+      <div class="chat-bubble right-bubble">撮影したビデオを見返しても改善点がいまいちわからない...</div>
+      <div class="chat-bubble left-bubble">そんなあなたに、T.T.LOGが解決策を提供します。</div>
+      <%= image_tag 'ttlog_image2.jpg', alt: 'T.T.LOGのイメージ画像' %>
+    </div>
+  </section>
+
+  <!-- 機能紹介 -->
+  <section style="background-color: #F0E7DA;">
+  <div class='container text-center'>
+    <h2 class="section-header">T.T.LOGでできること</h2>
+    <ul class="features-list">
+      <li><span class="icon">①</span>サーブ、レシーブからの得点率を分析。</li>
+      <li><span class="icon">②</span>技術ごとの得点率を分析。</li>
+      <li><span class="icon">③</span>1ゲームごとのプレー内容を分析。</li>
+      <li><span class="icon">④</span>AIを使用してより深い分析を実現。</li>
+      <li><span class="icon">⑤</span>分析結果を元にした練習メニューを提案。</li>
+    </ul>
+  </div>
+</section>
+
+
+  <!-- 会員登録、ログインボタン -->
+  <section style="background-color: #50C878;">
+    <div class='container text-center'>
+      <h2 class="section-header">今すぐT.T.LOGを始めよう</h2>
+      <% if current_user %>
+        <div class="button-group">
+          <%= link_to '分析を始める', new_match_info_path, class: "btn text-white btn-lg mt-4" %>
+        </div>
+      <% else %>
+        <div class="button-group">
+          <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn text-white btn-lg mt-4 mr-2" %>
+          <%= link_to 'ログイン', login_path, class: "btn text-white btn-lg mt-4" %>
+        </div>
+      <% end %>
+    </div>
+  </section>

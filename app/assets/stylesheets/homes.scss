@@ -30,11 +30,18 @@
 /* トップイメージ以外のセクションのスタイル修正 */
 section {
   margin: 0;
-  padding: 20px 0;
+  padding: 60px 0px;
 }
 
-.container {
-  padding: 20px;
+section p {
+  max-width: 60%;
+  /* 幅を80%に設定（必要に応じて調整） */
+  margin: 0 auto 30px;
+  /* 中央揃えと下のマージンを追加 */
+}
+
+.features-section {
+  padding: 60px 20px; /* 上下の余白を設定 */
 }
 
 .btn {
@@ -46,22 +53,13 @@ section {
   color: white;
 }
 
-@media screen and (max-width: 767px) {
-  .fw-bold {
-    font-size: 1.25rem;
-  }
-
-  .btn-lg {
-    font-size: 1rem;
-    padding: .5rem 1rem;
-  }
-}
-
 //タイトル下線
 .section-header {
   border-bottom: 5px solid #fff;
   display: inline-block;
   padding-bottom: 5px;
+  margin-bottom: 30px;
+  /* 下に空間を追加 */
 }
 
 //吹き出しデザイン
@@ -69,12 +67,13 @@ section {
   background-color: #f7e1f3;
   border-radius: 18px;
   padding: 20px;
-  margin: 0 auto 20px; // 左右のマージンをautoにして中央揃え
+  margin: 0 auto 30px; // 左右のマージンをautoにして中央揃え
   position: relative;
-  max-width: 50%;
+  max-width: 40%;
   text-align: center; // テキストを中央に揃える
 
-  &::after { // 共通のスタイル
+  &::after {
+    // 共通のスタイル
     content: '';
     position: absolute;
     width: 0;
@@ -82,11 +81,15 @@ section {
     border: 15px solid transparent;
     bottom: -15px;
   }
-  &.right-bubble::after { // 右から出る三角
+
+  &.right-bubble::after {
+    // 右から出る三角
     border-left-color: #f7e1f3;
     right: 30px; // 右側から30pxの位置に配置
   }
-  &.left-bubble::after { // 左から出る三角
+
+  &.left-bubble::after {
+    // 左から出る三角
     border-right-color: #f7e1f3;
     left: 30px; // 左側から30pxの位置に配置
   }
@@ -96,35 +99,49 @@ section {
 .features-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* 中央寄せ */
+  justify-content: center;
+  /* 中央寄せ */
   padding: 0;
-  list-style: none; /* デフォルトのリストスタイルを消す */
-  gap: 20px; /* アイテム間の余白 */
+  list-style: none;
+  /* デフォルトのリストスタイルを消す */
+  gap: 20px;
+  /* アイテム間の余白 */
 }
 
 .features-list li {
-  flex: 1 1 calc(33.33% - 40px); /* アイテムを3列に分割 */
+  flex: 1 1 calc(50% - 20px);
+  /* アイテムを2列に分割 */
   box-sizing: border-box;
-  background-color: #fff; /* 背景色 */
-  border: 2px solid #423A37; /* 枠線 */
-  border-radius: 10px; /* 角を丸める */
+  background-color: #fff;
+  /* 背景色 */
+  border: 2px solid #423A37;
+  /* 枠線 */
+  border-radius: 10px;
+  /* 角を丸める */
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 影を追加 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* 影を追加 */
   text-align: left;
-  transition: transform 0.3s ease, background-color 0.3s ease; /* アニメーション */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  /* アニメーション */
+  max-width: 450px; /* 最大幅を設定 */
 }
 
 .features-list li:hover {
-  transform: translateY(-5px); /* ホバー時に少し浮く */
-  background-color: #f8f5f2; /* 背景色を変える */
+  transform: translateY(-5px);
+  /* ホバー時に少し浮く */
+  background-color: #f8f5f2;
+  /* 背景色を変える */
 }
 
 .features-list .icon {
   display: inline-block;
-  background-color: #50C878; /* アイコン背景色 */
+  background-color: #50C878;
+  /* アイコン背景色 */
   color: white;
-  border-radius: 50%; /* 丸くする */
+  border-radius: 50%;
+  /* 丸くする */
   padding: 10px;
   width: 40px;
   height: 40px;
@@ -133,8 +150,44 @@ section {
   margin-right: 10px;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
+  .fw-bold {
+    font-size: 1.25rem;
+  }
+
+  .btn-lg {
+    font-size: 1rem;
+    padding: .5rem 1rem;
+  }
+
+  section p {
+    max-width: 90%;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
+  }
+
+  .features-section {
+    padding: 60px 20px; /* 上下の余白を設定 */
+  }
+
   .features-list li {
-    flex: 1 1 100%; /* モバイルでは1列にする */
+    flex: 1 1 100%;
+    /* モバイルでは1列にする */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  section p {
+    max-width: 90%;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
+  }
+
+  .features-section {
+    padding: 60px 20px; /* 上下の余白を設定 */
   }
 }

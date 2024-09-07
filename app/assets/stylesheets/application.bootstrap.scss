@@ -4,6 +4,14 @@
 @import "match_infos";
 
 /* PC向けのスタイル */
+.navbar, .footer-bottom {
+  background-color: #308C61;
+}
+
+.footer-bottom {
+  padding: 15px 0;
+}
+
 html,
 body {
   height: 100%;

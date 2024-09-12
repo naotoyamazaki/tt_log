@@ -22,6 +22,8 @@ gem 'net-imap'
 gem 'net-pop'
 gem 'net-smtp'
 gem 'sitemap_generator'
+gem 'rails-i18n', '~> 7.0'
+
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

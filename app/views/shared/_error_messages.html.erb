@@ -1,0 +1,12 @@
+<% puts "Object: #{object.inspect}" %>
+<% puts "Errors: #{object.errors.full_messages}" %>
+
+<% if object.errors.any? %>
+  <div class="alert alert-danger">
+    <ul>
+      <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

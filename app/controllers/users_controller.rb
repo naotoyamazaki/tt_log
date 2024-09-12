@@ -8,6 +8,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to login_path, notice: "会員登録が完了しました"
     else
+      Rails.logger.info(@user.errors.full_messages)
       render :new
     end
   end

@@ -8,6 +8,12 @@ class MatchInfo < ApplicationRecord
   has_many :games
   attr_accessor :post_to_x
 
+  validates :match_date, presence: true
+  validates :match_name, presence: true
+  validates :player_name, presence: true
+  validates :opponent_name, presence: true
+  validates :memo, length: { maximum: 500, message: "は500文字以内で入力してください" }, allow_blank: true
+
   def self.ransackable_attributes(auth_object = nil)
     ["match_name", "player_id", "opponent_id"]
   end

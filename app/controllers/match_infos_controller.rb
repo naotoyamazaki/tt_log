@@ -67,6 +67,7 @@ class MatchInfosController < ApplicationController
         format.html { redirect_to @match_info, notice: "試合分析データが更新されました。" }
         format.json { render :show, status: :ok, location: @match_info }
       else
+        Rails.logger.info(@match_info.errors.full_messages)
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @match_info.errors, status: :unprocessable_entity }
       end
@@ -98,6 +99,6 @@ class MatchInfosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def match_info_params
-      params.require(:match_info).permit(:match_date, :match_name, :memo , :post_to_x, scores_attributes: [:id, :batting_style, :score, :lost_score])
+      params.require(:match_info).permit(:match_date, :match_name, :memo , :post_to_x, scores_attributes: [:id, :batting_style, :score, :lost_score, :_destroy])
     end
 end

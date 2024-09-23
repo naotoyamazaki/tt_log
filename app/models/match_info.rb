@@ -30,4 +30,5 @@ class MatchInfo < ApplicationRecord
   def self.opponent_player_name_cont(query)
     joins(:opponent).where("players.player_name LIKE ?", "%#{query}%")
   end
+
 end

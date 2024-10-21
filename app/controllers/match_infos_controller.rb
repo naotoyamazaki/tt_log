@@ -37,7 +37,9 @@ class MatchInfosController < ApplicationController
     opponent = Player.find_or_create_by(player_name: params[:match_info][:opponent_name])
   
     @match_info = MatchInfo.new(match_info_params.merge(player_id: player.id, opponent_id: opponent.id))
-  
+    @match_info.player_name = params[:match_info][:player_name]
+    @match_info.opponent_name = params[:match_info][:opponent_name]
+
     @match_info.user = current_user
   
     respond_to do |format|

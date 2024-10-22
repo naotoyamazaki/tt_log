@@ -1,16 +1,7 @@
 <div class="form-container">
   <%= form_with(model: match_info) do |form| %>
-    <% if match_info.errors.any? %>
-      <div style="color: red">
-        <h2><%= pluralize(match_info.errors.count, "error") %> prohibited this match_info from being saved:</h2>
 
-        <ul>
-          <% match_info.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+    <%= render 'shared/error_messages', object: @match_info %>
 
     <div class="row mb-3">
       <div class="column">

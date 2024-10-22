@@ -63,7 +63,10 @@ class MatchInfosController < ApplicationController
   def update
     player = Player.find_or_create_by(player_name: params[:match_info][:player_name])
     opponent = Player.find_or_create_by(player_name: params[:match_info][:opponent_name])
-  
+
+    @match_info.player_name = params[:match_info][:player_name]
+    @match_info.opponent_name = params[:match_info][:opponent_name]
+
     respond_to do |format|
       if @match_info.update(match_info_params.merge(player_id: player.id, opponent_id: opponent.id))
         format.html { redirect_to @match_info, notice: "試合分析データが更新されました。" }

@@ -4,9 +4,24 @@
 <% if object.errors.any? %>
   <div class="alert alert-danger">
     <ul>
+      <% important_errors = ["日付を入力してください", "大会名を入力してください", "選手名を入力してください", "対戦相手名を入力してください"] %>
+
+      <% important_errors.each do |important_message| %>
+        <% if object.errors.full_messages.include?(important_message) %>
+          <li><%= important_message %></li>
+        <% end %>
+      <% end %>
+
       <% object.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+        <% unless important_errors.include?(message) %>
+          <% if message.exclude?("Scores") %>
+            <li><%= message %></li>
+          <% else %>
+            <li><%= message.gsub("Scores", "") %></li>
+          <% end %>
+        <% end %>
       <% end %>
     </ul>
   </div>
 <% end %>
+

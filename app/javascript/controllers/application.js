@@ -1,5 +1,7 @@
-import { Application } from "@hotwired/stimulus"
+import { Turbo } from "@hotwired/turbo-rails"
+Turbo.start()
 
+import { Application } from "@hotwired/stimulus"
 const application = Application.start()
 
 // Configure Stimulus development experience

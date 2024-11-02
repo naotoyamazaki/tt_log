@@ -11,25 +11,34 @@
 
       <div class="column">
         <%= form.label :"大会名", style: "display: block" %>
-        <%= form.text_field :match_name %>
+        <%= form.text_field :match_name, placeholder: "出場した大会名を入力" %>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="column">
         <%= form.label :"選手名", style: "display: block" %>
-        <%= form.text_field :player_name %>
+        <%= form.text_field :player_name, placeholder: "分析する選手名を入力" %>
       </div>
 
       <div class="column">
         <%= form.label :"対戦相手名", style: "display: block" %>
-        <%= form.text_field :opponent_name %>
+        <%= form.text_field :opponent_name, placeholder: "対戦相手の名前を入力" %>
       </div>
     </div>
 
-    <div class="column">
+    <div class="mb-5">
       <%= form.label :"メモ", style: "display: block" %>
-      <%= form.text_area :memo, class: "wide-textarea" %>
+      <%= form.text_area :memo, class: "wide-textarea", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
+    </div>
+
+    <div class="analysis-header mb-4">
+      <h4 class="center-subtext">【サーブとレシーブからの得点率分析】</h4>
+      <div>サーブとレシーブそれぞれから始まったラリーの得点率を分析します。<br>
+        例：分析する選手のサーブから始まったラリーで得点<br>→サーブの得点数に1をプラスする。<br>
+        ※サービスエースとレシーブエースのみを集計するためのものではありません。<br>
+        ※得点数/失点数は選手の視点で入力
+      </div>
     </div>
 
     <% if match_info.scores.present? %>
@@ -38,7 +47,7 @@
           <%= score_form.select :batting_style, [['サーブ', 'serve'], ['レシーブ', 'receive']], {}, { class: "form-control medium-input" } %>
 
           <% if score_form.object.batting_style == "serve" %>
-            <div class="row mb-3">
+            <div class="row mb-5">
               <div class="column">
                 <%= score_form.label :score, "得点数", class: "text-blue" %>
                 <div class="number-input d-flex align-items-center">
@@ -58,7 +67,7 @@
             </div>
           <% elsif score_form.object.batting_style == "receive" %>
             <!-- 同様のコードを"receive"の場合にも適用 -->
-            <div class="row mb-3">
+            <div class="row mb-5">
               <div class="column">
                 <%= score_form.label :score, "得点数", class: "text-blue" %>
                 <div class="number-input d-flex align-items-center">

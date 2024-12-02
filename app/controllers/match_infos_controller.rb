@@ -18,8 +18,9 @@ class MatchInfosController < ApplicationController
   # GET /match_infos/new
   def new
     @match_info = MatchInfo.new
-    @match_info.scores.build(batting_style: :serve)
-    @match_info.scores.build(batting_style: :receive)
+    Score.batting_styles.keys.each do |batting_style|
+      @match_info.scores.build(batting_style: batting_style)
+    end
   end
 
   # GET /match_infos/1/edit

@@ -13,6 +13,7 @@ class MatchInfosController < ApplicationController
     @match_info = MatchInfo.find(params[:id])
     @serve_scores = @match_info.scores.where(batting_style: 'serve')
     @receive_scores = @match_info.scores.where(batting_style: 'receive')
+    @batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
   end
 
   # GET /match_infos/new

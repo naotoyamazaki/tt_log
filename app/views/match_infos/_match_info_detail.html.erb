@@ -58,5 +58,26 @@
       <p>サーブからもレシーブからもあまり得点できていませんね。
       <br />相手がかなり格上だったのかもしれません。気を取り直して引き続き練習頑張っていきましょう！</p>
     <% end %>
+
+    <div class="ranking-section">
+      <h3>技術ごとの得点率ランキング</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>技術</th>
+            <th>得点率 (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% calculate_batting_score_data(@batting_scores).each do |data| %>
+            <tr>
+              <td><%= Score.human_enum_name(:batting_style, data[:batting_style]) %></td>
+              <td><%= data[:rate] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>

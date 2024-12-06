@@ -33,59 +33,54 @@
     </div>
 
     <div class="analysis-header mb-4">
-      <h4 class="center-subtext">【サーブとレシーブからの得点率分析】</h4>
-      <div>サーブとレシーブそれぞれから始まったラリーの得点率を分析します。<br>
+      <div class="mb-3">1.サーブとレシーブそれぞれから始まったラリーの得点率を分析します。<br>
         例：分析する選手のサーブから始まったラリーで得点<br>→サーブの得点数に1をプラスする。<br>
         ※サービスエースとレシーブエースのみを集計するためのものではありません。<br>
-        ※得点数/失点数は選手の視点で入力
+      </div>
+      <div>
+        2.試合で使用した技術ごとの得点率を分析します。<br>
+        例：分析する選手がフォアドライブを打って得点<br>→フォアドライブの得点数に1をプラスする。
       </div>
     </div>
 
-    <% if match_info.scores.present? %>
-      <%= form.fields_for :scores do |score_form| %>
-        <% if score_form.object.persisted? %>
-          <%= score_form.select :batting_style, [['サーブ', 'serve'], ['レシーブ', 'receive']], {}, { class: "form-control medium-input" } %>
+    <% # batting_styles_orderを固定 %>
+    <% batting_styles_order = [
+      'serve', 'receive',
+      'forehand_drive', 'backhand_drive',
+      'forehand_push', 'backhand_push',
+      'forehand_stop', 'backhand_stop',
+      'forehand_flick', 'backhand_flick',
+      'chiquita',
+      'forehand_block', 'backhand_block',
+      'forehand_counter', 'backhand_counter'
+    ] %>
 
-          <% if score_form.object.batting_style == "serve" %>
-            <div class="row mb-5">
-              <div class="column">
-                <%= score_form.label :score, "得点数", class: "text-blue" %>
-                <div class="number-input d-flex align-items-center">
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
-                  <%= score_form.number_field :score, class: "form-control small-input", min: 0, value: score_form.object.score || 0 %>
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
-                </div>
-              </div>
-              <div class="column">
-                <%= score_form.label :lost_score, "失点数", class: "text-red" %>
-                <div class="number-input d-flex align-items-center">
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
-                  <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0, value: score_form.object.lost_score || 0 %>
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
-                </div>
-              </div>
-            </div>
-          <% elsif score_form.object.batting_style == "receive" %>
-            <!-- 同様のコードを"receive"の場合にも適用 -->
-            <div class="row mb-5">
-              <div class="column">
-                <%= score_form.label :score, "得点数", class: "text-blue" %>
-                <div class="number-input d-flex align-items-center">
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
-                  <%= score_form.number_field :score, class: "form-control small-input", min: 0, value: score_form.object.score || 0 %>
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
-                </div>
-              </div>
-              <div class="column">
-                <%= score_form.label :lost_score, "失点数", class: "text-red" %>
-                <div class="number-input d-flex align-items-center">
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
-                  <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0, value: score_form.object.lost_score || 0 %>
-                  <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus">-</button>
-                </div>
-              </div>
-            </div>
-          <% end %>
+    <% # batting_style順に並べ替え %>
+    <% sorted_scores = match_info.scores.sort_by do |score| %>
+      <% batting_styles_order.index(score.batting_style) %>
+    <% end %>
+
+    <% # ソート後のscoresを使用 %>
+    <% sorted_scores.each do |score| %>
+      <%= form.fields_for :scores, score do |score_form| %>
+        <%= score_form.select :batting_style,
+          [['サーブ', 'serve'], ['レシーブ', 'receive'],
+          ['フォアドライブ', 'forehand_drive'], ['バックドライブ', 'backhand_drive'],
+          ['フォアツッツキ', 'forehand_push'], ['バックツッツキ', 'backhand_push'],
+          ['フォアストップ', 'forehand_stop'], ['バックストップ', 'backhand_stop'],
+          ['フォアフリック', 'forehand_flick'], ['バックフリック', 'backhand_flick'],
+          ['チキータ', 'chiquita'], ['フォアブロック', 'forehand_block'],
+          ['バックブロック', 'backhand_block'], ['フォアカウンター', 'forehand_counter'],
+          ['バックカウンター', 'backhand_counter']
+          ], {}, { class: "form-control medium-input" } %>
+
+        <% case score.batting_style %>
+        <% when "serve", "receive", "forehand_drive", "backhand_drive",
+              "forehand_push", "backhand_push", "forehand_stop", "backhand_stop",
+              "forehand_flick", "backhand_flick", "chiquita",
+              "forehand_block", "backhand_block",
+              "forehand_counter", "backhand_counter" %>
+          <%= render 'scores/score_fields', score_form: score_form, score: score %>
         <% end %>
       <% end %>
     <% end %>

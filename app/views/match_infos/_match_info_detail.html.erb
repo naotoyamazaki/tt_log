@@ -29,24 +29,34 @@
       <strong>Memo:</strong>
       <%= match_info.memo %>
     </p>
-    
-    <div class="row mb-3">
-      <div class="column">
-        <strong>サーブの得点率:</strong>
-        <%= calculate_point_rate(@serve_scores) %> %</p>
-      </div>
 
-      <div class="column">
-        <strong>レシーブの得点率:</strong>
-        <%= calculate_point_rate(@receive_scores) %> %</p>
-      </div>
+    <div class="ranking-section">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>展開</th>
+            <th>得点率 (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% serve_rate = calculate_point_rate(@serve_scores) %>
+          <% receive_rate = calculate_point_rate(@receive_scores) %>
+          <% [[t('activerecord.attributes.score.batting_style.serve'), serve_rate],
+              [t('activerecord.attributes.score.batting_style.receive'), receive_rate]].each do |name, rate| %>
+            <tr>
+              <td><%= name %>からの展開</td>
+              <td><%= rate %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
 
     <% serve_rate = calculate_point_rate(@serve_scores) %>
     <% receive_rate = calculate_point_rate(@receive_scores) %>
 
     <% if serve_rate >= 60 && receive_rate >= 40 %>
-      <p>サーブとレシーブどちらも安定しています。
+      <p>サーブからもレシーブからも安定して得点できています。
       <br />引き続きどちらもバランスよく練習していきましょう！</p>
     <% elsif serve_rate >= 60 && receive_rate < 40 %>
       <p>サーブからの得点率が高いですね。
@@ -56,7 +66,7 @@
       <br />ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！</p>
     <% else %>
       <p>サーブからもレシーブからもあまり得点できていませんね。
-      <br />相手がかなり格上だったのかもしれません。気を取り直して引き続き練習頑張っていきましょう！</p>
+      <br />相手がかなり格上だったのかもしれません。反省点を見直して引き続き練習頑張っていきましょう！</p>
     <% end %>
 
     <div class="ranking-section">

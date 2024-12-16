@@ -12,15 +12,11 @@ services:
   web:
     build: .
     command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    environment:
-      RAILS_MASTER_KEY: f2257ea72740fa5ac40ad64a1e6a5015
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+    env_file:
+      - ./.env
     volumes:
       - .:/tt_log
     ports:
       - "3000:3000"
     depends_on:
       - db
-    env_file:
-      - ./.env

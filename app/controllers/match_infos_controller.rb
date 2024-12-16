@@ -14,6 +14,13 @@ class MatchInfosController < ApplicationController
     @serve_scores = @match_info.scores.where(batting_style: 'serve')
     @receive_scores = @match_info.scores.where(batting_style: 'receive')
     @batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
+
+    # 得点率データを計算
+    batting_score_data = calculate_batting_score_data(@batting_scores)
+    # デバッグ用ログ
+    Rails.logger.info("batting_score_data: #{batting_score_data.to_json}")
+    # ChatGPT APIを呼び出してアドバイスを取得
+    @advice = ChatgptService.get_advice(batting_score_data.to_json)
   end
 
   # GET /match_infos/new

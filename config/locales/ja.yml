@@ -18,16 +18,16 @@ ja:
         batting_style:
           serve: サーブ
           receive: レシーブ
-          forehand_drive: フォアハンドドライブ
-          backhand_drive: バックハンドドライブ
-          forehand_push: フォアハンドツッツキ
-          backhand_push: バックハンドツッツキ
-          forehand_stop: フォアハンドストップ
-          backhand_stop: バックハンドストップ
-          forehand_flick: フォアハンドフリック
-          backhand_flick: バックハンドフリック
+          forehand_drive: フォアドライブ
+          backhand_drive: バックドライブ
+          forehand_push: フォアツッツキ
+          backhand_push: バックツッツキ
+          forehand_stop: フォアストップ
+          backhand_stop: バックストップ
+          forehand_flick: フォアフリック
+          backhand_flick: バックフリック
           chiquita: チキータ
-          forehand_block: フォアハンドブロック
-          backhand_block: バックハンドブロック
-          forehand_counter: フォアハンドカウンター
-          backhand_counter: バックハンドカウンター
+          forehand_block: フォアブロック
+          backhand_block: バックブロック
+          forehand_counter: フォアカウンター
+          backhand_counter: バックカウンター

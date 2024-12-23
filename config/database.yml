@@ -16,4 +16,7 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
+  database: tt_log_production
+  host: db
+  username: postgres
+  password: <%= ENV["POSTGRES_PASSWORD"] %>

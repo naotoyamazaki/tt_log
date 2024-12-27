@@ -17,6 +17,3 @@ test:
 production:
   <<: *default
   database: tt_log_production
-  host: db
-  username: <%= ENV["POSTGRES_USER"] %>
-  password: <%= ENV["POSTGRES_PASSWORD"] %>

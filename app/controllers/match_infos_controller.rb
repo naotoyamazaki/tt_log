@@ -19,8 +19,17 @@ class MatchInfosController < ApplicationController
     batting_score_data = calculate_batting_score_data(@batting_scores)
     # デバッグ用ログ
     Rails.logger.info("batting_score_data: #{batting_score_data.to_json}")
-    # ChatGPT APIを呼び出してアドバイスを取得
-    @advice = ChatgptService.get_advice(batting_score_data.to_json)
+    # アドバイスが存在する場合は再生成せずに使用
+    if @match_info.advice.present?
+      @advice = @match_info.advice
+    else
+      @advice = ChatgptService.get_advice(batting_score_data.to_json)
+      begin
+        @match_info.update_columns(advice: @advice) # エラー発生時に例外をスロー
+      rescue => e
+        Rails.logger.error("Failed to update advice: #{e.record.errors.full_messages.join(", ")}")
+      end
+    end
   end
 
   # GET /match_infos/new

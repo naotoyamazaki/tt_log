@@ -91,7 +91,7 @@ class MatchInfosController < ApplicationController
       if @match_info.update(match_info_params.merge(player_id: player.id, opponent_id: opponent.id))
         # 変更後のbatting_score_dataを計算
         updated_batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
-        updated_batting_score_data = calculate_batting_score_data(updated_batting_scores)
+        updated_batting_score_data = prepare_batting_score_data(updated_batting_scores)
   
         # batting_score_dataが変更された場合のみGPT APIを呼び出す
         if original_batting_score_data != updated_batting_score_data

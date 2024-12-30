@@ -16,9 +16,8 @@ class MatchInfosController < ApplicationController
     @batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
 
     # 得点率データを計算
-    batting_score_data = calculate_batting_score_data(@batting_scores)
-    # デバッグ用ログ
-    Rails.logger.info("batting_score_data: #{batting_score_data.to_json}")
+    batting_score_data = prepare_batting_score_data(@batting_scores)
+    Rails.logger.info("Data sent to ChatGPT API: #{batting_score_data.to_json}")
     # アドバイスが存在する場合は再生成せずに使用
     if @match_info.advice.present?
       @advice = @match_info.advice

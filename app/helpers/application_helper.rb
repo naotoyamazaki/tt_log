@@ -13,4 +13,15 @@ module ApplicationHelper
       { batting_style: score.batting_style, rate: rate }
     end.sort_by { |data| -data[:rate] } # 得点率の降順
   end
+
+  # 得点数と失点数データ整備（API送信用）
+  def prepare_batting_score_data(batting_scores)
+    batting_scores.map do |score|
+      {
+        batting_style: score.batting_style,
+        score: score.score,
+        lost_score: score.lost_score
+      }
+    end
+  end
 end

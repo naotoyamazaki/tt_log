@@ -46,13 +46,13 @@
     <% # batting_styles_orderを固定 %>
     <% batting_styles_order = [
       'serve', 'receive',
-      'forehand_drive', 'backhand_drive',
-      'forehand_push', 'backhand_push',
-      'forehand_stop', 'backhand_stop',
-      'forehand_flick', 'backhand_flick',
+      'fore_drive', 'back_drive',
+      'fore_push', 'back_push',
+      'fore_stop', 'back_stop',
+      'fore_flick', 'back_flick',
       'chiquita',
-      'forehand_block', 'backhand_block',
-      'forehand_counter', 'backhand_counter'
+      'fore_block', 'back_block',
+      'fore_counter', 'back_counter'
     ] %>
 
     <% # batting_style順に並べ替え %>
@@ -65,21 +65,21 @@
       <%= form.fields_for :scores, score do |score_form| %>
         <%= score_form.select :batting_style,
           [['サーブ', 'serve'], ['レシーブ', 'receive'],
-          ['フォアドライブ', 'forehand_drive'], ['バックドライブ', 'backhand_drive'],
-          ['フォアツッツキ', 'forehand_push'], ['バックツッツキ', 'backhand_push'],
-          ['フォアストップ', 'forehand_stop'], ['バックストップ', 'backhand_stop'],
-          ['フォアフリック', 'forehand_flick'], ['バックフリック', 'backhand_flick'],
-          ['チキータ', 'chiquita'], ['フォアブロック', 'forehand_block'],
-          ['バックブロック', 'backhand_block'], ['フォアカウンター', 'forehand_counter'],
-          ['バックカウンター', 'backhand_counter']
+          ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
+          ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
+          ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
+          ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
+          ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
+          ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
+          ['バックカウンター', 'back_counter']
           ], {}, { class: "form-control medium-input" } %>
 
         <% case score.batting_style %>
-        <% when "serve", "receive", "forehand_drive", "backhand_drive",
-              "forehand_push", "backhand_push", "forehand_stop", "backhand_stop",
-              "forehand_flick", "backhand_flick", "chiquita",
-              "forehand_block", "backhand_block",
-              "forehand_counter", "backhand_counter" %>
+        <% when "serve", "receive", "fore_drive", "back_drive",
+              "fore_push", "back_push", "fore_stop", "back_stop",
+              "fore_flick", "back_flick", "chiquita",
+              "fore_block", "back_block",
+              "fore_counter", "back_counter" %>
           <%= render 'scores/score_fields', score_form: score_form, score: score %>
         <% end %>
       <% end %>

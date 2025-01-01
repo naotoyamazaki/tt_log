@@ -14,6 +14,21 @@ class MatchInfosController < ApplicationController
     @serve_scores = @match_info.scores.where(batting_style: 'serve')
     @receive_scores = @match_info.scores.where(batting_style: 'receive')
     @batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
+
+    # 得点率データを計算
+    batting_score_data = prepare_batting_score_data(@batting_scores)
+    Rails.logger.info("Data sent to ChatGPT API: #{batting_score_data.to_json}")
+    # アドバイスが存在する場合は再生成せずに使用
+    if @match_info.advice.present?
+      @advice = @match_info.advice
+    else
+      @advice = ChatgptService.get_advice(batting_score_data.to_json)
+      begin
+        @match_info.update_columns(advice: @advice) # エラー発生時に例外をスロー
+      rescue => e
+        Rails.logger.error("Failed to update advice: #{e.record.errors.full_messages.join(", ")}")
+      end
+    end
   end
 
   # GET /match_infos/new
@@ -69,8 +84,23 @@ class MatchInfosController < ApplicationController
     @match_info.player_name = params[:match_info][:player_name]
     @match_info.opponent_name = params[:match_info][:opponent_name]
 
+    # 変更前のbatting_score_dataを保持
+    original_batting_score_data = calculate_batting_score_data(@match_info.scores.where.not(batting_style: ['serve', 'receive']))
+  
     respond_to do |format|
       if @match_info.update(match_info_params.merge(player_id: player.id, opponent_id: opponent.id))
+        # 変更後のbatting_score_dataを計算
+        updated_batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
+        updated_batting_score_data = prepare_batting_score_data(updated_batting_scores)
+  
+        # batting_score_dataが変更された場合のみGPT APIを呼び出す
+        if original_batting_score_data != updated_batting_score_data
+          new_advice = ChatgptService.get_advice(updated_batting_score_data.to_json)
+          unless @match_info.update(advice: new_advice)
+            Rails.logger.error("アドバイスの更新に失敗しました: #{@match_info.errors.full_messages}")
+          end
+        end
+  
         format.html { redirect_to @match_info, notice: "試合分析データが更新されました。" }
         format.json { render :show, status: :ok, location: @match_info }
       else

@@ -4,13 +4,13 @@ class Score < ApplicationRecord
 
   enum batting_style: {
     serve: 0, receive: 1,
-    forehand_drive: 2, backhand_drive: 3,
-    forehand_push: 4, backhand_push: 5,
-    forehand_stop: 6, backhand_stop: 7,
-    forehand_flick: 8, backhand_flick: 9,
-    chiquita: 10, forehand_block: 11,
-    backhand_block: 12, forehand_counter: 13,
-    backhand_counter: 14
+    fore_drive: 2, back_drive: 3,
+    fore_push: 4, back_push: 5,
+    fore_stop: 6, back_stop: 7,
+    fore_flick: 8, back_flick: 9,
+    chiquita: 10, fore_block: 11,
+    back_block: 12, fore_counter: 13,
+    back_counter: 14
   }
 
   validate :score_or_lost_score_must_be_positive_for_serve_and_receive

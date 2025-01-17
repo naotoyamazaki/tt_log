@@ -4,7 +4,7 @@ ENV TZ Asia/Tokyo
 ENV RAILS_ENV production
 ENV BUNDLE_DEPLOYMENT 1
 ENV BUNDLE_PATH /usr/local/bundle
-ENV BUNDLE_WITHOUT development:test
+ENV BUNDLE_WITHOUT ""
 
 RUN apt-get update -qq \
 && apt-get install -y curl wget gnupg build-essential libpq-dev nodejs yarn libvips libvips-dev pkg-config postgresql-client \

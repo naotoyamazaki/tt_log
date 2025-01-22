@@ -1,4 +1,4 @@
 services:
   web:
     environment:
-      - RAILS_ENV=development
+      - RAILS_ENV=production

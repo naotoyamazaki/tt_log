@@ -31,3 +31,5 @@ ja:
           back_block: バックブロック
           fore_counter: フォアカウンター
           back_counter: バックカウンター
+  defaults:
+    password_reset: "パスワードリセットのご案内"

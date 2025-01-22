@@ -9,8 +9,13 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :users, only: %i[new create]
-  
+  resources :password_resets, only: [:new, :create, :edit, :update]
+
   resources :match_infos do
     get :autocomplete, on: :collection
+  end
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 end

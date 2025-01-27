@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.9",
+    "@hotwired/turbo-rails": "^8.0.12",
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "^10.4.17",
     "bootstrap": "^5.3.3",
@@ -19,7 +19,6 @@
     "stimulus-autocomplete": "^3.1.0"
   },
   "scripts": {
-    "build": "importmap pin-all",
     "build:css": "yarn build:css:compile && yarn build:css:prefix",
     "build:css:compile": "sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
     "build:css:prefix": "postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",

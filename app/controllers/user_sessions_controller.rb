@@ -15,7 +15,7 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    logout
+    log_out if logged_in?
     redirect_to root_path, status: :see_other, alert: "ログアウトしました"
   end
 end

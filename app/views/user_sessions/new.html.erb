@@ -12,6 +12,10 @@
           <%= f.label :password, "パスワード" %>
           <%= f.password_field :password, class: 'form-control' %>
         </div>
+        <div class="ui checkbox">
+          <%= f.check_box :remember_me, value: "1" %>
+          <%= f.label "ログイン状態を保持する" %>
+        </div>
         <div class="actions center-text">
           <%= f.submit 'ログイン', class: 'btn btn-success' %>
         </div>

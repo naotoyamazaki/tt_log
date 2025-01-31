@@ -1,3 +1,4 @@
 import "@hotwired/turbo-rails"
-import "./controllers"
+import "@hotwired/stimulus-loading"
+import "controllers"
 import "bootstrap"

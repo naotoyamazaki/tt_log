@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Frontend
+
   def calculate_point_rate(scores)
     total_score = scores.sum(:score)
     total_lost_score = scores.sum(:lost_score)

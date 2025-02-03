@@ -216,6 +216,7 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (~> 1.1)
+    pagy (9.3.3)
     pg (1.5.8)
     pry (0.14.2)
       coderay (~> 1.1)
@@ -359,6 +360,7 @@ DEPENDENCIES
   net-imap
   net-pop
   net-smtp
+  pagy
   pg (~> 1.1)
   pry-byebug
   puma (>= 5.0)

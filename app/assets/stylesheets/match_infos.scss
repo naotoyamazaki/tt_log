@@ -72,6 +72,34 @@
   flex: 1;
 }
 
+//ページネーションのデザイン
+.pagination>li>a {          
+  border: none;     //枠線をなくす
+  color: #696969;   //文字の色を変える
+  border-radius: 15px;
+}
+
+.page-item.active
+.page-link {
+  z-index: 3;
+  background-color: #308C61;
+}
+
+//ホバー時のデザイン
+.pagination>li>a:hover {
+  color: #d4edda;
+}
+
+// 「前へ」「次へ」のボタンのデザイン調整
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+  background: none;  // 背景を削除
+  border: none;      // 枠線を削除
+  color: #696969;    // 文字の色を統一
+  font-size: 1.2em;  // アイコンのサイズを調整（必要なら）
+  padding: 5px 10px; // アイコンの間隔調整（必要なら）
+}
+
 /* 画面が小さい場合に縦並びに変更する */
 @media (max-width: 900px) {
   .row {

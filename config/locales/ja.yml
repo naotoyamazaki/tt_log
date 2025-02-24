@@ -33,3 +33,19 @@ ja:
           back_counter: バックカウンター
   defaults:
     password_reset: "パスワードリセットのご案内"
+  notices:
+    match_info_created: "試合分析データが作成されました。"
+    match_info_updated: "試合分析データが更新されました。"
+    match_info_deleted: "試合分析データが削除されました。"
+    match_info_not_found: "指定された投稿が見つかりません。"
+    password_reset_sent: "パスワードリセットのメールを送信しました"
+    password_reset_success: "パスワードがリセットされました"
+    invalid_login: "メールアドレスまたはパスワードが正しくありません。"
+    login_success: "ログインが完了しました"
+    logout_success: "ログアウトしました"
+    registration_success: "会員登録が完了しました"
+  errors:
+    messages:
+      blank: "を入力してください"
+      memo_too_long: "は500文字以内で入力してください"
+      advice_update_failed: "アドバイスの更新に失敗しました: %{errors}"

@@ -10,4 +10,3 @@ SitemapGenerator::Sitemap.create do
     add match_info_path(match_info), lastmod: match_info.updated_at
   end
 end
-

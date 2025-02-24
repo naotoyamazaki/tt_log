@@ -17,7 +17,16 @@ class MatchInfosControllerTest < ActionDispatch::IntegrationTest
 
   test "should create match_info" do
     assert_difference("MatchInfo.count") do
-      post match_infos_url, params: { match_info: { match_date: @match_info.match_date, match_name: @match_info.match_name, memo: @match_info.memo, opponent_id: @match_info.opponent_id, player_id: @match_info.player_id, user_id: @match_info.user_id } }
+      post match_infos_url, params: {
+        match_info: {
+          match_date: @match_info.match_date,
+          match_name: @match_info.match_name,
+          memo: @match_info.memo,
+          opponent_id: @match_info.opponent_id,
+          player_id: @match_info.player_id,
+          user_id: @match_info.user_id
+        }
+      }
     end
 
     assert_redirected_to match_info_url(MatchInfo.last)
@@ -34,7 +43,15 @@ class MatchInfosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update match_info" do
-    patch match_info_url(@match_info), params: { match_info: { match_date: @match_info.match_date, match_name: @match_info.match_name, memo: @match_info.memo, opponent_id: @match_info.opponent_id, player_id: @match_info.player_id, user_id: @match_info.user_id } }
+    patch match_info_url(@match_info), params: {
+      match_info: {
+        match_date: @match_info.match_date,
+        match_name: @match_info.match_name,
+        memo: @match_info.memo,
+        opponent_id: @match_info.opponent_id,
+        player_id: @match_info.player_id, user_id: @match_info.user_id
+      }
+    }
     assert_redirected_to match_info_url(@match_info)
   end
 

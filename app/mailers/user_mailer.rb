@@ -8,4 +8,3 @@ class UserMailer < ApplicationMailer
          subject: t('defaults.password_reset'))
   end
 end
-

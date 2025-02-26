@@ -1,0 +1,30 @@
+name: RuboCop Lint Check
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: 💎 Ruby 環境をセットアップ
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
+
+      - name: 📦 必要な gem をインストール
+        run: bundle install
+
+      - name: 🔍 Rubocop を実行
+        run: bundle exec rubocop --parallel

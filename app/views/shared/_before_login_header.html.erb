@@ -1,19 +1,20 @@
 <header>
-  <nav class="navbar navbar-expand-lg navigation navbar-light">
+  <nav class="navbar navbar-expand-lg navigation navbar-dark">
     <div class="container-fluid">
       <a class='navbar-brand mx-auto logo' href='/'>
-        <%= image_tag 'logo.png' %>
+        <%= image_tag 'logo.png', class: 'logo-img' %>
       </a>
-      <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContentHeader' aria-controls='navbarSupportedContentHeader' aria-expanded='false' aria-label='Toggle navigation'>
+      <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContentHeader' 
+        aria-controls='navbarSupportedContentHeader' aria-expanded='false' aria-label='Toggle navigation'>
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContentHeader">
         <ul class="navbar-nav main-nav align-items-center">
           <li class="nav-item">
-            <%= link_to '会員登録', new_user_path ,class: 'nav-link text-white' %>
+            <%= link_to '会員登録', new_user_path, class: 'nav-link btn-register' %>
           </li>
           <li class="nav-item">
-            <%= link_to 'ログイン', login_path ,class: 'nav-link text-white' %>
+            <%= link_to 'ログイン', login_path, class: 'nav-link btn-login' %>
           </li>
         </ul>
       </div>

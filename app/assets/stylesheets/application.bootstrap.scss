@@ -4,8 +4,92 @@
 @import "match_infos";
 
 /* PC向けのスタイル */
-.navbar, .footer-bottom {
-  background-color: #308C61;
+/* ヘッダー & フッターのスタイル */
+.navbar {
+  background: linear-gradient(90deg, #1B5E20 0%, #00B0FF 100%);
+  padding: 1rem 2rem;
+}
+
+.navbar-brand .logo-img {
+  width: 180px;
+  height: auto;
+}
+
+/* ドロップダウンメニュー */
+.dropdown-menu {
+  background: linear-gradient(180deg, #00B0FF 0%, #1A237E 100%);
+  border: none;
+}
+
+.dropdown-item:hover {
+  background: #4CAF50;
+}
+
+/* ナビゲーションボタン */
+.nav-link {
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.btn-register {
+  color: white;
+  background: #1A237E;
+  font-weight: bold;
+  padding: 8px 15px;
+  margin-right: 16px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+  background: #00B0FF;
+  color: white;
+}
+
+.btn-login {
+  color: white;
+  font-weight: bold;
+  padding: 8px 15px;
+  background: #1B5E20;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+  background: #4CAF50;
+  color: white;
+}
+
+/* ログアウトボタン */
+.logout-btn {
+  color: #FF5252;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  color: white;
+  background: #FF5252;
+  border-radius: 5px;
+}
+
+/* フッター */
+.footer-bottom {
+  background: #1A237E;
+  padding: 15px 0;
+}
+
+.footer-link {
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #00B0FF;
+}
+
+.footer-text {
+  font-size: 14px;
 }
 
 .footer-bottom {

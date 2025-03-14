@@ -35,6 +35,7 @@
 .btn-register {
   background: #1A237E;
   color: white;
+  border: 2px solid #FFFFFF;
   font-weight: bold;
   padding: 8px 15px;
   margin-right: 16px;
@@ -45,12 +46,14 @@
 .btn-register:hover {
   background: #00B0FF;
   color: white;
+  border: 2px solid #F5F5F5;
   transform: scale(1.05);
 }
 
 .btn-login {
   background: #1B5E20;
   color: white;
+  border: 2px solid #FFFFFF;
   font-weight: bold;
   padding: 8px 15px;
   border-radius: 5px;
@@ -60,6 +63,7 @@
 .btn-login:hover {
   background: #4CAF50;
   color: white;
+  border: 2px solid #F5F5F5;
   transform: scale(1.05);
 }
 

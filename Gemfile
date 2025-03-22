@@ -24,6 +24,7 @@ gem 'net-smtp'
 gem 'sitemap_generator'
 gem 'rails-i18n', '~> 7.0'
 gem 'pagy'
+gem 'sassc-rails'
 
 
 group :development, :test do

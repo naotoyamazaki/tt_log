@@ -1,7 +1,90 @@
-.center-text {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+.user_sessions-new{
+  .user-login {
+    background-color: #4CAF50;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /* フォームのデザイン */
+  .form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+  }
+
+  /* 見出し */
+  .center-text {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .form-group label {
+    color: #333;
+  }
+
+  /* 入力フィールド */
+  .form-control {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .form-control:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  }
+
+  /* ボタン */
+  .btn-green-primary {
+    background: #1A237E;
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .btn-green-primary:hover {
+    background: #00B0FF;
+    transform: scale(1.05);
+  }
+
+  /* チェックボックス */
+  .form-check-input {
+    margin-right: 5px;
+  }
+
+  .form-check-label {
+    font-size: 14px;
+    color: #333;
+  }
+
+  /* リンク */
+  .center-link {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .center-link a {
+    color: #1A237E;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .center-link a:hover {
+    text-decoration: underline;
+  }
 }
-
-

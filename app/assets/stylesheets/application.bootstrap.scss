@@ -1,6 +1,8 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 @import "homes";
+@import "users";
+@import "user_sessions";
 @import "match_infos";
 
 /* PC向けのスタイル */
@@ -29,6 +31,19 @@
 .nav-link {
   font-weight: bold;
   transition: color 0.3s ease;
+}
+
+/* ページタイトル */
+.center-text {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* ページ遷移リンク */
+.center-link {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* 会員登録・ログインボタンデザイン */

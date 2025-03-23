@@ -37,7 +37,7 @@
     <!-- Googleアサーチコンソールtag -->
     <meta name="google-site-verification" content="i5OL2DPxcbskR_qNLPfNsdYd-yuq9joUtzea-NeIhx0" />
   </head>
-  <body>
+  <body class="<%= controller_name %>-<%= action_name %>">
     <div class="content-wrap">
       <% if logged_in? %>
         <%= render 'shared/header' %>

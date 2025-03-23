@@ -21,6 +21,10 @@
           <% end %>
         <% end %>
       <% end %>
+
+      <% if flash.now[:alert].present? %>
+        <li><%= flash.now[:alert] %></li>
+      <% end %>
     </ul>
   </div>
 <% end %>

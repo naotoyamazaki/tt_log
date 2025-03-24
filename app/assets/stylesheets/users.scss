@@ -1,4 +1,5 @@
-.users-new {
+.users-new,
+.users-create {
   /* 会員登録フォームのコンテナ */
   .user-registration {
     background-color: #4CAF50;
@@ -74,5 +75,41 @@
 
   .center-link a:hover {
     text-decoration: underline;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-wrap {
+    flex: 1;
+  }
+
+  .flash.notice,
+  .flash.alert {
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+  }
+
+  .flash.notice {
+    text-align: center;
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+  }
+
+  .flash.alert {
+    text-align: center;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
   }
 }

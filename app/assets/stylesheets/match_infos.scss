@@ -13,17 +13,44 @@
 }
 
 /* indexカードのデザイン調整*/
-.card-title {
-  font-weight: bold;
-}
+.card {
+  background: linear-gradient(135deg, #4CAF50, #1B5E20);
+  text-align: center;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
-.card-text {
-  font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
-}
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
 
-.btn-light {
-  color: #000; /* ボタンのテキスト色を暗色に */
-  border-radius: .25rem; /* 角の丸みを調整 */
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+
+  .card-text {
+    font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
+  }
+
+  .card-text i {
+    margin-right: 8px; /* アイコンとテキストの間にスペースを追加 */
+  }
+
+  .btn-info {
+    background:#00B0FF;
+    color: #000; /* ボタンのテキスト色を暗色に */
+    border-radius: .25rem; /* 角の丸みを調整 */
+  }
+
+  .btn-info:hover {
+    background:#1A237E;
+    color: #F5F5F5;
+  }
 }
 
 /* 分析新規作成ページ  new/edit/show */

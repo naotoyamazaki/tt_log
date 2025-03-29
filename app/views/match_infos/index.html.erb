@@ -24,9 +24,11 @@
 <% end %>
 
 <% if @match_infos.empty? %>
-  <div class="d-flex justify-content-center">
-    <p class="text-center">試合の分析データがありません。
-    <br>試合分析をスタートしましょう。</p>
+  <div class="d-flex flex-column align-items-center mt-5">
+    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+    <p class="text-center text-muted">まだ試合の分析データがありません。
+    <br>新しい試合を登録して分析を始めましょう。</p>
+    <%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success btn-center-below-h1" %>
   </div>
 <% else %>
   <div class="row d-flex flex-wrap justify-content-start" id="match_infos">

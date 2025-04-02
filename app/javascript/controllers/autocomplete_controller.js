@@ -1,13 +1,16 @@
-import { Controller } from "@hotwired/stimulus"
-import Autocomplete from "@hotwired/stimulus-autocomplete"
+import { Controller } from "@hotwired/stimulus";
+import Autocomplete from "@hotwired/stimulus-autocomplete";
 
 export default class extends Controller {
+  static targets = ["input"];
+
   connect() {
-    console.log("Autocomplete controller connected"); // ログを追加
+    console.log("Autocomplete controller connected"); // デバッグ用ログ
+
+    // オートコンプリートを初期化
     new Autocomplete(this.element, {
-      // オプションをここに設定
-      input: this.element.querySelector("input"),
+      input: this.inputTarget,
       url: this.urlValue,
-    })
+    });
   }
 }

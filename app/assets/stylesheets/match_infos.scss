@@ -1,8 +1,6 @@
 /* 分析一覧ページ  index*/
-#match_infos {
-  width: 80%;
-  margin: 0 auto;
-  /* 中央寄せ */
+body {
+  background-color: #F5F5F5; // 明るめの背景
 }
 
 /* 分析開始ボタン */
@@ -20,6 +18,12 @@
   display: block; // ブロック要素として表示
   margin: 20px auto; // 上下のマージンを適宜設定し、自動で左右中央揃え
   width: fit-content; // ボタンの内容に合わせて幅を自動調整
+}
+
+#match_infos {
+  width: 80%;
+  margin: 0 auto;
+  /* 中央寄せ */
 }
 
 /* indexカードのデザイン調整*/
@@ -101,12 +105,12 @@
 .page-item.active
 .page-link {
   z-index: 3;
-  background-color: #308C61;
+  background-color: #4CAF50;
 }
 
 //ホバー時のデザイン
 .pagination>li>a:hover {
-  color: #d4edda;
+  color: #1B5E20;
 }
 
 // 「前へ」「次へ」のボタンのデザイン調整

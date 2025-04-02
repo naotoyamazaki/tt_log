@@ -35,6 +35,8 @@
 
 /* ページタイトル */
 .center-text {
+  font-weight: 800; // さらに太く
+  text-transform: uppercase; // 大文字化でより目立たせる
   text-align: center;
   margin-top: 20px;
   margin-bottom: 20px;

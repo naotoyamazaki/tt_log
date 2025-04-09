@@ -70,10 +70,13 @@ body {
 /* 分析新規作成ページ  new/edit/show */
 /* フォーム全体をページの真ん中に配置する */
 .form-container {
-  width: 30%;
-  /* 好みの幅に設定 */
-  margin: 0 auto;
-  /* 中央揃え */
+  width: 35%; /* 好みの幅に設定 */
+  margin: 0 auto; /* 中央揃え */
+  background-color: #F5F5F5;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 176, 255, 0.2); /* ネオンブルー系の影 */
+  margin-bottom: 2rem;
 }
 
 .show-container {

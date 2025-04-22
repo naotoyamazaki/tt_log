@@ -6,12 +6,12 @@ body {
 /* 分析開始ボタン */
 .btn-success {
   background: #4CAF50;
-  color: #FFFFFF;
+  color: #F5F5F5;
 }
 
 .btn-success:hover {
   background: #1B5E20;
-  color: #FFFFFF;
+  color: #F5F5F5;
 }
 
 .btn-center-below-h1 {
@@ -34,6 +34,10 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     transform: translateY(-5px);
@@ -76,7 +80,7 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 176, 255, 0.2); /* ネオンブルー系の影 */
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .show-container {
@@ -90,12 +94,26 @@ body {
 .row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
-  /* 適宜調整 */
 }
 
 .column {
   flex: 1;
+}
+
+select {
+  text-align: center;
+  text-align-last: center; /* Firefox以外でも効果を出す */
+}
+
+//分析一覧ページへ
+.center-link a {
+  color: #1A237E;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.center-link a:hover {
+  text-decoration: underline;
 }
 
 //ページネーションのデザイン

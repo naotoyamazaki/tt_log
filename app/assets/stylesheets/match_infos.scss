@@ -190,40 +190,32 @@ select {
   margin-bottom: 1rem;
 }
 
-/*
-.table th,
-.table td {
-  text-align: center;
-  vertical-align: middle;
+.table {
+  background-color: #ffffff; /* テーブル本体は白 */
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ここで影を追加！ */
+  border-radius: 8px; /* テーブル全体に角丸 */
+  overflow: hidden; /* 角丸を反映させるため */
 }
-  */
 
-  .table {
-    background-color: #ffffff; /* テーブル本体は白 */
-    border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ここで影を追加！ */
-    border-radius: 8px; /* テーブル全体に角丸 */
-    overflow: hidden; /* 角丸を反映させるため */
-  }
+.table th {
+  background-color: #E8F5E9; /* ヘッダー背景：薄グリーン */
+  color: #1B5E20;
+  font-weight: bold;
+  font-size: 1rem;
+  border-bottom: 2px solid #4CAF50;
+}
+
+.table td {
+  background-color: #ffffff; /* 行背景は白 */
+  border: 1px solid #C8E6C9;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+}
   
-  .table th {
-    background-color: #E8F5E9; /* ヘッダー背景：薄グリーン */
-    color: #1B5E20;
-    font-weight: bold;
-    font-size: 1rem;
-    border-bottom: 2px solid #4CAF50;
-  }
-  
-  .table td {
-    background-color: #ffffff; /* 行背景は白 */
-    border: 1px solid #C8E6C9;
-    font-size: 0.95rem;
-    padding: 0.75rem;
-  }
-  
-  .table tr:hover td {
-    background-color: #F1F8E9; /* ホバーでうっすら緑 */
-  }
+.table tr:hover td {
+  background-color: #F1F8E9; /* ホバーでうっすら緑 */
+}
 
 .advice-section {
   background: #E8F5E9;

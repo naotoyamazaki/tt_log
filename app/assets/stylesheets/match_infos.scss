@@ -1,27 +1,6 @@
-/* ページタイトル&分析ボタン */
-.center-text {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-/* 分析ページサブタイトル */
-.center-subtext {
-  text-align: center;
-}
-
-/* ページ遷移リンク */
-.center-link {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 /* 分析一覧ページ  index*/
-/* 分析開始ボタン */
-.btn-center-below-h1 {
-  display: block; // ブロック要素として表示
-  margin: 20px auto; // 上下のマージンを適宜設定し、自動で左右中央揃え
-  width: fit-content; // ボタンの内容に合わせて幅を自動調整
+body {
+  background-color: #F5F5F5; // 明るめの背景
 }
 
 #match_infos {
@@ -30,46 +9,66 @@
   /* 中央寄せ */
 }
 
+/* 分析開始ボタン */
+.btn-success {
+  background: #4CAF50;
+  color: #F5F5F5;
+}
+
+.btn-success:hover {
+  background: #1B5E20;
+  color: #F5F5F5;
+}
+
+.btn-center-below-h1 {
+  display: block; // ブロック要素として表示
+  margin: 20px auto; // 上下のマージンを適宜設定し、自動で左右中央揃え
+  width: fit-content; // ボタンの内容に合わせて幅を自動調整
+}
+
 /* indexカードのデザイン調整*/
-.card-title {
-  font-weight: bold;
-}
-
-.card-text {
-  font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
-}
-
-.btn-light {
-  color: #000; /* ボタンのテキスト色を暗色に */
-  border-radius: .25rem; /* 角の丸みを調整 */
-}
-
-/* 分析新規作成ページ  new/edit/show */
-/* フォーム全体をページの真ん中に配置する */
-.form-container {
-  width: 30%;
-  /* 好みの幅に設定 */
-  margin: 0 auto;
-  /* 中央揃え */
-}
-
-.show-container {
-  width: 30%;
-  /* 好みの幅に設定 */
-  margin: 0 auto;
-  /* 中央揃え */
-}
-
-/* フォームを横並びにする */
-.row {
+.card {
+  background: linear-gradient(135deg, #4CAF50, #1B5E20);
+  text-align: center;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  /* 適宜調整 */
-}
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-.column {
-  flex: 1;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+
+  .card-text {
+    font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
+  }
+
+  .card-text i {
+    margin-right: 8px; /* アイコンとテキストの間にスペースを追加 */
+  }
+
+  .btn-info {
+    background:#00B0FF;
+    color: #000; /* ボタンのテキスト色を暗色に */
+    border-radius: .25rem; /* 角の丸みを調整 */
+  }
+
+  .btn-info:hover {
+    background:#1A237E;
+    color: #F5F5F5;
+  }
 }
 
 //ページネーションのデザイン
@@ -82,12 +81,12 @@
 .page-item.active
 .page-link {
   z-index: 3;
-  background-color: #308C61;
+  background-color: #4CAF50;
 }
 
 //ホバー時のデザイン
 .pagination>li>a:hover {
-  color: #d4edda;
+  color: #1B5E20;
 }
 
 // 「前へ」「次へ」のボタンのデザイン調整
@@ -100,11 +99,43 @@
   padding: 5px 10px; // アイコンの間隔調整（必要なら）
 }
 
-/* 画面が小さい場合に縦並びに変更する */
-@media (max-width: 900px) {
-  .row {
-    flex-direction: column;
+/* 分析作成・編集ページ  new/edit/ */
+.form-container {
+  width: 35%; /* 好みの幅に設定 */
+  margin: 0 auto; /* 中央揃え */
+  background-color: #F5F5F5;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 176, 255, 0.2); /* ネオンブルー系の影 */
+  margin-bottom: 1rem;
+}
+
+//浮き上がるアニメーション
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+/* フォームを横並びにする */
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.column {
+  flex: 1;
+}
+
+select {
+  text-align: center;
+  text-align-last: center; /* Firefox以外でも効果を出す */
 }
 
 /* メモの横幅を広げる */
@@ -122,27 +153,123 @@
   width: 70px;
 }
 
-.text-blue {
-  color: blue;
+//分析一覧ページへ
+.center-link a {
+  color: #1A237E;
+  font-weight: bold;
+  text-decoration: none;
 }
 
-.text-red {
-  color: red;
+.center-link a:hover {
+  text-decoration: underline;
 }
 
-/* 詳細ページ  show */
+/* 分析詳細ページ show */
+.show-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.section-card {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1B5E20;
+  border-left: 6px solid #4CAF50;
+  padding-left: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.table {
+  background-color: #ffffff; /* テーブル本体は白 */
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ここで影を追加！ */
+  border-radius: 8px; /* テーブル全体に角丸 */
+  overflow: hidden; /* 角丸を反映させるため */
+}
+
+.table th {
+  background-color: #E8F5E9; /* ヘッダー背景：薄グリーン */
+  color: #1B5E20;
+  font-weight: bold;
+  font-size: 1rem;
+  border-bottom: 2px solid #4CAF50;
+}
+
+.table td {
+  background-color: #ffffff; /* 行背景は白 */
+  border: 1px solid #C8E6C9;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+}
+  
+.table tr:hover td {
+  background-color: #F1F8E9; /* ホバーでうっすら緑 */
+}
+
+.advice-section {
+  background: #E8F5E9;
+  border-left: 6px solid #4CAF50;
+  padding: 1rem;
+  border-radius: 8px;
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+.center-link {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
 .center-button {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+}
+
+.edit-btn {
+  background: #1B5E20;
+  color: #F5F5F5;
+}
+
+.edit-btn:hover {
+  background: #F5F5F5;
+  color: #1B5E20;
+  border: 1px solid #1B5E20;
 }
 
 .delete-btn {
-  background-color: purple;
-  color: white;
-  border: none;
-  text-align: center;
-  margin-bottom: 20px;
+  background-color: #C62828;
+  color: #F5F5F5;
+}
+
+.delete-btn:hover {
+  background-color: #F5F5F5;
+  color: #C62828;
+  border: 1px solid #C62828;
+}
+
+/* 画面が小さい場合に縦並びに変更する */
+@media (max-width: 900px) {
+  .row {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 768px) {

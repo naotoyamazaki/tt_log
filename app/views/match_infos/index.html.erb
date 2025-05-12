@@ -1,32 +1,46 @@
-<h1 class="center-text">試合分析一覧</h1>
+<h1 class="center-text">📝 試合分析一覧</h1>
 
-<%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success text-white btn-center-below-h1" %>
+<%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success btn-center-below-h1" %>
 
-<%= search_form_for @q, html: { class: "row justify-content-center" } do |f| %>
+<%= search_form_for @q, html: { class: "row justify-content-center align-items-center" } do |f| %>
   <div class="col-12 col-md-3 mb-2">
-    <%= f.label :match_name_cont, "大会名", class: "visually-hidden" %>
-    <%= f.search_field :match_name_cont, class: "form-control form-control-sm", placeholder: "大会名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    <label class="visually-hidden" for="match_name">大会名</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-trophy"></i></span>
+      <%= f.search_field :match_name_cont, id: "match_name", class: "form-control", placeholder: "大会名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    </div>
   </div>
 
   <div class="col-12 col-md-3 mb-2">
-    <%= f.label :player_player_name_cont, "選手名", class: "visually-hidden" %>
-    <%= f.search_field :player_player_name_cont, class: "form-control form-control-sm", placeholder: "選手名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    <label class="visually-hidden" for="player_name">選手名</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+      <%= f.search_field :player_player_name_cont, id: "player_name", class: "form-control", placeholder: "選手名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    </div>
   </div>
 
   <div class="col-12 col-md-3 mb-2">
-    <%= f.label :opponent_player_name_cont, "対戦相手名", class: "visually-hidden" %>
-    <%= f.search_field :opponent_player_name_cont, class: "form-control form-control-sm", placeholder: "対戦相手名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    <label class="visually-hidden" for="opponent_name">対戦相手名</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+      <%= f.search_field :opponent_player_name_cont, id: "opponent_name", class: "form-control", placeholder: "対戦相手名", data: { controller: "autocomplete", action: "autocomplete->input", autocomplete_url_value: autocomplete_match_infos_path(format: :json) } %>
+    </div>
   </div>
 
   <div class="col-12 col-md-auto mb-2">
-    <%= f.submit "検索", class: "btn btn-primary btn-sm" %>
+    <button type="submit" class="btn btn-primary">
+      <i class="fas fa-search"></i> 検索
+    </button>
   </div>
 <% end %>
 
+
 <% if @match_infos.empty? %>
-  <div class="d-flex justify-content-center">
-    <p class="text-center">試合の分析データがありません。
-    <br>試合分析をスタートしましょう。</p>
+  <div class="d-flex flex-column align-items-center mt-5">
+    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+    <p class="text-center text-muted">まだ試合の分析データがありません。
+    <br>新しい試合を登録して分析を始めましょう。</p>
+    <%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success btn-center-below-h1" %>
   </div>
 <% else %>
   <div class="row d-flex flex-wrap justify-content-start" id="match_infos">

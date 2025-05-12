@@ -1,8 +1,8 @@
 <header>
-  <nav class='navbar navbar-expand-lg navigation navbar-light'>
+  <nav class='navbar navbar-expand-lg navigation navbar-dark'>
     <div class="container-fluid">
       <a class='navbar-brand mx-auto logo' href="<%= match_infos_path %>">
-        <%= image_tag 'logo.png' %>
+        <%= image_tag 'logo2.png', class: 'logo-img' %>
       </a>
       <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContentHeader'
         aria-controls='navbarSupportedContentHeader' aria-expanded='false' aria-label='Toggle navigation'>
@@ -14,16 +14,13 @@
             <a href='#' class='nav-link dropdown-toggle text-white' data-bs-toggle='dropdown'>
               試合分析
             </a>
-            <div class='dropdown-menu dropdown-menu-right bg-success'>
+            <div class='dropdown-menu dropdown-menu-right bg-gradient-green'>
               <%= link_to '分析一覧', match_infos_path, class: 'dropdown-item text-white' %>
               <%= link_to '分析を開始', new_match_info_path, class: 'dropdown-item text-white' %>
             </div>
           </li>
-          <%# <li class='nav-item'>
-            <%= link_to 'マイページ', '#', class: 'nav-link text-white'
-          </li> %>
           <li class='nav-item'>
-            <%= link_to 'ログアウト', logout_path, class: 'nav-link text-white', data: { turbo_method: :delete } %>
+            <%= link_to 'ログアウト', logout_path, class: 'nav-link logout-btn text-white', data: { turbo_method: :delete } %>
           </li>
         </ul>
       </div>

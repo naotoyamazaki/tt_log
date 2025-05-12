@@ -1,38 +1,39 @@
-<div class="form-container">
+<div class="form-container fade-in-up">
   <%= form_with(model: match_info) do |form| %>
 
     <%= render 'shared/error_messages', object: @match_info %>
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :"日付", style: "display: block" %>
-        <%= form.date_field :match_date %>
+        <%= form.label :"🗓️日付", style: "display: block" %>
+        <%= form.date_field :match_date , class: "form-control rounded-pill shadow-sm"%>
       </div>
 
       <div class="column">
-        <%= form.label :"大会名", style: "display: block" %>
-        <%= form.text_field :match_name, placeholder: "出場した大会名を入力" %>
+        <%= form.label :"🏆大会名", style: "display: block" %>
+        <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm", placeholder: "出場した大会名を入力" %>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :"選手名", style: "display: block" %>
-        <%= form.text_field :player_name, placeholder: "分析する選手名を入力" %>
+        <%= form.label :"👤選手名", style: "display: block" %>
+        <%= form.text_field :player_name, class: "form-control rounded-pill shadow-sm", placeholder: "分析する選手名を入力" %>
       </div>
 
       <div class="column">
-        <%= form.label :"対戦相手名", style: "display: block" %>
-        <%= form.text_field :opponent_name, placeholder: "対戦相手の名前を入力" %>
+        <%= form.label :"👤対戦相手名", style: "display: block" %>
+        <%= form.text_field :opponent_name, class: "form-control rounded-pill shadow-sm", placeholder: "対戦相手の名前を入力" %>
       </div>
     </div>
 
-    <div class="mb-5">
-      <%= form.label :"メモ", style: "display: block" %>
-      <%= form.text_area :memo, class: "wide-textarea", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
+    <div class="mb-4">
+      <%= form.label :"🗒️メモ", style: "display: block" %>
+      <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
     </div>
 
-    <div class="analysis-header mb-4">
+    <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
+      <h3 class="text-center">分析フォームの使い方</h3>
       <div class="mb-3">1.サーブとレシーブそれぞれから始まったラリーの得点率を分析します。<br>
         例：分析する選手のサーブから始まったラリーで得点<br>→サーブの得点数に1をプラスする。<br>
         ※サービスエースとレシーブエースのみを集計するためのものではありません。<br>
@@ -63,29 +64,29 @@
     <% # ソート後のscoresを使用 %>
     <% sorted_scores.each do |score| %>
       <%= form.fields_for :scores, score do |score_form| %>
-        <%= score_form.select :batting_style,
-          [['サーブ', 'serve'], ['レシーブ', 'receive'],
-          ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
-          ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
-          ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
-          ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
-          ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
-          ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
-          ['バックカウンター', 'back_counter']
-          ], {}, { class: "form-control medium-input" } %>
+        <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+          <%= score_form.select :batting_style,
+            [['サーブ', 'serve'], ['レシーブ', 'receive'],
+            ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
+            ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
+            ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
+            ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
+            ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
+            ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
+            ['バックカウンター', 'back_counter']
+            ], {}, { class: "form-control medium-input" } %>
 
-        <% case score.batting_style %>
-        <% when "serve", "receive", "fore_drive", "back_drive",
-              "fore_push", "back_push", "fore_stop", "back_stop",
-              "fore_flick", "back_flick", "chiquita",
-              "fore_block", "back_block",
-              "fore_counter", "back_counter" %>
-          <%= render 'scores/score_fields', score_form: score_form, score: score %>
-        <% end %>
+          <% case score.batting_style %>
+          <% when "serve", "receive", "fore_drive", "back_drive",
+                "fore_push", "back_push", "fore_stop", "back_stop",
+                "fore_flick", "back_flick", "chiquita",
+                "fore_block", "back_block",
+                "fore_counter", "back_counter" %>
+            <%= render 'scores/score_fields', score_form: score_form, score: score %>
+          <% end %>
+        </div>
       <% end %>
     <% end %>
-
-
 
     <%# <div class="center-text">
     <%= form.check_box :post_to_x %>
@@ -93,7 +94,7 @@
     <%# </div>  %>
 
     <div class="center-text">
-      <%= form.submit "試合を分析する", class: "btn btn-success text-white" %>
+      <%= form.submit "🚀 試合を分析する", class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
     </div>
   <% end %>
 </div>

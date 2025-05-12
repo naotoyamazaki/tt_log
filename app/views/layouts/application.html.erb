@@ -8,9 +8,10 @@
 
     <%= javascript_importmap_tags %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
-    <%= favicon_link_tag asset_path('favicon-32x32.png') %>
+    <%= favicon_link_tag asset_path('favicon-64x64.png') %>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -37,7 +38,7 @@
     <!-- Googleアサーチコンソールtag -->
     <meta name="google-site-verification" content="i5OL2DPxcbskR_qNLPfNsdYd-yuq9joUtzea-NeIhx0" />
   </head>
-  <body>
+  <body class="<%= controller_name %>-<%= action_name %>">
     <div class="content-wrap">
       <% if logged_in? %>
         <%= render 'shared/header' %>

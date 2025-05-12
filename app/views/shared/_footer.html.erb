@@ -1,17 +1,14 @@
 <footer id='footer' class='footer-bottom'>
-  <div class="container-fluid">
-    <div class='navbar-collapse justify-content-center' id='navbarSupportedContentFooter'>
-      <ul class='navbar-nav align-items-center'>
-        <li class='nav-item'>
-          <%= link_to '利用規約', terms_of_service_path, class: 'nav-link text-white' %>
-        </li>
-        <li class='nav-item'>
-          <%= link_to 'プライバシーポリシー', privacy_policy_path, class: 'nav-link text-white' %>
-        </li>
-      </ul>
-    </div>
-    <!-- Copyrightテキストをul要素の外に配置 -->
-    <div class='text-center text-white py-2'>
+  <div class="container-fluid text-center">
+    <ul class='navbar-nav d-flex flex-row justify-content-center'>
+      <li class='nav-item mx-3'>
+        <%= link_to '利用規約', terms_of_service_path, class: 'nav-link footer-link' %>
+      </li>
+      <li class='nav-item mx-3'>
+        <%= link_to 'プライバシーポリシー', privacy_policy_path, class: 'nav-link footer-link' %>
+      </li>
+    </ul>
+    <div class='text-white py-2 footer-text'>
       Copyright © 2023. T.T.LOG
     </div>
   </div>

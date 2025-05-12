@@ -1,6 +1,6 @@
-<div class="row mb-5">
+<div class="row">
   <div class="column">
-    <%= score_form.label :score, "得点数", class: "text-blue" %>
+    <%= score_form.label :score, "得点数", style: "color: #4169E1; font-weight: bold;" %>
     <div class="number-input d-flex align-items-center">
       <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
       <%= score_form.number_field :score, class: "form-control small-input", min: 0, value: score.score || 0 %>
@@ -8,7 +8,7 @@
     </div>
   </div>
   <div class="column">
-    <%= score_form.label :lost_score, "失点数", class: "text-red" %>
+    <%= score_form.label :lost_score, "失点数", style: "color: #B22222; font-weight: bold;" %>
     <div class="number-input d-flex align-items-center">
       <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">+</button>
       <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0, value: score.lost_score || 0 %>

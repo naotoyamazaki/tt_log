@@ -1,32 +1,30 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3">
-      <h1 class="center-text">会員登録</h1>
-      <%= form_with model: @user, local: true do |f| %>
-        <%= render 'shared/error_messages', object: @user %>
-        <div class="form-group mb-3">
-          <%= f.label :"名前" %>
-          <%= f.text_field :name, class: 'form-control' %>
-        </div>
-        <div class="form-group mb-3">
-          <%= f.label :"メールアドレス" %>
-          <%= f.email_field :email, class: 'form-control' %>
-        </div>
-        <div class="form-group mb-3">
-          <%= f.label :"パスワード" %>
-          <%= f.password_field :password, class: 'form-control' %>
-        </div>
-        <div class="form-group mb-3">
-          <%= f.label :"パスワード確認" %>
-          <%= f.password_field :password_confirmation, class: 'form-control' %>
-        </div>
-        <div class="center-text">
-          <%= f.submit '登録', class: 'btn btn-success' %>
-        </div>
-      <% end %>
-      <div class='center-link'>
-        <%= link_to 'ログインページへ', login_path, class: 'text-success' %>
+<div class="user-registration">
+  <div class="form-container">
+    <h1 class="center-text">会員登録</h1>
+    <%= form_with model: @user, local: true do |f| %>
+      <%= render partial: 'shared/error_messages', locals: { object: @user } %>
+      <div class="form-group mb-3">
+        <%= f.label :"名前" %>
+        <%= f.text_field :name, class: 'form-control', placeholder: "卓球太郎" %>
       </div>
+      <div class="form-group mb-3">
+        <%= f.label :"メールアドレス" %>
+        <%= f.email_field :email, class: 'form-control', placeholder: "example@example.com" %>
+      </div>
+      <div class="form-group mb-3">
+        <%= f.label :"パスワード" %>
+        <%= f.password_field :password, class: 'form-control', placeholder: "********" %>
+      </div>
+      <div class="form-group mb-3">
+        <%= f.label :"パスワード確認" %>
+        <%= f.password_field :password_confirmation, class: 'form-control' , placeholder: "もう一度パスワードを入力してください"%>
+      </div>
+      <div class="center-text">
+        <%= f.submit '登録', class: 'btn btn-blue-primary' %>
+      </div>
+    <% end %>
+    <div class='center-link'>
+      <%= link_to 'ログインページへ', login_path %>
     </div>
   </div>
 </div>

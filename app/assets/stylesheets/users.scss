@@ -1,6 +1,115 @@
-.center-text {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
+.users-new,
+.users-create {
+  /* 会員登録フォームのコンテナ */
+  .user-registration {
+    background-color: #4CAF50;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    max-width: 100%;
+  }
 
+  /* フォームのデザイン */
+  .form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+  }
+
+  /* 見出しデザイン */
+  .center-text {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .form-group label {
+    color: #333;
+  }
+
+  /* 入力フィールド */
+  .form-control {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  /* フォーカス時のエフェクト */
+  .form-control:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+  }
+
+  /* フォームのボタン */
+  .btn-blue-primary {
+    background: #1A237E;
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .btn-blue-primary:hover {
+    background: #00B0FF;
+    transform: scale(1.05);
+  }
+
+  /* ログインリンク */
+  .center-link a {
+    color: #1A237E;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .center-link a:hover {
+    text-decoration: underline;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-wrap {
+    flex: 1;
+  }
+
+  .flash.notice,
+  .flash.alert {
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+  }
+
+  .flash.notice {
+    text-align: center;
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+  }
+
+  .flash.alert {
+    text-align: center;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+  }
+}

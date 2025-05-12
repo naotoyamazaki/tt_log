@@ -1,95 +1,105 @@
-<div class="show-container">
+<div class="show-container fade-in-up">
   <div id="<%= dom_id match_info %>">
 
-    <div class="row mb-3">
-      <div class="column">
-        <strong>日付:</strong>
-        <%= match_info.match_date %>
-      </div>
+    <div class="section-card p-4 shadow-sm mb-4">
+      <h2 class="section-title mb-3">試合情報</h2>
+        <div class="row mb-2">
+          <div class="column">
+            <strong>日付:</strong>
+            <%= match_info.match_date %>
+          </div>
 
-      <div class="column">
-        <strong>大会名:</strong>
-        <%= match_info.match_name %>
-      </div>
+          <div class="column">
+            <strong>大会名:</strong>
+            <%= match_info.match_name %>
+          </div>
+        </div>
+
+        <div class="row mb-2">
+          <div class="column">
+            <strong>選手名:</strong>
+            <%= match_info.player.player_name %>
+          </div>
+
+          <div class="column">
+            <strong>対戦相手名:</strong>
+            <%= match_info.opponent.player_name %>
+          </div>
+        </div>
+
+        <p>
+          <strong>Memo:</strong>
+          <%= match_info.memo %>
+        </p>
     </div>
 
-    <div class="row mb-3">
-      <div class="column">
-        <strong>選手名:</strong>
-        <%= match_info.player.player_name %>
-      </div>
-
-      <div class="column">
-        <strong>対戦相手名:</strong>
-        <%= match_info.opponent.player_name %>
-      </div>
-    </div>
-
-    <p>
-      <strong>Memo:</strong>
-      <%= match_info.memo %>
-    </p>
-
-    <div class="ranking-section">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>展開</th>
-            <th>得点率 (%)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% serve_rate = calculate_point_rate(@serve_scores) %>
-          <% receive_rate = calculate_point_rate(@receive_scores) %>
-          <% [[t('activerecord.attributes.score.batting_style.serve'), serve_rate],
-              [t('activerecord.attributes.score.batting_style.receive'), receive_rate]].each do |name, rate| %>
+    <div class="section-card p-4 shadow-sm mb-4">
+      <div class="ranking-section">
+        <h3 class="section-title mb-3">サーブ・レシーブからの得点率</h3>
+        <table class="table">
+          <thead>
             <tr>
-              <td><%= name %>からの展開</td>
-              <td><%= rate %></td>
+              <th>展開</th>
+              <th>得点率 (%)</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-
-    <% serve_rate = calculate_point_rate(@serve_scores) %>
-    <% receive_rate = calculate_point_rate(@receive_scores) %>
-
-    <% if serve_rate >= 60 && receive_rate >= 40 %>
-      <p>サーブからもレシーブからも安定して得点できています。
-      <br />引き続きどちらもバランスよく練習していきましょう！</p>
-    <% elsif serve_rate >= 60 && receive_rate < 40 %>
-      <p>サーブからの得点率が高いですね。
-      <br />ただレシーブからの得点率が少し低いのでレシーブからの展開を多めに練習していきましょう！</p>
-    <% elsif serve_rate < 60 && receive_rate >= 40 %>
-      <p>レシーブからの得点率が高いですね。
-      <br />ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！</p>
-    <% else %>
-      <p>サーブからもレシーブからもあまり得点できていませんね。
-      <br />相手がかなり格上だったのかもしれません。反省点を見直して引き続き練習頑張っていきましょう！</p>
-    <% end %>
-
-    <div class="ranking-section">
-      <h3 class="center-text">技術ごとの得点率ランキング</h3>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>技術</th>
-            <th>得点率 (%)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% calculate_batting_score_data(@batting_scores).each do |data| %>
-            <tr>
-              <td><%= Score.human_enum_name(:batting_style, data[:batting_style]) %></td>
-              <td><%= data[:rate] %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% serve_rate = calculate_point_rate(@serve_scores) %>
+            <% receive_rate = calculate_point_rate(@receive_scores) %>
+            <% [[t('activerecord.attributes.score.batting_style.serve'), serve_rate],
+                [t('activerecord.attributes.score.batting_style.receive'), receive_rate]].each do |name, rate| %>
+              <tr>
+                <td><%= name %>からの展開</td>
+                <td><%= rate %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
 
       <div class="advice-section">
-        <p><%= @advice %></p>
+        <% serve_rate = calculate_point_rate(@serve_scores) %>
+        <% receive_rate = calculate_point_rate(@receive_scores) %>
+
+        <% if serve_rate >= 60 && receive_rate >= 40 %>
+          <p>サーブからもレシーブからも安定して得点できています。
+          <br />引き続きどちらもバランスよく練習していきましょう！</p>
+        <% elsif serve_rate >= 60 && receive_rate < 40 %>
+          <p>サーブからの得点率が高いですね。
+          <br />ただレシーブからの得点率が少し低いのでレシーブからの展開を多めに練習していきましょう！</p>
+        <% elsif serve_rate < 60 && receive_rate >= 40 %>
+          <p>レシーブからの得点率が高いですね。
+          <br />ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！</p>
+        <% else %>
+          <p>サーブからもレシーブからもあまり得点できていませんね。
+          <br />相手がかなり格上だったのかもしれません。反省点を見直して引き続き練習頑張っていきましょう！</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="section-card p-4 shadow-sm mb-4">
+      <div class="ranking-section">
+        <h3 class="section-title mb-3">技術ごとの得点率ランキング</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>技術</th>
+              <th>得点率 (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% calculate_batting_score_data(@batting_scores).each do |data| %>
+              <tr>
+                <td><%= Score.human_enum_name(:batting_style, data[:batting_style]) %></td>
+                <td><%= data[:rate] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <div class="advice-section">
+          <p><%= @advice %></p>
+        </div>
       </div>
     </div>
 

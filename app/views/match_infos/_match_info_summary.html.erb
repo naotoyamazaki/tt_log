@@ -1,10 +1,21 @@
-<div class="col-md-3 col-sm-4 my-3"> <!-- PCでは3列、スマホでは2列で表示 -->
-  <div class="card bg-success text-white h-100"> <!-- カードの高さを100%にする -->
+<div class="col-lg-3 col-md-4 col-sm-6 my-3"> <!-- PCでは3列、スマホでは2列で表示 -->
+<a href="<%= match_info_path(match_info) %>" class="text-decoration-none text-white">
+  <div class="card fade-in-up">
     <div class="card-body">
-    <h5 class="card-title"><%= match_info.match_name %></h5>
-    <p class="card-text"><%= match_info.match_date %></p>
-    <p class="card-text"><%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %></p>
-    <%= link_to "試合分析詳細", match_info, class: "btn btn-light mt-2" %>
+      <h5 class="card-title">
+        <i class="fas fa-user"></i>
+        選手名:<%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %>
+      </h5>
+      <p class="card-text">
+        <i class="fas fa-trophy"></i>
+        大会名:<%= match_info.match_name %>
+      </p>
+      <p class="card-text">
+        <i class="fas fa-calendar-alt"></i>
+        日程:<%= match_info.match_date %>
+      </p>
+      <%= link_to "試合分析詳細", match_info, class: "btn btn-info mt-2" %>
     </div>
   </div>
+</a>
 </div>

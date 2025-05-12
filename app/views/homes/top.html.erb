@@ -4,16 +4,17 @@
       <br />苦手なプレーまでわかる試合分析ツール
     <br />
     <% if current_user %>
-      <%= link_to '分析スタート', new_match_info_path, class: "btn text-white btn-lg mt-4" %>
+      <%= link_to '分析スタート', new_match_info_path, class: "btn btn-primary btn-lg mt-4" %>
     <% else %>
-      <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn text-white btn-lg mt-4" %>
+      <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg mt-4 btn-register" %>
+      <%= link_to 'ログイン', login_path, class: "btn btn-lg mt-4 btn-login" %>
     <% end %>
     </h1>
   </div>
 </div>
 
   <!-- T.T.LOGとは？ -->
-  <section style="background-color: #F0E7DA;">
+  <section style="background-color: #4CAF50;">
     <div class='container text-center'>
       <h2 class="section-header">T.T.LOGとは？</h2>
       <p>卓球を教えてくれるスクールやコーチは近年でとても増えましたが、あなたが出場した試合を見てしっかりアドバイスをくれるコーチはまだあまりいないと思います。T.T.LOGでは独自の分析フォーマットであなたの試合内容を数値化してアドバイスをくれます。それによって自身のプレーの強みや改善点を明確にすることができる卓球分析ツールです。</p>
@@ -23,7 +24,7 @@
   </section>
 
   <!-- こんな悩みはありませんか？ -->
-  <section style="background-color: #50C878;">
+  <section style="background-color: #4CAF50;">
     <div class='container text-center'>
       <h2 class="section-header">こんな悩みはありませんか？</h2>
       <div class="chat-bubble left-bubble">たくさん練習しても試合で勝つことができない...</div>
@@ -34,7 +35,7 @@
   </section>
 
   <!-- 機能紹介 -->
-  <section class="features-section" style="background-color: #F0E7DA;">
+  <section style="background-color: #4CAF50;">
   <div class='container text-center'>
     <h2 class="section-header">T.T.LOGでできること</h2>
     <ul class="features-list">
@@ -48,17 +49,17 @@
 
 
   <!-- 会員登録、ログインボタン -->
-  <section style="background-color: #50C878;">
+  <section class="start-section" >
     <div class='container text-center'>
       <h2 class="section-header">今すぐT.T.LOGを始めよう</h2>
       <% if current_user %>
         <div class="button-group">
-          <%= link_to '分析を始める', new_match_info_path, class: "btn text-white btn-lg mt-4" %>
+          <%= link_to '分析スタート', new_match_info_path, class: "btn btn-primary btn-lg mt-4" %>
         </div>
       <% else %>
         <div class="button-group">
-          <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn text-white btn-lg mt-4 mr-2" %>
-          <%= link_to 'ログイン', login_path, class: "btn text-white btn-lg mt-4" %>
+          <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg mt-4 mr-2 btn-register" %>
+          <%= link_to 'ログイン', login_path, class: "btn btn-lg mt-4 btn-login" %>
         </div>
       <% end %>
     </div>

@@ -21,6 +21,7 @@
 .dropdown-menu {
   background: linear-gradient(180deg, #00B0FF 0%, #1A237E 100%);
   border: none;
+  min-width: 100px;
 }
 
 .dropdown-item:hover {

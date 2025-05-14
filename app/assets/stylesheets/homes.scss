@@ -39,8 +39,16 @@ section p {
   /* 下に空間を追加 */
 }
 
-.container p{
+.container p {
   color: white;
+}
+
+.section-img {
+  display: block;
+  margin: 30px auto;
+  max-width: 100%;
+  height: auto;
+  width: 30%;
 }
 
 /* 吹き出しのデザイン */
@@ -80,12 +88,14 @@ section p {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-    list-style: none;
+  list-style: none;
   gap: 20px;
+  text-align: center;
 }
 
 .features-list li {
-  flex: 1 1 calc(50% - 20px);
+  flex: 0 1 430px;
+  max-width: 90%;
   background-color: rgba(255, 255, 255, 0.1);
   border: 2px solid #00B0FF;
   border-radius: 10px;
@@ -120,6 +130,11 @@ section p {
 }
 
 @media screen and (max-width: 768px) {
+
+  .top-wrapper {
+    height: 50vh;
+  }
+
   .fw-bold {
     font-size: 1.25rem;
   }
@@ -129,21 +144,29 @@ section p {
     padding: .5rem 1rem;
   }
 
+  section {
+    padding: 40px 15px;
+  }
+
   section p {
     max-width: 90%;
+  }
+
+  .section-img {
+    width: 80%;
   }
 
   .chat-bubble {
     max-width: 90%;
   }
 
-  .features-section {
-    padding: 60px 20px; /* 上下の余白を設定 */
+  .features-list {
+    padding: 0;
   }
 
   .features-list li {
+    margin-bottom: 20px;
     flex: 1 1 100%;
-    /* モバイルでは1列にする */
   }
 }
 
@@ -154,9 +177,5 @@ section p {
 
   .chat-bubble {
     max-width: 90%;
-  }
-
-  .features-section {
-    padding: 60px 20px; /* 上下の余白を設定 */
   }
 }

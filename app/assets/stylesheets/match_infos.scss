@@ -273,6 +273,20 @@ select {
 }
 
 @media (max-width: 768px) {
+  #match_infos {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .mb-2 {
+    margin-bottom: 1rem !important;
+  }
+
+  .btn-center-below-h1 {
+    margin: 20px auto;
+    display: block;
+  }
+
   .card-body {
     padding: .5rem; /* カード内のパディングを調整 */
   }

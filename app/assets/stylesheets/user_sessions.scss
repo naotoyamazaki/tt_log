@@ -17,6 +17,8 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     max-width: 500px;
     width: 100%;
+    margin: 0 20px;
+    box-sizing: border-box;
   }
 
   /* 見出し */
@@ -125,5 +127,17 @@
     color: #721c24;
     border-color: #f5c6cb;
     margin: 0px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .form-container {
+    padding: 20px;
+    margin: 0 15px;
+  }
+
+  .form-control {
+    font-size: 14px;
+    padding: 8px;
   }
 }

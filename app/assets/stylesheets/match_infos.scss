@@ -166,7 +166,7 @@ select {
 
 /* 分析詳細ページ show */
 .show-container {
-  max-width: 800px;
+  width: 35%;
   margin: 2rem auto;
   padding: 2rem;
   background-color: #fff;
@@ -291,13 +291,6 @@ select {
     padding: .5rem; /* カード内のパディングを調整 */
   }
 
-  .show-container {
-    width: 60%;
-    /* 好みの幅に設定 */
-    margin: 0 auto;
-    /* 中央揃え */
-  }
-
   .form-container {
     width: 90%;
     margin-top: 1.5rem;
@@ -340,5 +333,24 @@ select {
     flex-direction: row;
     justify-content: space-between;
     gap: 0.5rem;
+  }
+
+  .show-container {
+    padding: 1rem;
+    width: 95%;
+  }
+
+  .section-card {
+    padding: 1rem;
+  }
+
+  .table {
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    margin: 0.25rem 0.5rem;
   }
 }

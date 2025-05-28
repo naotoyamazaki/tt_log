@@ -6,8 +6,10 @@
     <% if current_user %>
       <%= link_to '分析スタート', new_match_info_path, class: "btn btn-primary btn-lg mt-4" %>
     <% else %>
-      <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg mt-4 btn-register" %>
-      <%= link_to 'ログイン', login_path, class: "btn btn-lg mt-4 btn-login" %>
+      <div class="button-group d-flex justify-content-center flex-wrap gap-3 mt-4">
+        <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg btn-register" %>
+        <%= link_to 'ログイン', login_path, class: "btn btn-lg btn-login" %>
+      </div>
     <% end %>
     </h1>
   </div>
@@ -19,7 +21,7 @@
       <h2 class="section-header">T.T.LOGとは？</h2>
       <p>卓球を教えてくれるスクールやコーチは近年でとても増えましたが、あなたが出場した試合を見てしっかりアドバイスをくれるコーチはまだあまりいないと思います。T.T.LOGでは独自の分析フォーマットであなたの試合内容を数値化してアドバイスをくれます。それによって自身のプレーの強みや改善点を明確にすることができる卓球分析ツールです。</p>
       <!-- ビジュアルやイメージビデオの埋め込みなど -->
-      <%= image_tag 'ttlog_image1.jpg', alt: 'T.T.LOGのイメージ画像' %>
+      <%= image_tag 'ttlog_image1.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
     </div>
   </section>
 
@@ -30,7 +32,7 @@
       <div class="chat-bubble left-bubble">たくさん練習しても試合で勝つことができない...</div>
       <div class="chat-bubble right-bubble">撮影した動画を見返しても改善点がわからない...</div>
       <div class="chat-bubble left-bubble">そんなあなたに、T.T.LOGが解決策を提供します。</div>
-      <%= image_tag 'ttlog_image2.jpg', alt: 'T.T.LOGのイメージ画像' %>
+      <%= image_tag 'ttlog_image2.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
     </div>
   </section>
 
@@ -39,10 +41,10 @@
   <div class='container text-center'>
     <h2 class="section-header">T.T.LOGでできること</h2>
     <ul class="features-list">
-      <li><span class="icon">①</span>サーブ、レシーブからの得点率を分析。</li>
-      <li><span class="icon">②</span>技術ごとの得点率を分析。</li>
-      <li><span class="icon">③</span>1ゲームごとのプレー内容を分析。</li>
-      <li><span class="icon">④</span>分析結果を元にした練習メニューを提案。</li>
+      <li><span class="icon">①</span>サーブ、レシーブからの得点率を分析</li>
+      <li><span class="icon">②</span>技術ごとの得点率を分析</li>
+      <li><span class="icon">③</span>分析結果を元にしたアドバイス</li>
+      <li><span class="icon">④</span>練習メニューを提案(開発中)</li>
     </ul>
   </div>
 </section>
@@ -57,9 +59,9 @@
           <%= link_to '分析スタート', new_match_info_path, class: "btn btn-primary btn-lg mt-4" %>
         </div>
       <% else %>
-        <div class="button-group">
-          <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg mt-4 mr-2 btn-register" %>
-          <%= link_to 'ログイン', login_path, class: "btn btn-lg mt-4 btn-login" %>
+        <div class="button-group d-flex justify-content-center flex-wrap gap-3 mt-4">
+          <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg btn-register" %>
+          <%= link_to 'ログイン', login_path, class: "btn btn-lg btn-login" %>
         </div>
       <% end %>
     </div>

@@ -3,7 +3,7 @@
 <%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success btn-center-below-h1" %>
 
 <%= search_form_for @q, html: { class: "row justify-content-center align-items-center" } do |f| %>
-  <div class="col-12 col-md-3 mb-2">
+  <div class="col-10 col-md-3 mb-2">
     <label class="visually-hidden" for="match_name">大会名</label>
     <div class="input-group">
       <span class="input-group-text"><i class="fas fa-trophy"></i></span>
@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <div class="col-12 col-md-3 mb-2">
+  <div class="col-10 col-md-3 mb-2">
     <label class="visually-hidden" for="player_name">選手名</label>
     <div class="input-group">
       <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="col-12 col-md-3 mb-2">
+  <div class="col-10 col-md-3 mb-2">
     <label class="visually-hidden" for="opponent_name">対戦相手名</label>
     <div class="input-group">
       <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <div class="col-12 col-md-auto mb-2">
+  <div class="col-12 col-md-auto mb-2 text-center">
     <button type="submit" class="btn btn-primary">
       <i class="fas fa-search"></i> 検索
     </button>

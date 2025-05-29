@@ -29,6 +29,9 @@ gem 'sassc-rails'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
 end
 
 
@@ -44,4 +47,6 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
+  gem 'webdrivers'
+  gem 'database_cleaner-active_record'
 end

@@ -44,4 +44,37 @@ class MatchInfo < ApplicationRecord
   rescue StandardError => e
     Rails.logger.error("Failed to update advice: #{e.record.errors.full_messages.join(', ')}")
   end
+
+  private
+
+  def prepare_batting_score_data(score_records)
+    grouped_data = group_scores_by_technique(score_records)
+
+    grouped_data.map do |technique, result|
+      "#{technique}：得点 #{result[:score]} 失点 #{result[:lost_score]}"
+    end
+  end
+
+  def group_scores_by_technique(score_records)
+    data = {}
+
+    score_records.each do |score|
+      name = translated_batting_style_name(score.batting_style)
+
+      data[name] ||= { score: 0, lost_score: 0 }
+      data[name][:score] += score.score
+      data[name][:lost_score] += score.lost_score
+    end
+
+    data
+  end
+
+  def translated_batting_style_name(style)
+    case style
+    when "fore_push" then "フォアツッツキ"
+    when "back_push" then "バックツッツキ"
+    else
+      Score.human_enum_name(:batting_style, style)
+    end
+  end
 end

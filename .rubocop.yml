@@ -28,6 +28,10 @@ Metrics/MethodLength:
 Metrics/ClassLength:
   Max: 200
 
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/models/match_info_spec.rb'
+
 # 1行の長さ制限
 Layout/LineLength:
   Max: 120

@@ -35,6 +35,8 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  config.include LoginMacros, type: :request
 end
 
 Shoulda::Matchers.configure do |config|
@@ -43,3 +45,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }

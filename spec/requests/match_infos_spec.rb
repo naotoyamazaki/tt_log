@@ -41,9 +41,9 @@ RSpec.describe "MatchInfos", type: :request do
     end
 
     it "新規作成できること" do
-      expect {
+      expect do
         post match_infos_path, params: params
-      }.to change(MatchInfo, :count).by(1)
+      end.to change(MatchInfo, :count).by(1)
       expect(response).to redirect_to(MatchInfo.last)
     end
   end
@@ -64,9 +64,9 @@ RSpec.describe "MatchInfos", type: :request do
     let!(:match_info) { create(:match_info, user: user) }
 
     it "削除できること" do
-      expect {
+      expect do
         delete match_info_path(match_info)
-      }.to change(MatchInfo, :count).by(-1)
+      end.to change(MatchInfo, :count).by(-1)
       expect(response).to redirect_to(match_infos_path)
     end
   end

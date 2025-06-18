@@ -47,3 +47,5 @@
 .env
 
 yarn-error.log
+
+spec/examples.txt

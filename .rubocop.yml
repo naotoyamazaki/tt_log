@@ -33,6 +33,7 @@ Metrics/BlockLength:
     - 'spec/models/match_info_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/requests/match_infos_spec.rb'
+    - 'spec/system/match_infos_spec.rb'
 
 # 1行の長さ制限
 Layout/LineLength:

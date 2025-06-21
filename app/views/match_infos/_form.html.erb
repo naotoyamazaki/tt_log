@@ -5,30 +5,30 @@
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :"🗓️日付", style: "display: block" %>
+        <%= form.label :match_date, "🗓️日付", style: "display: block" %>
         <%= form.date_field :match_date , class: "form-control rounded-pill shadow-sm"%>
       </div>
 
       <div class="column">
-        <%= form.label :"🏆大会名", style: "display: block" %>
+        <%= form.label :match_name, "🏆大会名", style: "display: block" %>
         <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm", placeholder: "出場した大会名を入力" %>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :"👤選手名", style: "display: block" %>
+        <%= form.label :player_name, "👤選手名", style: "display: block" %>
         <%= form.text_field :player_name, class: "form-control rounded-pill shadow-sm", placeholder: "分析する選手名を入力" %>
       </div>
 
       <div class="column">
-        <%= form.label :"👤対戦相手名", style: "display: block" %>
+        <%= form.label :opponent_name, "👤対戦相手名", style: "display: block" %>
         <%= form.text_field :opponent_name, class: "form-control rounded-pill shadow-sm", placeholder: "対戦相手の名前を入力" %>
       </div>
     </div>
 
     <div class="mb-4">
-      <%= form.label :"🗒️メモ", style: "display: block" %>
+      <%= form.label :memo, "🗒️メモ", style: "display: block" %>
       <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
     </div>
 

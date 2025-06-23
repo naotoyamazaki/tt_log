@@ -13,7 +13,6 @@ gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 gem 'sorcery', '~> 0.16.5'
-gem 'pry-byebug'
 gem 'cssbundling-rails'
 gem 'ransack'
 gem 'twitter'
@@ -32,6 +31,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'pry-byebug'
 end
 
 

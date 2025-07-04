@@ -20,3 +20,8 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - redis
+  redis:
+    image: redis:7.2
+    ports:
+      - "6379:6379"

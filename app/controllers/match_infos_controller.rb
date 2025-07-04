@@ -14,7 +14,7 @@ class MatchInfosController < ApplicationController
       @advice = @match_info.advice
     else
       AdviceGenerationJob.perform_later(@match_info.id)
-      @advice = t('messages.advice_generating')
+      @advice = t('notices.advice_generating')
     end
   end
 
@@ -58,7 +58,7 @@ class MatchInfosController < ApplicationController
 
     if update_match_info
       update_advice_if_needed(original_batting_score_data)
-      update_response(success: true, notice: t('messages.advice_generating'))
+      update_response(success: true, notice: t('notices.advice_generating'))
     else
       update_response(success: false)
     end

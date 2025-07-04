@@ -44,9 +44,9 @@ ja:
     login_success: "ログインが完了しました"
     logout_success: "ログアウトしました"
     registration_success: "会員登録が完了しました"
+    advice_generating: "アドバイスを生成中です…"
   errors:
     messages:
       blank: "を入力してください"
       memo_too_long: "は500文字以内で入力してください"
       advice_update_failed: "アドバイスの更新に失敗しました: %{errors}"
-      advice_generating: "アドバイスを生成中です"

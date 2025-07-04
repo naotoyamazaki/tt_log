@@ -1,4 +1,3 @@
-# app/jobs/advice_generation_job.rb
 class AdviceGenerationJob < ApplicationJob
   queue_as :default
 

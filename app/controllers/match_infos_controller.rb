@@ -58,7 +58,7 @@ class MatchInfosController < ApplicationController
 
     if update_match_info
       update_advice_if_needed(original_batting_score_data)
-      update_response(success: true, notice: t('notices.advice_generating'))
+      update_response(success: true, notice: t('notices.match_info_updated'))
     else
       update_response(success: false)
     end
@@ -77,6 +77,11 @@ class MatchInfosController < ApplicationController
   def autocomplete
     @match_infos = MatchInfo.search(params[:term])
     render json: @match_infos.map(&:name)
+  end
+
+  def advice_status
+    match_info = current_user.match_infos.find(params[:id])
+    render json: { advice: match_info.advice }
   end
 
   private
@@ -131,6 +136,7 @@ class MatchInfosController < ApplicationController
   def update_advice_if_needed(original_data)
     return unless batting_score_changed?(original_data)
 
+    @match_info.update(advice: nil)
     AdviceGenerationJob.perform_later(@match_info.id)
   end
 

@@ -8,7 +8,9 @@ class AdviceGenerationJob < ApplicationJob
     batting_scores = match_info.batting_score_data
     Rails.logger.info("非同期でChatGPTに送信: #{batting_scores.to_json}")
     advice = ChatgptService.get_advice(batting_scores.to_json)
-    match_info.update_advice(advice)
+    # rubocop:disable Rails/SkipsModelValidations
+    match_info.update_column(:advice, advice)
+    # rubocop:enable Rails/SkipsModelValidations
   rescue StandardError => e
     Rails.logger.error("AdviceGenerationJob Error: #{e.message}")
   end

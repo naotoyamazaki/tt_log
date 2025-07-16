@@ -8,3 +8,4 @@ pin "bootstrap", to: "https://ga.jspm.io/npm:bootstrap@5.3.2/dist/js/bootstrap.e
 
 pin "custom_number_input", to: "custom_number_input.js", preload: true
 pin "@hotwired/stimulus-autocomplete", to: "https://ga.jspm.io/npm:stimulus-autocomplete@3.1.0/src/autocomplete.js"
+pin "advice_controller", to: "controllers/advice_controller.js"

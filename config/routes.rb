@@ -13,7 +13,21 @@ Rails.application.routes.draw do
 
   resources :match_infos do
     get :autocomplete, on: :collection
+
+    get :autocomplete, on: :collection
+    member do
+      get :advice_status
+    end
   end
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
+  require 'sidekiq/web'
+
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    ActiveSupport::SecurityUtils.secure_compare(username, ENV.fetch("SIDEKIQ_USERNAME")) &
+      ActiveSupport::SecurityUtils.secure_compare(password, ENV.fetch("SIDEKIQ_PASSWORD"))
+  end
+
+  mount Sidekiq::Web => '/sidekiq'
 end

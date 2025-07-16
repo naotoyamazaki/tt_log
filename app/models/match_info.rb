@@ -40,9 +40,10 @@ class MatchInfo < ApplicationRecord
   end
 
   def update_advice(advice)
-    update(advice: advice)
+    self.advice = advice
+    save!(validate: false)
   rescue StandardError => e
-    Rails.logger.error("Failed to update advice: #{e.record.errors.full_messages.join(', ')}")
+    Rails.logger.error("Failed to update advice: #{e.message}")
   end
 
   private

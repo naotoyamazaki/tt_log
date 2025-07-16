@@ -44,6 +44,7 @@ ja:
     login_success: "ログインが完了しました"
     logout_success: "ログアウトしました"
     registration_success: "会員登録が完了しました"
+    advice_generating: "アドバイスを生成中です…"
   errors:
     messages:
       blank: "を入力してください"

@@ -97,8 +97,11 @@
           </tbody>
         </table>
 
-        <div class="advice-section">
-          <p><%= @advice %></p>
+        <div class="advice-section"
+            data-controller="advice"
+            data-advice-id-value="<%= @match_info.id %>"
+            data-advice-url-value="<%= advice_status_match_info_path(@match_info) %>">
+          <p data-advice-target="text"><%= @advice %></p>
         </div>
       </div>
     </div>

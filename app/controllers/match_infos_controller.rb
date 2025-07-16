@@ -8,10 +8,14 @@ class MatchInfosController < ApplicationController
     @pagy, @match_infos = pagy(@q.result.includes(:player, :opponent).order(created_at: :desc))
   end
 
-  # GET /match_infos/1 or /match_infos/1.json
   def show
     set_match_info_scores
-    fetch_advice
+    if @match_info.advice.present?
+      @advice = @match_info.advice
+    else
+      AdviceGenerationJob.perform_later(@match_info.id)
+      @advice = t('notices.advice_generating')
+    end
   end
 
   # GET /match_infos/new
@@ -54,7 +58,7 @@ class MatchInfosController < ApplicationController
 
     if update_match_info
       update_advice_if_needed(original_batting_score_data)
-      update_response(success: true)
+      update_response(success: true, notice: t('notices.match_info_updated'))
     else
       update_response(success: false)
     end
@@ -75,6 +79,11 @@ class MatchInfosController < ApplicationController
     render json: @match_infos.map(&:name)
   end
 
+  def advice_status
+    match_info = current_user.match_infos.find(params[:id])
+    render json: { advice: match_info.advice }
+  end
+
   private
 
   # show
@@ -83,22 +92,6 @@ class MatchInfosController < ApplicationController
     @serve_scores = @match_info.scores.where(batting_style: 'serve')
     @receive_scores = @match_info.scores.where(batting_style: 'receive')
     @batting_scores = @match_info.scores.where.not(batting_style: ['serve', 'receive'])
-  end
-
-  def fetch_advice
-    batting_score_data = prepare_batting_score_data(@batting_scores)
-    Rails.logger.info("Data sent to ChatGPT API: #{batting_score_data.to_json}")
-    # アドバイスが存在する場合は再生成せずに使用
-    if @match_info.advice.present?
-      @advice = @match_info.advice
-    else
-      @advice = ChatgptService.get_advice(batting_score_data.to_json)
-      begin
-        @match_info.update_columns(advice: @advice) # エラー発生時に例外をスロー # rubocop:disable Rails/SkipsModelValidations
-      rescue StandardError => e
-        Rails.logger.error("Failed to update advice: #{e.record.errors.full_messages.join(', ')}")
-      end
-    end
   end
 
   # create
@@ -143,10 +136,8 @@ class MatchInfosController < ApplicationController
   def update_advice_if_needed(original_data)
     return unless batting_score_changed?(original_data)
 
-    new_advice = ChatgptService.get_advice(fetch_batting_score_data(@match_info).to_json)
-    unless @match_info.update(advice: new_advice)
-      Rails.logger.error(t('errors.messages.advice_update_failed', errors: @match_info.errors.full_messages))
-    end
+    @match_info.update(advice: nil)
+    AdviceGenerationJob.perform_later(@match_info.id)
   end
 
   # バッティングスコアが変更されたか判定
@@ -155,10 +146,10 @@ class MatchInfosController < ApplicationController
   end
 
   # 更新成功・失敗時のレスポンス
-  def update_response(success:)
+  def update_response(success:, notice: nil)
     respond_to do |format|
       if success
-        format.html { redirect_to @match_info, notice: t('notices.match_info_updated') }
+        format.html { redirect_to @match_info, notice: notice || t('notices.match_info_updated') }
         format.json { render :show, status: :ok, location: @match_info }
       else
         log_update_errors

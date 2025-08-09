@@ -6,6 +6,7 @@ class ChatgptService
     body = generate_request_body(batting_score_data)
     headers = generate_headers(api_key)
 
+    response = nil
     response = send_request(body, headers)
     process_response(response)
   rescue StandardError => e

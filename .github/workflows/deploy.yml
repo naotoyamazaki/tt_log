@@ -10,19 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Heroku CLI をインストール
       - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
 
-      # Heroku に git でデプロイ（Buildpack）
       - name: Push to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_APP_NAME: ttlog
         run: |
-          # Herokuのリモートを追加してAPIキーで認証付きURLへpush
           git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git
+          
+          git fetch origin main
           git push heroku HEAD:main -f

@@ -48,6 +48,8 @@
 
 .env
 
+.env.development
+
 yarn-error.log
 
 spec/examples.txt

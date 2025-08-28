@@ -1,19 +1,20 @@
+# config/database.yml
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: db
-  username: <%= ENV["POSTGRES_USER"] %>
-  password: <%= ENV["POSTGRES_PASSWORD"] %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  host: <%= ENV.fetch("PGHOST", "localhost") %>
+  port: <%= ENV.fetch("PGPORT", 5432) %>
+  username: <%= ENV.fetch("PGUSER", ENV.fetch("USER")) %>
+  password: <%= ENV.fetch("PGPASSWORD", "password") %>
 
 development:
   <<: *default
-  database: tt_log_development
+  database: ttlog_development
 
 test:
   <<: *default
-  database: tt_log_test
+  database: ttlog_test
 
 production:
   <<: *default
-  database: tt_log_production

@@ -30,7 +30,7 @@ class UserSessionsController < ApplicationController
   # ログイン失敗時の処理
   def handle_failed_login
     @user = User.new(email: params[:email])
-    flash.now[:alert] = t('notices.invalid_login')
-    render :new
+    @user.errors.add(:base, t('notices.invalid_login'))
+    render :new, status: :unprocessable_entity
   end
 end

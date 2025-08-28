@@ -6,27 +6,23 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Login to Heroku Container Registry
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:login
+      # Heroku CLI をインストール
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
 
-    - name: Build and push Docker image
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: ttlog
-      run: |
-        heroku container:push web --app $HEROKU_APP_NAME
-
-    - name: Release Docker image to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: ttlog
-      run: |
-        heroku container:release web --app $HEROKU_APP_NAME
+      # Heroku に git でデプロイ（Buildpack）
+      - name: Push to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ttlog
+        run: |
+          # Herokuのリモートを追加してAPIキーで認証付きURLへpush
+          git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git
+          git push heroku HEAD:main -f

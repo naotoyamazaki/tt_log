@@ -6,7 +6,6 @@ Bundler.require(*Rails.groups)
 
 module TtLog
   class Application < Rails::Application
-
     config.load_defaults 7.1
 
     config.active_record.timestamped_migrations = true

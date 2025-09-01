@@ -31,6 +31,16 @@ class UserSessionsController < ApplicationController
   def handle_failed_login
     @user = User.new(email: params[:email])
     @user.errors.add(:base, t('notices.invalid_login'))
-    render :new, status: :unprocessable_entity
+
+    respond_to do |format|
+      format.html { render :new, status: :unprocessable_entity }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          'login_form',
+          partial: 'user_sessions/form',
+          locals: { user: @user }
+        ), status: :unprocessable_entity
+      end
+    end
   end
 end

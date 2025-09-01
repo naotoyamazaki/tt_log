@@ -1,24 +1,11 @@
 <div class="user-login">
   <div class="form-container">
     <h1 class="center-text">ログイン</h1>
-    <%= form_with url: login_path, local: true do |f| %>
-      <%= render partial: 'shared/error_messages', locals: { object: @user } %>
-      <div class="form-group mb-3">
-        <%= f.label :email, "メールアドレス" %>
-        <%= f.text_field :email, class: 'form-control', placeholder: "example@example.com" %>
-      </div>
-      <div class="form-group mb-3">
-        <%= f.label :password, "パスワード" %>
-        <%= f.password_field :password, class: 'form-control', placeholder: "********" %>
-      </div>
-      <div class="form-check mb-3">
-        <%= f.check_box :remember_me, value: "1", class: "form-check-input" %>
-        <%= f.label "ログイン状態を保持する", class: "form-check-label" %>
-      </div>
-      <div class="center-text">
-        <%= f.submit 'ログイン', class: 'btn btn-green-primary' %>
-      </div>
-    <% end %>
+
+    <turbo-frame id="login_form">
+      <%= render 'form', user: @user %>
+    </turbo-frame>
+
     <div class='center-link'>
       <%= link_to '会員登録ページへ', new_user_path %>
     </div>

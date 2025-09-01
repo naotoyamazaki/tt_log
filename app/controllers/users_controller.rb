@@ -8,16 +8,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to login_path, notice: t('notices.registration_success')
     else
-      respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            'signup_form',
-            partial: 'users/form',
-            locals: { user: @user }
-          ), status: :unprocessable_entity
-        end
-      end
+      render :new, status: :unprocessable_entity
     end
   end
 

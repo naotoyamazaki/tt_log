@@ -1,28 +1,9 @@
 <div class="user-registration">
   <div class="form-container">
     <h1 class="center-text">会員登録</h1>
-    <%= form_with model: @user, local: true do |f| %>
-      <%= render partial: 'shared/error_messages', locals: { object: @user } %>
-      <div class="form-group mb-3">
-        <%= f.label :"名前" %>
-        <%= f.text_field :name, class: 'form-control', placeholder: "卓球太郎" %>
-      </div>
-      <div class="form-group mb-3">
-        <%= f.label :"メールアドレス" %>
-        <%= f.email_field :email, class: 'form-control', placeholder: "example@example.com" %>
-      </div>
-      <div class="form-group mb-3">
-        <%= f.label :"パスワード" %>
-        <%= f.password_field :password, class: 'form-control', placeholder: "********" %>
-      </div>
-      <div class="form-group mb-3">
-        <%= f.label :"パスワード確認" %>
-        <%= f.password_field :password_confirmation, class: 'form-control' , placeholder: "もう一度パスワードを入力してください"%>
-      </div>
-      <div class="center-text">
-        <%= f.submit '登録', class: 'btn btn-blue-primary' %>
-      </div>
-    <% end %>
+    <turbo-frame id="signup_form">
+      <%= render 'form', user: @user %>
+    </turbo-frame>
     <div class='center-link'>
       <%= link_to 'ログインページへ', login_path %>
     </div>

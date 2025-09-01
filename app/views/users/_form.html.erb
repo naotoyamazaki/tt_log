@@ -1,0 +1,23 @@
+<%= render partial: 'shared/error_messages', locals: { object: user } %>
+
+<%= form_with model: user, data: { turbo_frame: 'signup_form' } do |f| %>
+  <div class="form-group mb-3">
+    <%= f.label :"名前" %>
+    <%= f.text_field :name, class: 'form-control', placeholder: "卓球太郎" %>
+  </div>
+  <div class="form-group mb-3">
+    <%= f.label :"メールアドレス" %>
+    <%= f.email_field :email, class: 'form-control', placeholder: "example@example.com" %>
+  </div>
+  <div class="form-group mb-3">
+    <%= f.label :"パスワード" %>
+    <%= f.password_field :password, class: 'form-control', placeholder: "********" %>
+  </div>
+  <div class="form-group mb-3">
+    <%= f.label :"パスワード確認" %>
+    <%= f.password_field :password_confirmation, class: 'form-control', placeholder: "もう一度パスワードを入力してください" %>
+  </div>
+  <div class="center-text">
+    <%= f.submit '登録', class: 'btn btn-blue-primary' %>
+  </div>
+<% end %>

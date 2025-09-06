@@ -1,24 +1,24 @@
-<div class='top-wrapper'>
-  <div class='top-inner-text'>
-    <h1 class="fw-bold">試合映像 ✖️ AIで成長を加速
-    <br />
-    <% if current_user %>
-      <%= link_to '分析スタート', new_match_info_path, class: "btn btn-primary btn-lg mt-4" %>
-    <% else %>
-      <div class="button-group d-flex justify-content-center flex-wrap gap-3 mt-4">
-        <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg btn-register" %>
-        <%= link_to 'ログイン', login_path, class: "btn btn-lg btn-login" %>
-      </div>
-    <% end %>
-    </h1>
+  <div class='top-wrapper'>
+    <div class='top-inner-text'>
+      <h1 class="fw-bold">試合映像 ✖️ AIで成長を加速
+      <br />
+      <% if current_user %>
+        <%= link_to '分析スタート', new_match_info_path, class: "btn btn-primary btn-lg mt-4" %>
+      <% else %>
+        <div class="button-group d-flex justify-content-center flex-wrap gap-3 mt-4">
+          <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg btn-register" %>
+          <%= link_to 'ログイン', login_path, class: "btn btn-lg btn-login" %>
+        </div>
+      <% end %>
+      </h1>
+    </div>
   </div>
-</div>
 
   <!-- T.T.LOGとは？ -->
   <section style="background-color: #4CAF50;">
     <div class='container text-center'>
       <h2 class="section-header">T.T.LOGとは？</h2>
-      <p>卓球を教えてくれるコーチは近年でとても増えましたが、あなたの試合を見てしっかりアドバイスをくれるコーチはまだ少ないと思います。撮影したあなたの試合映像を見ながらT.T.LOG独自の分析フォーマットで分析することであなたのプレーを数値化して改善のためのアドバイスが受けられます。それにより自身のプレーの強みや弱み、改善点を明確にすることができる卓球の試合分析ツールです。</p>
+      <p style="color: white;">卓球を教えてくれるコーチは近年でとても増えましたが、あなたの試合を見てしっかりアドバイスをくれるコーチはまだ少ないと思います。撮影したあなたの試合映像を見ながらT.T.LOG独自の分析フォーマットで分析することであなたのプレーを数値化して改善のためのアドバイスが受けられます。それにより自身のプレーの強みや弱み、改善点を明確にすることができる卓球の試合分析ツールです。</p>
       <!-- ビジュアルやイメージビデオの埋め込みなど -->
       <%= image_tag 'ttlog_image1.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
     </div>
@@ -37,16 +37,16 @@
 
   <!-- 機能紹介 -->
   <section style="background-color: #4CAF50;">
-  <div class='container text-center'>
-    <h2 class="section-header">T.T.LOGでできること</h2>
-    <ul class="features-list">
-      <li><span class="icon">①</span>サーブ、レシーブからの得点率を分析</li>
-      <li><span class="icon">②</span>技術ごとの得点率を分析</li>
-      <li><span class="icon">③</span>分析結果を元にしたアドバイス</li>
-      <li><span class="icon">④</span>練習メニューを提案(開発中)</li>
-    </ul>
-  </div>
-</section>
+    <div class='container text-center'>
+      <h2 class="section-header">T.T.LOGでできること</h2>
+      <ul class="features-list">
+        <li><span class="icon">①</span>サーブ、レシーブからの得点率を分析</li>
+        <li><span class="icon">②</span>技術ごとの得点率を分析</li>
+        <li><span class="icon">③</span>分析結果を元にしたアドバイス</li>
+        <li><span class="icon">④</span>練習メニューを提案(開発中)</li>
+      </ul>
+    </div>
+  </section>
 
 
   <!-- 会員登録、ログインボタン -->

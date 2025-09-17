@@ -7,14 +7,39 @@
           <%= f.label :"メールアドレス" %>
           <%= @user.email %>
         </div>
-        <div class="form-group mb-3">
+
+        <div class="form-group mb-3" data-controller="password-visibility">
           <%= f.label :"パスワード" %>
-          <%= f.password_field :password, class: 'form-control' %>
+          <div class="input-group">
+            <%= f.password_field :password,
+                  class: 'form-control',
+                  data: { "password-visibility-target": "input", "input-name": "password" } %>
+
+            <button type="button"
+              class="btn btn-outline-secondary"
+              data-action="password-visibility#toggle"
+              data-password-visibility-target="button"
+              data-target-input="password">
+            </button>
+          </div>
         </div>
-        <div class="form-group mb-3">
+
+        <div class="form-group mb-3" data-controller="password-visibility">
           <%= f.label :"パスワード確認" %>
-          <%= f.password_field :password_confirmation, class: 'form-control' %>
+          <div class="input-group">
+            <%= f.password_field :password_confirmation,
+                  class: 'form-control',
+                  data: { "password-visibility-target": "input", "input-name": "password_confirmation" } %>
+
+            <button type="button"
+              class="btn btn-outline-secondary"
+              data-action="password-visibility#toggle"
+              data-password-visibility-target="button"
+              data-target-input="password">
+            </button>
+          </div>
         </div>
+
         <div class="center-text">
           <%= f.submit '再設定', class: 'btn btn-success' %>
         </div>
@@ -22,5 +47,3 @@
     </div>
   </div>
 </div>
-
-<%= javascript_include_tag "application", type: "module" %>

@@ -7,10 +7,24 @@
         <%= f.label :email, "メールアドレス" %>
         <%= f.text_field :email, class: 'form-control', placeholder: "example@example.com" %>
       </div>
-      <div class="form-group mb-3">
+
+      <div class="form-group mb-3" data-controller="password-visibility">
         <%= f.label :password, "パスワード" %>
-        <%= f.password_field :password, class: 'form-control', placeholder: "********" %>
+        <div class="input-group">
+          <%= f.password_field :password,
+                class: 'form-control',
+                placeholder: "********",
+                data: { "password-visibility-target": "input", "input-name": "password" } %>
+
+          <button type="button"
+            class="btn btn-outline-secondary"
+            data-action="password-visibility#toggle"
+            data-password-visibility-target="button"
+            data-target-input="password">
+          </button>
+        </div>
       </div>
+
       <div class="form-check mb-3">
         <%= f.check_box :remember_me, value: "1", class: "form-check-input" %>
         <%= f.label "ログイン状態を保持する", class: "form-check-label" %>

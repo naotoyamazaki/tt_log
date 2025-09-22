@@ -4,7 +4,29 @@
 
 <div class="center-button">
   <%= link_to "編集", edit_match_info_path(@match_info), class: "btn edit-btn" %>
-  <%= button_to "削除", {action: "destroy", id: @match_info.id}, method: :delete, class: "btn delete-btn" %>
+  <button type="button" class="btn delete-btn" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+    削除
+  </button>
+</div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmModalLabel">削除の確認</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <div class="modal-body">
+        この分析を本当に削除してもよろしいですか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <%= button_to "削除する", match_info_path(@match_info),
+              method: :delete,
+              class: "btn btn-danger" %>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="center-link  mb-5">

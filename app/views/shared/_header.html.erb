@@ -19,10 +19,32 @@
               <%= link_to '分析を開始', new_match_info_path, class: 'dropdown-item text-white' %>
             </div>
           </li>
+
           <li class='nav-item'>
-            <%= link_to 'ログアウト', logout_path, class: 'nav-link logout-btn text-white', data: { turbo_method: :delete } %>
+            <button type="button" class="nav-link logout-btn text-white btn btn-link p-0" 
+                    data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+              ログアウト
+            </button>
           </li>
         </ul>
+      </div>
+
+      <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="logoutConfirmModalLabel">ログアウト確認</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+            </div>
+            <div class="modal-body">
+              本当にログアウトしてよろしいですか？
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+              <%= button_to 'ログアウトする', logout_path, method: :delete, class: 'btn btn-danger' %>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>

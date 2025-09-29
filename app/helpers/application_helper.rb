@@ -1,13 +1,6 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def calculate_point_rate(scores)
-    total_score = scores.sum(:score)
-    total_lost_score = scores.sum(:lost_score)
-    total = total_score + total_lost_score
-    total.positive? ? (total_score.to_f / total * 100).round : 0
-  end
-
   def calculate_batting_score_data(batting_scores)
     data = batting_scores.map do |score|
       total = score.score + score.lost_score

@@ -117,6 +117,7 @@ class MatchInfosController < ApplicationController
 
   def update_advice_if_needed(original_data)
     return unless batting_score_changed?(original_data)
+
     @match_info.update(advice: nil)
     AdviceGenerationJob.perform_later(@match_info.id)
   end

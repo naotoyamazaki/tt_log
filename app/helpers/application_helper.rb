@@ -8,10 +8,9 @@ module ApplicationHelper
       { batting_style: score.batting_style, rate: rate }
     end
 
-    data.sort_by { |entry| -entry[:rate] } # 得点率の降順
+    data.sort_by { |entry| -entry[:rate] }
   end
 
-  # 得点数と失点数データ整備（API送信用）
   def prepare_batting_score_data(batting_scores)
     batting_scores.map do |score|
       {

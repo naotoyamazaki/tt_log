@@ -133,6 +133,27 @@
   padding: 15px 0;
 }
 
+/* 既存 footer-bottom に続けて追加 */
+.footer-contact {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.footer-mail-link {
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.footer-mail-link:hover {
+  color: #00B0FF;
+  text-decoration: underline;
+}
+
+.text-neon {
+  color: #00B0FF;
+}
+
 html,
 body {
   height: 100%;

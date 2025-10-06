@@ -1,6 +1,6 @@
 <footer id='footer' class='footer-bottom'>
   <div class="container-fluid text-center">
-    <ul class='navbar-nav d-flex flex-row justify-content-center'>
+    <ul class='navbar-nav d-flex flex-row justify-content-center mb-2'>
       <li class='nav-item mx-3'>
         <%= link_to '利用規約', terms_of_service_path, class: 'nav-link footer-link' %>
       </li>
@@ -8,6 +8,14 @@
         <%= link_to 'プライバシーポリシー', privacy_policy_path, class: 'nav-link footer-link' %>
       </li>
     </ul>
+
+    <!-- 📧 ご意見・ご感想セクション -->
+    <div class="footer-contact text-white mb-2">
+      <i class="fa-solid fa-envelope me-1 text-neon"></i>
+      ご意見・ご感想はこちらから：
+      <%= mail_to 'ttlog8507@gmail.com', 'ttlog8507@gmail.com', class: 'footer-mail-link', target: '_blank' %>
+    </div>
+
     <div class='text-white py-2 footer-text'>
       Copyright © 2025. T.T.LOG
     </div>

@@ -1,19 +1,78 @@
+# spec/requests/match_infos_update_spec.rb
 require 'rails_helper'
 
-RSpec.describe MatchInfo, type: :model do
-  describe "#update_advice" do
-    let(:match_info) { create(:match_info) }
+RSpec.describe "MatchInfos#update", type: :request do
+  include ActiveJob::TestHelper
 
-    it "正常にアドバイスを更新する" do
-      match_info.update_advice("この技術を強化しましょう")
-      expect(match_info.reload.advice).to eq("この技術を強化しましょう")
-    end
+  let(:user) { create(:user) }
+  let(:match_info) do
+    create(
+      :match_info,
+      user: user,
+      advice: "old",
+      match_name: "テスト大会",
+      match_date: Date.current
+    )
+  end
+  let!(:serve_score) { create(:score, match_info: match_info, batting_style: :serve, score: 1, lost_score: 1) }
 
-    it "updateで例外が発生したら rescue され、ログ出力される" do
-      allow(match_info).to receive(:update).and_raise(ActiveRecord::RecordInvalid.new(match_info))
-      expect(Rails.logger).to receive(:error).with(/Failed to update advice:/)
+  before do
+    ActiveJob::Base.queue_adapter = :test
 
-      match_info.update_advice("失敗テスト")
-    end
+    post login_path, params: { email: user.email, password: 'password' }
+    follow_redirect! if response.redirect?
+  end
+
+  def valid_base_params
+    {
+      match_name: "テスト大会",
+      match_date: Date.current,
+      player_name: "田中",
+      opponent_name: "佐藤"
+    }
+  end
+
+  it "打撃スコアが変わったら advice を nil にし、ジョブをenqueueする" do
+    expect do
+      patch match_info_path(match_info), params: {
+        match_info: valid_base_params.merge(
+          scores_attributes: {
+            "0" => {
+              id: serve_score.id,
+              batting_style: "serve",
+              score: 3,
+              lost_score: 1,
+              _destroy: "false"
+            }
+          }
+        )
+      }
+    end.to have_enqueued_job(AdviceGenerationJob)
+
+    expect(response).to have_http_status(:found).or have_http_status(:see_other)
+    match_info.reload
+    expect(match_info.advice).to be_nil
+  end
+
+  it "打撃スコアが変わらなければ advice を維持し、ジョブをenqueueしない" do
+    expect do
+      patch match_info_path(match_info), params: {
+        match_info: valid_base_params.merge(
+          scores_attributes: {
+            "0" => {
+              id: serve_score.id,
+              batting_style: "serve",
+              score: 1,
+              lost_score: 1,
+              _destroy: "false"
+            }
+          }
+        )
+      }
+    end.not_to have_enqueued_job(AdviceGenerationJob)
+
+    expect(response).to have_http_status(:found).or have_http_status(:see_other)
+    match_info.reload
+    expect(match_info.advice).to eq("old")
   end
 end

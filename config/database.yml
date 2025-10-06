@@ -14,10 +14,7 @@ development:
 test:
   <<: *default
   database: ttlog_test
-  host: <%= ENV.fetch("PGHOST", "localhost") %>
-  port: <%= ENV.fetch("PGPORT", 5432) %>
-  username: <%= ENV.fetch("PGUSER", "postgres") %>
-  password: <%= ENV.fetch("PGPASSWORD", "password") %>
+  username: <%= ENV.fetch("PGUSER", `whoami`.strip) %>
 
 production:
   <<: *default

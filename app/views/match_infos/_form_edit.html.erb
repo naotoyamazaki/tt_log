@@ -34,19 +34,17 @@
 
     <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
       <h3 class="text-center">分析フォームの使い方</h3>
-      <div class="mb-3">1.サーブとレシーブそれぞれから始まったラリーの得点率を分析します。<br>
-        例：分析する選手のサーブから始まったラリーで得点<br>→サーブの得点数に1をプラスする。<br>
-        ※サービスエースとレシーブエースのみを集計するためのものではありません。<br>
-      </div>
       <div>
-        2.試合で使用した技術ごとの得点率を分析します。<br>
-        例：分析する選手がフォアドライブを打って得点<br>→フォアドライブの得点数に1をプラスする。
+        試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
+        例：分析する選手がサービスエースで得点 → サーブの得点数に1をプラスする。<br>
+        例：分析する選手がサービスミスで失点 → サーブの失点数に1をプラスする。<br>
+        例：分析する選手がフォアドライブで得点 → フォアドライブの得点数に1をプラスする。<br>
+        例：分析する選手がフォアドライブで失点 → フォアドライブの失点数に1をプラスする。
       </div>
     </div>
 
-    <% # batting_styles_orderを固定 %>
     <% batting_styles_order = [
-      'serve', 'receive',
+      'serve',
       'fore_drive', 'back_drive',
       'fore_push', 'back_push',
       'fore_stop', 'back_stop',
@@ -56,28 +54,25 @@
       'fore_counter', 'back_counter'
     ] %>
 
-    <% # batting_style順に並べ替え %>
-    <% sorted_scores = match_info.scores.sort_by do |score| %>
-      <% batting_styles_order.index(score.batting_style) %>
-    <% end %>
+    <% sorted_scores = match_info.scores.sort_by { |score| batting_styles_order.index(score.batting_style) || 999 } %>
 
-    <% # ソート後のscoresを使用 %>
     <% sorted_scores.each do |score| %>
       <%= form.fields_for :scores, score do |score_form| %>
         <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
           <%= score_form.select :batting_style,
-            [['サーブ', 'serve'], ['レシーブ', 'receive'],
-            ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
-            ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
-            ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
-            ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
-            ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
-            ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
-            ['バックカウンター', 'back_counter']
+            [
+              ['サーブ', 'serve'],
+              ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
+              ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
+              ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
+              ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
+              ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
+              ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
+              ['バックカウンター', 'back_counter']
             ], {}, { class: "form-control medium-input" } %>
 
           <% case score.batting_style %>
-          <% when "serve", "receive", "fore_drive", "back_drive",
+          <% when "serve", "fore_drive", "back_drive",
                 "fore_push", "back_push", "fore_stop", "back_stop",
                 "fore_flick", "back_flick", "chiquita",
                 "fore_block", "back_block",
@@ -87,11 +82,6 @@
         </div>
       <% end %>
     <% end %>
-
-    <%# <div class="center-text">
-    <%= form.check_box :post_to_x %>
-    <%# <%= form.label :post_to_x, "Xに投稿する" %>
-    <%# </div>  %>
 
     <div class="center-text">
       <%= form.submit "🚀 試合を分析する", class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>

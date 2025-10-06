@@ -36,7 +36,7 @@ class MatchInfo < ApplicationRecord
   end
 
   def batting_score_data
-    prepare_batting_score_data(scores.where.not(batting_style: %w[serve receive]))
+    prepare_batting_score_data(scores.where.not(batting_style: :receive))
   end
 
   def update_advice(advice)

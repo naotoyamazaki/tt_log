@@ -1,3 +1,4 @@
+# spec/system/match_infos_spec.rb
 require 'rails_helper'
 
 RSpec.describe '試合情報の投稿', type: :system do
@@ -25,7 +26,7 @@ RSpec.describe '試合情報の投稿', type: :system do
     all('input[name$="[score]"]')[0].fill_in with: 3
     all('input[name$="[lost_score]"]')[0].fill_in with: 1
 
-    all('select[name$="[batting_style]"]')[1].select 'レシーブ'
+    all('select[name$="[batting_style]"]')[1].select 'フォアドライブ'
     all('input[name$="[score]"]')[1].fill_in with: 2
     all('input[name$="[lost_score]"]')[1].fill_in with: 1
 

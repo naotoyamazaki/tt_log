@@ -1,11 +1,19 @@
 # プロジェクト名：[T.T.LOG]
-✅サムネイル挿入
+<img src="app/assets/images/line_thumbnail.jpg" alt="T.T.LOG サムネイル" width="600">
 
 # 目次
+- [サービス概要](#サービス概要)
+- [サービスURL](#サービスurl)
+- [サービス開発の背景](#サービス開発の背景)
+- [想定されるユーザー層](#想定されるユーザー層)
+- [機能紹介](#機能紹介)
+  - [技術別の分析とアドバイス機能について](#技術別の分析とアドバイス機能について)
+- [技術構成について](#技術構成について)
+  - [使用技術](#使用技術)
+  - [ER図](#er図)
+  - [画面遷移図](#画面遷移図)
 
-
-
-## サービス概要
+# サービス概要
 T.T.LOGは卓球の試合映像を見ながらラリーの最後にどの技術(フォアハンド・バックハンドなど)で得点したか、または失点したかをカウントしていくことでそれぞれの得点率が自動集計され、生成AIからそのデータに伴ったアドバイスがもらえる卓球専門の試合分析サービスです。
 
 # サービスURL
@@ -20,16 +28,16 @@ Password : password
 Email : ttlog.app+2@gmail.com
 Password : password
 
-## 想定されるユーザー層
-老若男女問わず卓球が趣味で定期的に大会に参加に参加される方。
-自分の大会でのプレーを撮影して反省点を探す方。
-
-## サービス開発の背景
+# サービス開発の背景
 私は小学生から現在に至るまでアマチュア選手として卓球を続けてきており、現在は一般の方に卓球を指導する仕事をしています。
 その経験の中で卓球をする方は「自分のプレーを客観視できておらず、必要のない練習をしてしまう」ことや「自分のプレーを見返してみてもどこが課題なのかわからない」などの課題感があります。
 そして卓球をする方は自分の試合を撮影して後で見返すという習慣が浸透しています。
 これらの課題感と習慣があることから撮影した動画を見ながら試合で使用した技術(フォアハンド・バックハンドなど)の得失点数をカウントしていくことでそれぞれの得点率が集計され、それに伴ったアドバイスがもらえるというサービスがあれば課題感の解決につながるのではないかと考えました。
 卓球の競技者が自身のプレーを客観視できて練習内容の効率化を図ることで成長スピードを促進させることができるサービスにしていきたいです。
+
+# 想定されるユーザー層
+老若男女問わず卓球が趣味で定期的に大会に参加に参加される方。
+自分の大会でのプレーを撮影して反省点を探す方。
 
 # 機能紹介
 ✅GIF画像とコメント挿入
@@ -44,22 +52,53 @@ Password : password
     【使用頻度が低い技術や未使用技術の導入方法】
 
 # 技術構成について
-✅使用技術を表形式にする
 ### 使用技術
-* 開発環境: Docker
-* サーバーサイド Ruby: 3.2.2, Rails: 7.1.2
-* ユーザ登録及び認証機能: Sorcery
-* マルチ検索・オートコンプリート機能: Stimulus Autocomplete（Rails7）
-* フロントエンド: Javascript(importmap-railsによるモジュール管理)
-* CSSフレームワーク: bootstrap: 5.3.2(cssbundling-railsによる統合)
-* WebAPI:
-  - OpenAI API
-* インフラ:
-  - Webアプリケーションサーバ: heroku
-  - データベースサーバ: PostgreSQL
-* その他:
-  - VCS: GitHub
-  - CI/CD: GitHubActions
+<table style="border-collapse: collapse; width: 100%; font-size: 15px;">
+  <thead>
+    <tr style="background-color: #1B5E20; color: #FFFFFF;">
+      <th style="border: 2px solid #00B0FF; padding: 10px; text-align: center; width: 180px;">カテゴリ</th>
+      <th style="border: 2px solid #00B0FF; padding: 10px; text-align: left;">技術内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">開発環境</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Docker</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">サーバーサイド</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Ruby 3.2.2 / Rails 7.1.2</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">認証機能</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Sorcery</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">検索・オートコンプリート</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Stimulus Autocomplete（Rails7）</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">フロントエンド</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">JavaScript（importmap-rails）</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">CSSフレームワーク</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Bootstrap 5.3.2（cssbundling-rails）</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">Web API</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">OpenAI API</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">インフラ</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Heroku（Webサーバ） / PostgreSQL（DBサーバ）</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">その他</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">GitHub（VCS） / GitHub Actions（CI/CD）</td>
+    </tr>
+  </tbody>
+</table>
 
 ### ER図
 <a href="https://gyazo.com/53df8ed3a5e6d25a28a7e855f9dee774"><img src="https://i.gyazo.com/53df8ed3a5e6d25a28a7e855f9dee774.png" alt="Image from Gyazo" width="590"/></a>

@@ -6,9 +6,13 @@
 - [サービス開発の背景](#サービス開発の背景)
 - [想定されるユーザー層](#想定されるユーザー層)
 - [機能紹介](#機能紹介)
-  - [技術別の分析とアドバイス機能について](#技術別の分析とアドバイス機能について)
+  - [試合分析機能](#試合分析機能)
+  - [分析データの編集・削除機能](#分析データの編集削除機能)
+  - [ユーザー機能](#%E2%80%8D%EF%B8%8Fユーザー機能)
+  - [分析データ検索機能](#分析データ検索機能)
 - [技術構成について](#技術構成について)
   - [使用技術](#使用技術)
+  - [OpenAI APIのプロンプトについて](#openai-apiのプロンプトについて)
   - [ER図](#er図)
   - [画面遷移図](#画面遷移図)
 
@@ -38,19 +42,122 @@ Password : password
 老若男女問わず卓球が趣味で定期的に大会に参加に参加される方。<br>
 自分の大会でのプレーを撮影して反省点を探す方。
 
-# 機能紹介
-✅GIF画像とコメント挿入
+# 💻機能紹介
+## 📝試合分析機能
+<table>
+<thead>
+<tr>
+<th align="center">分析データ入力</th>
+<th align="center">分析結果・詳細</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/new.gif"
+            alt="作成フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/show.gif"
+            alt="詳細フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">日程/大会名/選手名/対戦相手名/メモ/得点技術/失点技術を試合動画を見ながら記録していく。</p></td>
+<td align="center"><p align="left" dir="auto">記録したデータを元に「技術の得点率ランキング表」と「技術に対するアドバイス」が生成されます。</p></td>
+</tr>
+</tbody>
+</table>
 
-## 技術別の分析とアドバイス機能について
-技術別の得点数と失点数を集計後に下記のプロンプトでOpenAI APIに分析リクエスト。<br>
-以下は卓球の1試合で使用した技術ごとの得点数と失点数データです。このデータを基に、次の項目について日本語で簡潔にアドバイスを作成してください。<br>
-なお、フォアプッシュはフォアツッツキ、バックプッシュはバックツッツキと表示してください。<br>
-  - 【得点が多く失点が少ない技術の活用方法】
-  - 【得点が多いが失点も多い技術の改善方法】
-  - 【得点が少なく失点が多い技術の改善方法】
-  - 【使用頻度が低い技術や未使用技術の導入方法】
+## 📑分析データの編集・削除機能
+<table>
+<thead>
+<tr>
+<th align="center">分析データの編集</th>
+<th align="center">分析データの削除</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/edit.gif"
+            alt="編集フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/delete.gif"
+            alt="削除フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">分析データを編集して得点率ランキングやアドバイスを再生成することができます。</p></td>
+<td align="center"><p align="left" dir="auto">不要な分析データを削除することができます。</p></td>
+</tr>
+</tbody>
+</table>
 
-# 技術構成について
+
+## 👨ユーザー機能
+<table>
+<thead>
+<tr>
+<th align="center">会員登録</th>
+<th align="center">ログイン</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/signup.gif"
+            alt="会員登録フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/login.gif"
+            alt="ログインフローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">名前・メールアドレス・パスワード・パスワード確認を入力し会員登録をします。ご高齢の方も使用してくださっていてパスワードの入力ミスが発生してしまっていたのでパスワード表示切替ボタンを設置しました。</p></td>
+<td align="center"><p align="left" dir="auto">登録したメールアドレスとパスワードでログインします。「ログイン状態を保持する」にチェックを入れることでログイン状態が1ヶ月間継続します。</p></td>
+</tr>
+</tbody>
+</table>
+
+## 🔍分析データ検索機能
+<table>
+<thead>
+<tr>
+<th align="center">分析データ検索(サジェストなし)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/search.gif"
+            alt="検索フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">大会名・選手名・対戦相手名を組み合わせて過去の分析データを検索できます。</p></td>
+</tr>
+</tbody>
+</table>
+
+
+# 🧑‍💻技術構成について
 ## 使用技術
 <table style="border-collapse: collapse; width: 100%; font-size: 15px;">
   <thead>
@@ -98,6 +205,15 @@ Password : password
     </tr>
   </tbody>
 </table>
+
+## OpenAI APIのプロンプトについて
+技術別の得点数と失点数を集計後に下記のプロンプトでOpenAI APIに分析リクエスト。<br>
+以下は卓球の1試合で使用した技術ごとの得点数と失点数データです。このデータを基に、次の項目について日本語で簡潔にアドバイスを作成してください。<br>
+なお、フォアプッシュはフォアツッツキ、バックプッシュはバックツッツキと表示してください。<br>
+  - 【得点が多く失点が少ない技術の活用方法】
+  - 【得点が多いが失点も多い技術の改善方法】
+  - 【得点が少なく失点が多い技術の改善方法】
+  - 【使用頻度が低い技術や未使用技術の導入方法】
 
 ## ER図
 <a href="https://gyazo.com/53df8ed3a5e6d25a28a7e855f9dee774"><img src="https://i.gyazo.com/53df8ed3a5e6d25a28a7e855f9dee774.png" alt="Image from Gyazo" width="590"/></a>

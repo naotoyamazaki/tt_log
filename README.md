@@ -21,7 +21,8 @@
 <br>
 
 # サービス概要
-T.T.LOGは卓球の試合映像を見ながらラリーの最後にどの技術(フォアハンド・バックハンドなど)で得点したか、または失点したかをカウントしていくことでそれぞれの得点率が自動集計され、生成AIからそのデータに伴ったアドバイスがもらえる卓球専門の試合分析サービスです。
+**「AIが卓球の試合を分析し、プレー改善のヒントをくれる分析サービス」**<br>
+T.T.LOGは、卓球の試合映像を見ながらラリーの結果を入力するだけで、得点率が自動集計され、生成AIから改善アドバイスがもらえる卓球専門の分析ツールです。
 
 【サービスURL】<br>
 https://www.ttlog.jp<br><br>
@@ -40,14 +41,15 @@ Password : password
 私は小学生から現在に至るまでアマチュア選手として卓球を続けてきており、現在は一般の方に卓球を指導する仕事をしています。<br>
 その経験の中で卓球をする方は「自分のプレーを客観視できておらず、必要のない練習をしてしまう」ことや「自分のプレーを見返してみてもどこが課題なのかわからない」などの課題感があります。<br>
 そして卓球をする方は自分の試合を撮影して後で見返すという習慣が浸透しています。<br>
+<br>
 これらの課題感と習慣があることから撮影した動画を見ながら試合で使用した技術(フォアハンド・バックハンドなど)の得失点数をカウントしていくことでそれぞれの得点率が集計され、それに伴ったアドバイスがもらえるというサービスがあれば課題感の解決につながるのではないかと考えました。<br>
 卓球の競技者が自身のプレーを客観視できて練習内容の効率化を図ることで成長スピードを促進させることができるサービスにしていきたいです。
 
 <br>
 
 # 想定されるユーザー層
-老若男女問わず卓球が趣味で定期的に大会に参加に参加される方。<br>
-自分の大会でのプレーを撮影して反省点を探す方。
+- 老若男女問わず卓球が趣味で定期的に大会に参加に参加される方
+- 自分の大会でのプレーを撮影して反省点を探す方
 
 <br>
 
@@ -191,24 +193,26 @@ Password : password
       <td style="border: 1px solid #00B0FF; padding: 8px;">Ruby 3.2.2 / Rails 7.1.2</td>
     </tr>
     <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">非同期処理</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">ActiveJob + Sidekiq</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">認証機能</td>
       <td style="border: 1px solid #00B0FF; padding: 8px;">Sorcery</td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">検索・オートコンプリート</td>
-      <td style="border: 1px solid #00B0FF; padding: 8px;">Stimulus Autocomplete（Rails7）</td>
     </tr>
     <tr style="background-color: #F5F5F5;">
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">フロントエンド</td>
       <td style="border: 1px solid #00B0FF; padding: 8px;">JavaScript（importmap-rails）</td>
     </tr>
-    <tr>
+    <tr style="background-color: #F5F5F5;">
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">CSSフレームワーク</td>
-      <td style="border: 1px solid #00B0FF; padding: 8px;">Bootstrap 5.3.2（cssbundling-rails）</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">
+        Bootstrap 5.3.2（cssbundling-rails）
+      </td>
     </tr>
     <tr style="background-color: #F5F5F5;">
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">Web API</td>
-      <td style="border: 1px solid #00B0FF; padding: 8px;">OpenAI API</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">OpenAI API(モデル：gpt-4)</td>
     </tr>
     <tr>
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">インフラ</td>
@@ -240,6 +244,7 @@ Password : password
 <br>
 
 ## 画面遷移図
+以下のリンクからFigma上で画面遷移図を閲覧できます。<br>
 https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427-798&mode=design&t=rC1St5srpN7nLmEV-0
 
 <br>

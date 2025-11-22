@@ -1,107 +1,272 @@
-# [T.T.LOG]
+# プロジェクト名：[T.T.LOG]
+<img src="app/assets/images/line_thumbnail.jpg" alt="T.T.LOG サムネイル" width="600">
 
-## サービス概要
-T.T.LOGは卓球の試合映像を見ながら場面別(サーブ・レシーブ)や技術別(ドライブ・ツッツキ・ブロックなど)の項目をスピンボックスにてカウントしていくことでそれぞれの得点率が集計され、それに伴ったアドバイスがもらえる卓球専門の試合分析サービスです。
+<br>
 
-## 想定されるユーザー層
-老若男女問わず卓球が趣味でよく大会に参加に参加される方。
-自分のプレーを撮影して見返す方。
+# 目次
+- [サービス概要](#サービス概要)
+- [サービス開発の背景](#サービス開発の背景)
+- [想定されるユーザー層](#想定されるユーザー層)
+- [機能紹介](#機能紹介)
+  - [試合分析機能](#試合分析機能)
+  - [分析データの編集・削除機能](#分析データの編集削除機能)
+  - [ユーザー機能](#ユーザー機能)
+  - [分析データ検索機能](#分析データ検索機能)
+- [今後実装予定の機能](#今後実装予定の機能)
+- [技術構成について](#技術構成について)
+  - [使用技術](#使用技術)
+  - [OpenAI APIのプロンプトについて](#openai-apiのプロンプトについて)
+  - [ER図](#er図)
+  - [画面遷移図](#画面遷移図)
+ 
+<br>
 
-## サービスコンセプト
-私は小学生から現在に至るまでアマチュア選手として卓球を続けてきており、現在は一般の方に卓球を指導する仕事をしています。
-その経験の中で卓球をする方は「自分のプレーを客観視できておらず、必要のない練習をしてしまう」または「自分は何を練習したらいいのかわからない」などの課題感があります。
-そして卓球をする方は自分の試合を撮影して後で見返すという習慣が浸透しています。
-これらの課題感と習慣があることから撮影した動画を見ながら場面別(サーブ・レシーブ)や技術別(ドライブ・ツッツキ・ブロックなど)の項目をスピンボックスにてカウントしていくことでそれぞれの得点率が集計され、それに伴ったアドバイスがもらえるというサービスがあれば課題感の解決につながるのではないかと考えました。
+# サービス概要
+**「AIが卓球の試合を分析し、プレー改善のヒントをくれる分析サービス」**<br>
+T.T.LOGは、卓球の試合映像を見ながらラリーの結果を入力するだけで、得点率が自動集計され、生成AIから改善アドバイスがもらえる卓球専門の分析ツールです。
+
+【サービスURL】<br>
+https://www.ttlog.jp<br><br>
+
+【ゲストユーザーアカウント情報】<br>
+・ゲストユーザー1<br>
+Email : ttlog.app+1@gmail.com<br>
+Password : password<br><br>
+・ゲストユーザー2<br>
+Email : ttlog.app+2@gmail.com<br>
+Password : password
+
+<br>
+
+# サービス開発の背景
+私は小学生から現在に至るまでアマチュア選手として卓球を続けてきており、現在は一般の方に卓球を指導する仕事をしています。<br>
+その経験の中で卓球をする方は「自分のプレーを客観視できておらず、必要のない練習をしてしまう」ことや「自分のプレーを見返してみてもどこが課題なのかわからない」などの課題感があります。<br>
+そして卓球をする方は自分の試合を撮影して後で見返すという習慣が浸透しています。<br>
+<br>
+これらの課題感と習慣があることから撮影した動画を見ながら試合で使用した技術(フォアハンド・バックハンドなど)の得失点数をカウントしていくことでそれぞれの得点率が集計され、それに伴ったアドバイスがもらえるというサービスがあれば課題感の解決につながるのではないかと考えました。<br>
 卓球の競技者が自身のプレーを客観視できて練習内容の効率化を図ることで成長スピードを促進させることができるサービスにしていきたいです。
 
-## 実装を予定している機能
-### MVP
-* 会員登録
-* ログイン
-* 試合分析結果一覧
-* 場面別での得点率の分析フォーマット
-* 場面別分析結果詳細
-* 試合ごとのマルチ検索・オートコンプリート機能
+<br>
 
-### その後の機能
-* 技術別の得点率分析フォーマット
-* OpenAI APIによる分析アドバイス
-* 1ゲームごとの分析フォーマット
-* 練習メニュー提案
-* パスワードリセット
-* ログインの保持
-* デモログイン
-* X(旧Twitter)での共有機能
-* マイページ更新
+# 想定されるユーザー層
+- 老若男女問わず卓球が趣味で定期的に大会に参加に参加される方
+- 自分の大会でのプレーを撮影して反省点を探す方
+- 生徒の課題を分析したい指導者の方
 
-### 分析用データ
-* 場面別
-  * サーブ
-  * レシーブ
+<br>
 
-* 技術別
-  * フォアドライブ
-  * バックドライブ
-  * フォアツッツキ
-  * バックツッツキ
-  * フォアストップ
-  * バックストップ
-  * フォアフリック
-  * バックフリック
-  * チキータ
-  * フォアブロック
-  * バックブロック
-  * フォアカウンター
-  * バックカウンター
+# 💻機能紹介
+## 📝試合分析機能
+<table>
+<thead>
+<tr>
+<th align="center">分析データ入力</th>
+<th align="center">分析結果・詳細</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/new.gif"
+            alt="作成フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/show.gif"
+            alt="詳細フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">日程/大会名/選手名/対戦相手名/メモ/得点技術/失点技術を試合動画を見ながら記録していく。</p></td>
+<td align="center"><p align="left" dir="auto">記録したデータを元に「技術の得点率ランキング表」と「技術に対するアドバイス」が生成されます。</p></td>
+</tr>
+</tbody>
+</table>
 
-* ゲーム別
-  * 1ゲーム目
-  * 2ゲーム目
-  * 3ゲーム目
-  * 4ゲーム目
-  * 5ゲーム目
-  * 6ゲーム目
-  * 7ゲーム目
+<br>
 
-## 機能の実装方針予定
-### 場面別の分析とアドバイス機能について
-  * サーブからの得点率が60％以上、レシーブからの得点率が40％以上の場合
-　  →「サーブとレシーブどちらも安定しています。引き続きどちらもバランスよく練習していきましょう！」と表示。
-  * サーブからの得点率が60％以上、レシーブからの得点率が40％以下の場合
-　  →「サーブからの得点率が高いですね。ただレシーブからの得点率が少し低いのでレシーブからの展開を多めに練習していきましょう！」と表示。
-  * サーブからの得点率が60％以下、レシーブからの得点率が40％以上の場合
-　  →「レシーブからの得点率が高いですね。ただサーブからの得点率が少し低いのでサーブからの展開を多めに練習していきましょう！」と表示。
-  * サーブからの得点率が60％以下、レシーブからの得点率が40％以下の場合
-　  →「サーブからもレシーブからもあまり得点できていませんね。相手がかなり格上だったのかもしれません。気を取り直して引き続き練習頑張っていきましょう！」と表示。
+## 📑分析データの編集・削除機能
+<table>
+<thead>
+<tr>
+<th align="center">分析データの編集</th>
+<th align="center">分析データの削除</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/edit.gif"
+            alt="編集フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/delete.gif"
+            alt="削除フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">分析データを編集して得点率ランキングやアドバイスを再生成することができます。</p></td>
+<td align="center"><p align="left" dir="auto">不要な分析データを削除することができます。</p></td>
+</tr>
+</tbody>
+</table>
 
-### 技術別の分析とアドバイス機能について
-  * 技術別の得点数と失点数を集計後に下記のプロンプトでOpenAI APIに分析リクエスト
-　  以下は卓球の1試合で使用した技術ごとの得点数と失点数データです。このデータを基に、次の項目について日本語で簡潔にアドバイスを作成してください。
-    なお、フォアプッシュはフォアツッツキ、バックプッシュはバックツッツキと表示してください。
-    【得点が多く失点が少ない技術の活用方法】
-    【得点が多いが失点も多い技術の改善方法】
-    【得点が少なく失点が多い技術の改善方法】
-    【使用頻度が低い技術や未使用技術の導入方法】
+<br>
 
-### 使用技術
-* 開発環境: Docker
-* サーバーサイド Ruby: 3.2.2, Rails: 7.1.2
-* ユーザ登録及び認証機能: Sorcery
-* マルチ検索・オートコンプリート機能: Stimulus Autocomplete（Rails7）
-* フロントエンド: Javascript(importmap-railsによるモジュール管理)
-* CSSフレームワーク: bootstrap: 5.3.2(cssbundling-railsによる統合)
-* WebAPI: 
-  - OpenAI API
-  - TwitterAPI
-* インフラ:
-  - Webアプリケーションサーバ: heroku
-  - データベースサーバ: PostgreSQL
-* その他:
-  - VCS: GitHub
-  - CI/CD: GitHubActions
+## 👨ユーザー機能
+<table>
+<thead>
+<tr>
+<th align="center">会員登録</th>
+<th align="center">ログイン</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/signup.gif"
+            alt="会員登録フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/login.gif"
+            alt="ログインフローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">名前・メールアドレス・パスワード・パスワード確認を入力し会員登録をします。ご高齢の方も使用してくださっていてパスワードの入力ミスが発生してしまっていたのでパスワード表示切替ボタンを設置しました。</p></td>
+<td align="center"><p align="left" dir="auto">登録したメールアドレスとパスワードでログインします。「ログイン状態を保持する」にチェックを入れることでログイン状態が1ヶ月間継続します。</p></td>
+</tr>
+</tbody>
+</table>
 
-## 画面遷移図
-https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427-798&mode=design&t=rC1St5srpN7nLmEV-0
+<br>
+
+## 🔍分析データ検索機能
+<table>
+<thead>
+<tr>
+<th align="center">分析データ検索(サジェストなし)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
+            src="./app/assets/images/search.gif"
+            alt="検索フローのGIF"
+            width="320"
+            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
+          ></a></td>
+</tr>
+<tr>
+<td align="center"><p align="left" dir="auto">大会名・選手名・対戦相手名を組み合わせて過去の分析データを検索できます。</p></td>
+</tr>
+</tbody>
+</table>
+
+<br>
+
+# 🔮今後実装予定の機能
+ユーザーの皆さまからのご意見・ご要望をもとに、以下の機能を今後のアップデートで実装していく予定です。<br>
+（内容は開発状況に応じて変更される場合があります）
+
+## 📊 分析機能の拡張（実装予定）
+- 技術ごとの得点数・失点数を分析結果に表示
+- 技術ごとの詳細分析項目を追加
+
+## 🔍 検索性の向上（実装予定）
+- 分析データ検索のオートコンプリート機能
+
+## 🏓 新規分析モード（検討中）
+- サーブレシーブに特化した分析機能
+- 分析中に現在の得点・ゲーム数がわかる得点板表示
+
+## 🎥 メディア対応（検討中）
+- 試合動画のアップロード・再生機能
+
+<br>
+
+# 🔧技術構成について
+## 使用技術
+<table style="border-collapse: collapse; width: 100%; font-size: 15px;">
+  <thead>
+    <tr style="background-color: #1B5E20; color: #FFFFFF;">
+      <th style="border: 2px solid #00B0FF; padding: 10px; text-align: center; width: 180px;">カテゴリ</th>
+      <th style="border: 2px solid #00B0FF; padding: 10px; text-align: left;">技術内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">開発環境</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Docker</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">サーバーサイド</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Ruby 3.2.2 / Rails 7.1.2</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">非同期処理</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">ActiveJob + Sidekiq</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">認証機能</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Sorcery</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">フロントエンド</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">JavaScript（importmap-rails）</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">CSSフレームワーク</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">
+        Bootstrap 5.3.2（cssbundling-rails）
+      </td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">Web API</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">OpenAI API(モデル：gpt-4)</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">インフラ</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">Heroku（Webサーバ） / PostgreSQL（DBサーバ）</td>
+    </tr>
+    <tr style="background-color: #F5F5F5;">
+      <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">その他</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">GitHub（VCS） / GitHub Actions（CI/CD）</td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+## OpenAI APIのプロンプトについて
+技術別の得点数と失点数を集計後に下記のプロンプトでOpenAI APIに分析リクエスト。<br>
+以下は卓球の1試合で使用した技術ごとの得点数と失点数データです。このデータを基に、次の項目について日本語で簡潔にアドバイスを作成してください。<br>
+なお、フォアプッシュはフォアツッツキ、バックプッシュはバックツッツキと表示してください。<br>
+  - 【得点が多く失点が少ない技術の活用方法】
+  - 【得点が多いが失点も多い技術の改善方法】
+  - 【得点が少なく失点が多い技術の改善方法】
+  - 【使用頻度が低い技術や未使用技術の導入方法】
+
+<br>
 
 ## ER図
 <a href="https://gyazo.com/53df8ed3a5e6d25a28a7e855f9dee774"><img src="https://i.gyazo.com/53df8ed3a5e6d25a28a7e855f9dee774.png" alt="Image from Gyazo" width="590"/></a>
+
+<br>
+
+## 画面遷移図
+以下のリンクからFigma上で画面遷移図を閲覧できます。<br>
+https://www.figma.com/file/MJdJwaQDsET1HkfhQ1KO25/RUNTEQ%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=design&node-id=427-798&mode=design&t=rC1St5srpN7nLmEV-0
+
+<br>

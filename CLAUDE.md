@@ -85,3 +85,7 @@ rails db:schema:load
 - `/login`, `/logout` → セッション管理
 - `/password_resets` → パスワードリセットフロー
 - `/sidekiq` → 管理画面（Basic認証付き）
+
+## プルリクエスト
+
+PRを作成する際は `.github/PULL_REQUEST_TEMPLATE.md` のテンプレートを使用すること。

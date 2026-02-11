@@ -65,8 +65,27 @@ class MatchInfosController < ApplicationController
   end
 
   def autocomplete
-    @match_infos = MatchInfo.search(params[:term])
-    render json: @match_infos.map(&:name)
+    query = "%#{params[:q]}%"
+    candidates = case params[:field]
+                 when "match_name"
+                   current_user.match_infos
+                     .where("match_name ILIKE ?", query)
+                     .distinct.pluck(:match_name)
+                 when "player_name"
+                   Player.joins(:match_infos_as_player)
+                     .where(match_infos: { user_id: current_user.id })
+                     .where("players.player_name ILIKE ?", query)
+                     .distinct.pluck(:player_name)
+                 when "opponent_name"
+                   Player.joins(:match_infos_as_opponent)
+                     .where(match_infos: { user_id: current_user.id })
+                     .where("players.player_name ILIKE ?", query)
+                     .distinct.pluck(:player_name)
+                 else
+                   []
+                 end
+
+    render partial: "match_infos/autocomplete_results", locals: { candidates: candidates.first(10) }
   end
 
   def advice_status

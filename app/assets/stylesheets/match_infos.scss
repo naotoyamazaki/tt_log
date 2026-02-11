@@ -99,6 +99,37 @@ body {
   padding: 5px 10px; // アイコンの間隔調整（必要なら）
 }
 
+/* オートコンプリート */
+[data-controller="autocomplete"] {
+  position: relative;
+
+  .autocomplete-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-top: 2px;
+    padding: 0;
+
+    li[role="option"] {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      list-style: none;
+
+      &:hover, &.active {
+        background-color: #0d6efd;
+        color: white;
+      }
+    }
+  }
+}
+
 /* 分析作成・編集ページ  new/edit/ */
 .form-container {
   width: 35%; /* 好みの幅に設定 */

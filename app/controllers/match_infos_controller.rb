@@ -65,26 +65,7 @@ class MatchInfosController < ApplicationController
   end
 
   def autocomplete
-    query = "%#{params[:q]}%"
-    candidates = case params[:field]
-                 when "match_name"
-                   current_user.match_infos
-                     .where("match_name ILIKE ?", query)
-                     .distinct.pluck(:match_name)
-                 when "player_name"
-                   Player.joins(:match_infos_as_player)
-                     .where(match_infos: { user_id: current_user.id })
-                     .where("players.player_name ILIKE ?", query)
-                     .distinct.pluck(:player_name)
-                 when "opponent_name"
-                   Player.joins(:match_infos_as_opponent)
-                     .where(match_infos: { user_id: current_user.id })
-                     .where("players.player_name ILIKE ?", query)
-                     .distinct.pluck(:player_name)
-                 else
-                   []
-                 end
-
+    candidates = autocomplete_candidates(params[:field], params[:q])
     render partial: "match_infos/autocomplete_results", locals: { candidates: candidates.first(10) }
   end
 
@@ -94,6 +75,27 @@ class MatchInfosController < ApplicationController
   end
 
   private
+
+  def autocomplete_candidates(field, term)
+    query = "%#{term}%"
+    case field
+    when "match_name"
+      current_user.match_infos.where("match_name ILIKE ?", query).distinct.pluck(:match_name)
+    when "player_name"
+      autocomplete_players(:match_infos_as_player, query)
+    when "opponent_name"
+      autocomplete_players(:match_infos_as_opponent, query)
+    else
+      []
+    end
+  end
+
+  def autocomplete_players(association, query)
+    Player.joins(association)
+      .where(match_infos: { user_id: current_user.id })
+      .where("players.player_name ILIKE ?", query)
+      .distinct.pluck(:player_name)
+  end
 
   def set_match_info_scores
     @match_info = MatchInfo.find(params[:id])

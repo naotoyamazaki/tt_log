@@ -11,7 +11,7 @@ Rails.application.configure do
 
   config.public_file_server.enabled = true
 
-  config.assets.compile = false
+  config.assets.compile = true
 
   config.active_storage.service = :local
 

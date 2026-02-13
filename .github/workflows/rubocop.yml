@@ -20,7 +20,7 @@ jobs:
       - name: 💎 Ruby 環境をセットアップ
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.2
+          ruby-version: 3.2.10
           bundler-cache: true
 
       - name: 📦 必要な gem をインストール

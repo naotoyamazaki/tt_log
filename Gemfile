@@ -1,11 +1,11 @@
 source "https://rubygems.org"
 
-ruby "3.2.2"
+ruby "3.2.10"
 
 gem 'rails', '7.1.2'
 gem "sprockets-rails"
 gem "pg", "~> 1.1"
-gem "puma", ">= 5.0"
+gem "puma", "~> 7.0"
 gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"

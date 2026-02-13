@@ -246,7 +246,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
-    puma (6.4.2)
+    puma (7.2.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.7)
@@ -430,6 +430,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-22
+  x86_64-darwin-24
   x86_64-linux
 
 DEPENDENCIES
@@ -450,7 +451,7 @@ DEPENDENCIES
   pagy
   pg (~> 1.1)
   pry-byebug
-  puma (>= 5.0)
+  puma (~> 7.0)
   rails (= 7.1.2)
   rails-i18n (~> 7.0)
   ransack
@@ -473,7 +474,7 @@ DEPENDENCIES
   webdrivers
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.2.10p266
 
 BUNDLED WITH
    2.4.10

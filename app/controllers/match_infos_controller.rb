@@ -12,8 +12,9 @@ class MatchInfosController < ApplicationController
     if @match_info.advice.present?
       @advice = @match_info.advice
     else
-      AdviceGenerationJob.perform_later(@match_info.id)
-      @advice = t('notices.advice_generating')
+      advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json)
+      @match_info.update_column(:advice, advice)
+      @advice = advice
     end
   end
 
@@ -67,11 +68,6 @@ class MatchInfosController < ApplicationController
   def autocomplete
     candidates = autocomplete_candidates(params[:field], params[:q])
     render partial: "match_infos/autocomplete_results", locals: { candidates: candidates.first(10) }
-  end
-
-  def advice_status
-    match_info = current_user.match_infos.find(params[:id])
-    render json: { advice: match_info.advice }
   end
 
   private
@@ -140,7 +136,8 @@ class MatchInfosController < ApplicationController
     return unless batting_score_changed?(original_data)
 
     @match_info.update(advice: nil)
-    AdviceGenerationJob.perform_later(@match_info.id)
+    advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json)
+    @match_info.update_column(:advice, advice)
   end
 
   def batting_score_changed?(original_data)

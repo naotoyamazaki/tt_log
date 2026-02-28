@@ -13,9 +13,6 @@ Rails.application.routes.draw do
 
   resources :match_infos do
     get :autocomplete, on: :collection
-    member do
-      get :advice_status
-    end
   end
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?

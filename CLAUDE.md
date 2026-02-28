@@ -86,6 +86,10 @@ rails db:schema:load
 - `/password_resets` → パスワードリセットフロー
 - `/sidekiq` → 管理画面（Basic認証付き）
 
+## 開発ワークフロー
+
+- プランに基づいた実装の際は、必ず新たなブランチを切ってから作業を開始すること
+
 ## プルリクエスト
 
 PRを作成する際は `.github/PULL_REQUEST_TEMPLATE.md` のテンプレートを使用すること。

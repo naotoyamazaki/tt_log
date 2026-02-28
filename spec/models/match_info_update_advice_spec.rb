@@ -2,8 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe "MatchInfos#update", type: :request do
-  include ActiveJob::TestHelper
-
   let(:user) { create(:user) }
   let(:match_info) do
     create(
@@ -17,8 +15,6 @@ RSpec.describe "MatchInfos#update", type: :request do
   let!(:serve_score) { create(:score, match_info: match_info, batting_style: :serve, score: 1, lost_score: 1) }
 
   before do
-    ActiveJob::Base.queue_adapter = :test
-
     post login_path, params: { email: user.email, password: 'password' }
     follow_redirect! if response.redirect?
   end
@@ -32,47 +28,49 @@ RSpec.describe "MatchInfos#update", type: :request do
     }
   end
 
-  it "打撃スコアが変わったら advice を nil にし、ジョブをenqueueする" do
-    expect do
-      patch match_info_path(match_info), params: {
-        match_info: valid_base_params.merge(
-          scores_attributes: {
-            "0" => {
-              id: serve_score.id,
-              batting_style: "serve",
-              score: 3,
-              lost_score: 1,
-              _destroy: "false"
-            }
+  it "打撃スコアが変わったら advice を nil にし、ChatgptService を呼び出して新しいアドバイスを保存する" do
+    allow(ChatgptService).to receive(:get_advice).and_return("新しいアドバイス")
+
+    patch match_info_path(match_info), params: {
+      match_info: valid_base_params.merge(
+        scores_attributes: {
+          "0" => {
+            id: serve_score.id,
+            batting_style: "serve",
+            score: 3,
+            lost_score: 1,
+            _destroy: "false"
           }
-        )
-      }
-    end.to have_enqueued_job(AdviceGenerationJob)
+        }
+      )
+    }
 
     expect(response).to have_http_status(:found).or have_http_status(:see_other)
     match_info.reload
-    expect(match_info.advice).to be_nil
+    expect(match_info.advice).to eq("新しいアドバイス")
+    expect(ChatgptService).to have_received(:get_advice)
   end
 
-  it "打撃スコアが変わらなければ advice を維持し、ジョブをenqueueしない" do
-    expect do
-      patch match_info_path(match_info), params: {
-        match_info: valid_base_params.merge(
-          scores_attributes: {
-            "0" => {
-              id: serve_score.id,
-              batting_style: "serve",
-              score: 1,
-              lost_score: 1,
-              _destroy: "false"
-            }
+  it "打撃スコアが変わらなければ advice を維持し、ChatgptService を呼び出さない" do
+    allow(ChatgptService).to receive(:get_advice)
+
+    patch match_info_path(match_info), params: {
+      match_info: valid_base_params.merge(
+        scores_attributes: {
+          "0" => {
+            id: serve_score.id,
+            batting_style: "serve",
+            score: 1,
+            lost_score: 1,
+            _destroy: "false"
           }
-        )
-      }
-    end.not_to have_enqueued_job(AdviceGenerationJob)
+        }
+      )
+    }
 
     expect(response).to have_http_status(:found).or have_http_status(:see_other)
     match_info.reload
     expect(match_info.advice).to eq("old")
+    expect(ChatgptService).not_to have_received(:get_advice)
   end
 end

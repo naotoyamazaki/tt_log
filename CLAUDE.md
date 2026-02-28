@@ -71,7 +71,7 @@ rails db:schema:load
 ## 環境変数
 
 `.env` で管理（`.env.development` でローカル上書き）。主要なキー:
-- `OPENAI_API_KEY` - GPT-4 APIキー
+- `OPENAI_API_KEY` - OpenAI APIキー（gpt-4o-mini）
 - `DATABASE_URL` - 本番DB接続先
 - `REDIS_URL` - Sidekiq用Redis
 - `RAILS_MASTER_KEY`, `SECRET_KEY_BASE`

@@ -234,7 +234,7 @@ Password : password
     </tr>
     <tr style="background-color: #F5F5F5;">
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">Web API</td>
-      <td style="border: 1px solid #00B0FF; padding: 8px;">OpenAI API(モデル：gpt-4)</td>
+      <td style="border: 1px solid #00B0FF; padding: 8px;">OpenAI API(モデル：gpt-4o-mini)</td>
     </tr>
     <tr>
       <td style="border: 1px solid #00B0FF; padding: 8px; font-weight: bold;">インフラ</td>

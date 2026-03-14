@@ -3,9 +3,10 @@ ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
 ENV RAILS_ENV development
 ENV BUNDLE_PATH /usr/local/bundle
+ENV PATH /usr/local/bundle/bin:$PATH
 
 RUN apt-get update -qq \
-  && apt-get install -y curl gnupg build-essential libpq-dev libvips libvips-dev pkg-config postgresql-client \
+  && apt-get install -y curl gnupg build-essential libpq-dev libvips libvips-dev pkg-config postgresql-client libyaml-dev \
   && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get install -y nodejs \
   && npm install -g yarn

@@ -27,6 +27,7 @@ services:
     volumes:
       - .:/tt_log
       - bundle:/usr/local/bundle
+      - node_modules:/tt_log/node_modules
     ports:
       - "3000:3000"
     depends_on:
@@ -34,3 +35,4 @@ services:
       - redis
 volumes:
   bundle:
+  node_modules:

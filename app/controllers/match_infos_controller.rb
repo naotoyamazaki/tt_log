@@ -13,7 +13,7 @@ class MatchInfosController < ApplicationController
       @advice = @match_info.advice
     else
       advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json)
-      @match_info.update(advice: advice)
+      @match_info.update_advice(advice)
       @advice = advice
     end
   end
@@ -135,9 +135,9 @@ class MatchInfosController < ApplicationController
   def update_advice_if_needed(original_data)
     return unless batting_score_changed?(original_data)
 
-    @match_info.update(advice: nil)
+    @match_info.update_advice(nil)
     advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json)
-    @match_info.update(advice: advice)
+    @match_info.update_advice(advice)
   end
 
   def batting_score_changed?(original_data)

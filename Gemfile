@@ -15,7 +15,6 @@ gem "bootsnap", require: false
 gem 'sorcery', '~> 0.16.5'
 gem 'cssbundling-rails'
 gem 'ransack'
-gem 'twitter'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'net-imap'
 gem 'net-pop'

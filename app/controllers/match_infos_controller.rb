@@ -169,7 +169,7 @@ class MatchInfosController < ApplicationController
 
   def match_info_params
     params.require(:match_info).permit(
-      :match_date, :match_name, :memo, :post_to_x, scores_attributes: [
+      :match_date, :match_name, :memo, scores_attributes: [
         :id, :batting_style, :score, :lost_score, :_destroy
       ]
     )

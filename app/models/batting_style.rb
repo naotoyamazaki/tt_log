@@ -1,2 +1,0 @@
-class BattingStyle < ApplicationRecord
-end

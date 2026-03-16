@@ -17,14 +17,7 @@ class Score < ApplicationRecord
     batting_styles.keys - ['receive']
   end
 
-  # validate :score_or_lost_score_must_be_positive_for_serve_and_receive
-
   def self.human_enum_name(enum_name, key)
     I18n.t("activerecord.attributes.score.#{enum_name}.#{key}")
   end
-
-  # private
-  # def score_or_lost_score_must_be_positive_for_serve_and_receive
-  #   errors.add(:base, "サーブとレシーブそれぞれの得点数または失点数を1以上にしてください") if (serve? || receive?) && score <= 0 && lost_score <= 0
-  # end
 end

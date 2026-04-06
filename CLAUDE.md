@@ -89,6 +89,11 @@ rails db:schema:load
 ## 開発ワークフロー
 
 - プランに基づいた実装の際は、必ず新たなブランチを切ってから作業を開始すること
+- 実装後は必ず RSpec テストと RuboCop Lint チェックを両方実行し、すべてパスしていることを確認すること
+
+```bash
+bundle exec rspec && bundle exec rubocop --parallel
+```
 
 ## プルリクエスト
 

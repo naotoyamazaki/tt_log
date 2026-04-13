@@ -86,6 +86,10 @@ rails db:schema:load
 - `/password_resets` → パスワードリセットフロー
 - `/sidekiq` → 管理画面（Basic認証付き）
 
+## デザイン
+
+デザインに関する実装をする際は、プロジェクトルートの `DESIGN.md` を参照すること。
+
 ## 開発ワークフロー
 
 - プランに基づいた実装の際は、必ず新たなブランチを切ってから作業を開始すること
@@ -98,3 +102,61 @@ bundle exec rspec && bundle exec rubocop --parallel
 ## プルリクエスト
 
 PRを作成する際は `.github/PULL_REQUEST_TEMPLATE.md` のテンプレートを使用すること。
+
+## サブエージェント（Planner / Generator / Evaluator）
+
+このプロジェクトには3つのサブエージェントが定義されている（`.claude/agents/` 配下）。
+新機能の開発はこのワークフローに従うこと。
+
+### エージェント役割
+
+| エージェント | 役割 | 使うタイミング |
+|-------------|------|--------------|
+| **planner** | 短い説明を詳細な仕様書に展開する | 「〜を作りたい」という要望を受けたとき |
+| **generator** | 仕様書のスプリントを1つずつ実装する | planner が承認された仕様書を渡すとき |
+| **evaluator** | 実装をPlaywright MCPで検証し合否を出す | generator がスプリント完了を報告したとき |
+
+### 標準ワークフロー
+
+```
+ユーザーの要望
+    ↓
+[planner] 仕様書を生成 → plans/{name}.md に保存
+    ↓ ユーザー承認
+[generator] Sprint 1 を実装 → feature/sprint-1-xxx ブランチ
+    ↓ 自己評価チェックリストをパス
+[evaluator] 動作検証 → 合格 / 不合格レポート
+    ↓ 合格
+ユーザーに完了報告 → 次スプリントへ進む指示を待つ
+```
+
+不合格の場合は generator に差し戻し、同じバグを3回修正しても解決しない場合はユーザーに相談する。
+
+### 呼び出しルール
+
+- **planner より先に generator を呼ばない** — 仕様書なしで実装を開始しない
+- **generator より先に evaluator を呼ばない** — 実装完了報告を受けてから検証する
+- **スプリントは1つずつ** — generator は複数スプリントをまとめて実装しない
+- **ユーザー承認を挟む** — 各スプリント完了後、次スプリントへ進む前にユーザーの明示的な指示を待つ
+
+### 仕様書の保存場所
+
+- `plans/` ディレクトリに Markdown 形式で保存する
+- ファイル名は `{kebab-case-product-name}.md`（例: `user-ranking-feature.md`）
+- 仕様書はプロジェクト固有の内容を記載し、技術実装詳細（DBスキーマ等）は含めない
+
+### generator の実装ルール（このプロジェクト固有）
+
+generator がこのプロジェクトでコードを書く際は、以下を必ず守ること:
+
+- ブランチ名: `feature/sprint-{N}-{short-name}`
+- テスト: `bundle exec rspec` でパスすること
+- Lint: `bundle exec rubocop --parallel` でパスすること
+- RuboCop の最大行長は120文字、メソッド長は20行
+- デザイン変更を伴う場合は `DESIGN.md` を参照すること
+
+### evaluator の検証ルール（このプロジェクト固有）
+
+- アプリ起動確認: `curl -s -o /dev/null -w "%{http_code}" http://localhost:3000` が 200 を返すこと
+- RSpec・RuboCop のパスを合格条件に含める
+- 推測で合格にしない — 実際にブラウザ操作で確認した機能のみ合格とする

@@ -195,6 +195,119 @@ select {
   text-decoration: underline;
 }
 
+/* スコアボード */
+.scoreboard-container {
+  background: linear-gradient(135deg, #1B5E20, #4CAF50);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: white;
+}
+
+.scoreboard-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.scoreboard-player-name,
+.scoreboard-opponent-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.scoreboard-vs {
+  font-size: 1.1rem;
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+.scoreboard-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.scoreboard-section {
+  text-align: center;
+  flex: 1;
+}
+
+.scoreboard-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+}
+
+/* 左右の得点表示 */
+.scoreboard-left,
+.scoreboard-right {
+  flex: 1;
+}
+
+.scoreboard-score {
+  font-size: 6rem;
+  font-weight: bold;
+  line-height: 1;
+  margin-top: 0.5rem;
+}
+
+/* 中央のゲーム数エリア */
+.scoreboard-center {
+  flex: 2;
+  min-width: 200px;
+}
+
+.game-scores-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.game-wins-left,
+.game-wins-right {
+  font-size: 3.6rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.game-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 0 0 auto;
+}
+
+.game-score-placeholder {
+  font-size: 1.2rem;
+  opacity: 0.3;
+  padding: 0.125rem;
+  line-height: 1;
+}
+
+.game-history-row {
+  font-size: 1.2rem;
+  padding: 0.125rem;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1;
+}
+
+.game-history-row.player-win {
+  background-color: rgba(165, 214, 167, 0.3);
+  font-weight: bold;
+}
+
+.game-history-row.opponent-win {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* 分析詳細ページ show */
 .show-container {
   width: 35%;

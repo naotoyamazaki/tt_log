@@ -1,5 +1,5 @@
 <div class="form-container fade-in-up">
-  <%= form_with(model: match_info) do |form| %>
+  <%= form_with(model: match_info, data: { controller: "scoreboard" }) do |form| %>
 
     <%= render 'shared/error_messages', object: @match_info %>
 
@@ -18,12 +18,18 @@
     <div class="row mb-3">
       <div class="column">
         <%= form.label :player_name, "👤選手名", style: "display: block" %>
-        <%= form.text_field :player_name, class: "form-control rounded-pill shadow-sm", placeholder: "分析する選手名を入力" %>
+        <%= form.text_field :player_name,
+          class: "form-control rounded-pill shadow-sm",
+          placeholder: "分析する選手名を入力",
+          data: { scoreboard_target: "playerNameInput", action: "input->scoreboard#updateNames" } %>
       </div>
 
       <div class="column">
         <%= form.label :opponent_name, "👤対戦相手名", style: "display: block" %>
-        <%= form.text_field :opponent_name, class: "form-control rounded-pill shadow-sm", placeholder: "対戦相手の名前を入力" %>
+        <%= form.text_field :opponent_name,
+          class: "form-control rounded-pill shadow-sm",
+          placeholder: "対戦相手の名前を入力",
+          data: { scoreboard_target: "opponentNameInput", action: "input->scoreboard#updateNames" } %>
       </div>
     </div>
 
@@ -42,6 +48,8 @@
         例：分析する選手がフォアドライブで失点 → フォアドライブの失点数に1をプラスする。
       </div>
     </div>
+
+    <%= render 'match_infos/scoreboard' %>
 
     <% match_info.scores.each do |score| %>
       <%= form.fields_for :scores, score do |score_form| %>

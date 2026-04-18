@@ -39,6 +39,21 @@ class MatchInfo < ApplicationRecord
     prepare_batting_score_data(scores.where.not(batting_style: :receive))
   end
 
+  def game_by_game_score_data
+    return [] if games.none?
+
+    games.order(:game_number).map do |game|
+      game_scores = game.scores.where.not(batting_style: :receive)
+      techniques = prepare_batting_score_data(game_scores)
+      {
+        game_number: game.game_number,
+        score: "#{game.player_score}-#{game.opponent_score}",
+        result: game.player_score > game.opponent_score ? "勝ち" : "負け",
+        techniques: techniques
+      }
+    end
+  end
+
   def update_advice(advice)
     self.advice = advice
     save!(validate: false)

@@ -8,6 +8,41 @@ RSpec.describe '試合情報の投稿', type: :system do
     driven_by(:rack_test)
   end
 
+  describe 'ゲーム別スコア表示（F8/F9）' do
+    let(:match_info) { create(:match_info, user: user) }
+
+    before do
+      create(:game, match_info: match_info, game_number: 1, player_score: 11, opponent_score: 8)
+      create(:game, match_info: match_info, game_number: 2, player_score: 7, opponent_score: 11)
+      allow(ChatgptService).to receive(:get_advice).and_return("テストアドバイス")
+    end
+
+    it '詳細ページにゲーム別スコアが表示される' do
+      visit login_path
+      fill_in 'メールアドレス', with: user.email
+      fill_in 'パスワード', with: 'password'
+      click_button 'ログイン'
+
+      visit match_info_path(match_info)
+
+      expect(page).to have_content('ゲーム別スコア')
+      expect(page).to have_content('11-8')
+      expect(page).to have_content('7-11')
+    end
+
+    it '一覧ページのカードにゲームスコアが表示される' do
+      visit login_path
+      fill_in 'メールアドレス', with: user.email
+      fill_in 'パスワード', with: 'password'
+      click_button 'ログイン'
+
+      visit match_infos_path
+
+      expect(page).to have_content('11-8')
+      expect(page).to have_content('7-11')
+    end
+  end
+
   it 'ユーザーが試合情報を投稿し、詳細ページに表示される' do
     visit login_path
     fill_in 'メールアドレス', with: user.email

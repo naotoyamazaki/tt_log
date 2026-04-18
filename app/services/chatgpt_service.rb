@@ -1,9 +1,9 @@
 class ChatgptService
   API_URL = "https://api.openai.com/v1/chat/completions".freeze
 
-  def self.get_advice(batting_score_data)
+  def self.get_advice(batting_score_data, game_data = nil)
     api_key = ENV.fetch("OPENAI_API_KEY")
-    body = generate_request_body(batting_score_data)
+    body = generate_request_body(batting_score_data, game_data)
     headers = generate_headers(api_key)
 
     response = nil
@@ -16,10 +16,10 @@ class ChatgptService
   class << self
     private
 
-    def generate_request_body(batting_score_data)
+    def generate_request_body(batting_score_data, game_data = nil)
       messages = [
         { role: "system", content: "あなたは卓球コーチです。" },
-        { role: "user", content: generate_user_message(batting_score_data) }
+        { role: "user", content: generate_user_message(batting_score_data, game_data) }
       ]
 
       {
@@ -58,7 +58,9 @@ class ChatgptService
       handle_error(e, response)
     end
 
-    def generate_user_message(batting_score_data)
+    def generate_user_message(batting_score_data, game_data = nil)
+      game_section = build_game_section(game_data)
+
       <<~TEXT
         以下は卓球の1試合で使用した技術ごとの得点数と失点数データです。このデータを基に、次の項目について日本語で簡潔にアドバイスを作成してください。
         なお、フォアプッシュはフォアツッツキ、バックプッシュはバックツッツキと表示してください。
@@ -67,12 +69,24 @@ class ChatgptService
         【得点が多いが失点も多い技術の改善方法】
         【得点が少なく失点が多い技術の改善方法】
         【使用頻度が低い技術や未使用技術の導入方法】
+        #{game_section.present? ? '【ゲームごとの傾向と流れの分析】' : ''}
 
         データ:
         #{batting_score_data}
-
+        #{game_section}
         アドバイス:
       TEXT
+    end
+
+    def build_game_section(game_data)
+      return "" if game_data.blank?
+
+      lines = ["\nゲーム別データ:"]
+      game_data.each do |game|
+        lines << "第#{game[:game_number]}ゲーム（#{game[:score]}、#{game[:result]}）:"
+        game[:techniques].each { |t| lines << "  #{t}" }
+      end
+      lines.join("\n")
     end
 
     def handle_error(error, response = nil)

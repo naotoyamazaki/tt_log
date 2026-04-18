@@ -12,7 +12,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     if @match_info.advice.present?
       @advice = @match_info.advice
     else
-      advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json)
+      game_data = @match_info.game_by_game_score_data
+      advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json, game_data)
       @match_info.update_advice(advice)
       @advice = advice
     end
@@ -215,7 +216,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     return unless batting_score_changed?(original_data)
 
     @match_info.update_advice(nil)
-    advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json)
+    game_data = @match_info.game_by_game_score_data
+    advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json, game_data)
     @match_info.update_advice(advice)
   end
 

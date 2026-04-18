@@ -428,6 +428,104 @@ select {
   border: 1px solid #C62828;
 }
 
+/* ゲーム別スコアバッジ（show ページ） */
+.game-score-summary {
+  flex-wrap: wrap;
+}
+
+.game-score-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  min-width: 72px;
+  font-weight: bold;
+}
+
+.game-badge-won {
+  background-color: #E8F5E9;
+  border: 2px solid #4CAF50;
+  color: #1B5E20;
+}
+
+.game-badge-lost {
+  background-color: #FFEBEE;
+  border: 2px solid #E57373;
+  color: #B71C1C;
+}
+
+.game-badge-label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-bottom: 0.2rem;
+}
+
+.game-badge-score {
+  font-size: 1.1rem;
+}
+
+/* ゲーム別得点推移テーブル */
+.game-breakdown-card {
+  border: 1px solid #C8E6C9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.game-breakdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  font-weight: bold;
+}
+
+.game-breakdown-won {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+  border-bottom: 2px solid #4CAF50;
+}
+
+.game-breakdown-lost {
+  background-color: #FFEBEE;
+  color: #B71C1C;
+  border-bottom: 2px solid #E57373;
+}
+
+.game-breakdown-title {
+  font-size: 0.95rem;
+}
+
+.game-breakdown-score {
+  font-size: 1.1rem;
+}
+
+/* 試合一覧カード内のゲームスコアチップ */
+.game-scores-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.game-score-chip {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.chip-won {
+  background-color: rgba(165, 214, 167, 0.5);
+  color: #1B5E20;
+}
+
+.chip-lost {
+  background-color: rgba(239, 154, 154, 0.5);
+  color: #B71C1C;
+}
+
 /* 画面が小さい場合に縦並びに変更する */
 @media (max-width: 900px) {
   .row {

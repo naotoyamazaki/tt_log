@@ -21,6 +21,32 @@ RSpec.describe "MatchInfos", type: :request do
       get match_info_path(match_info)
       expect(response).to have_http_status(:ok)
     end
+
+    context "ゲームデータがある場合" do
+      let!(:game) { create(:game, match_info: match_info, game_number: 1, player_score: 11, opponent_score: 8) }
+
+      before do
+        allow(ChatgptService).to receive(:get_advice).and_return("テストアドバイス")
+      end
+
+      it "詳細ページにゲームスコアが含まれること" do
+        get match_info_path(match_info)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("11-8")
+      end
+
+      it "ゲーム別スコアセクションが表示されること" do
+        get match_info_path(match_info)
+        expect(response.body).to include("ゲーム別スコア")
+      end
+    end
+
+    context "ゲームデータがない場合" do
+      it "ゲーム別スコアセクションが表示されないこと" do
+        get match_info_path(match_info)
+        expect(response.body).not_to include("game-score-summary")
+      end
+    end
   end
 
   describe "GET /match_infos/new" do

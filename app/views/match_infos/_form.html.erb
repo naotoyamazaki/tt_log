@@ -1,17 +1,38 @@
+<% batting_style_names = {
+  'serve'        => 'サーブ',
+  'fore_drive'   => 'フォアドライブ',
+  'back_drive'   => 'バックドライブ',
+  'fore_push'    => 'フォアツッツキ',
+  'back_push'    => 'バックツッツキ',
+  'fore_stop'    => 'フォアストップ',
+  'back_stop'    => 'バックストップ',
+  'fore_flick'   => 'フォアフリック',
+  'back_flick'   => 'バックフリック',
+  'chiquita'     => 'チキータ',
+  'fore_block'   => 'フォアブロック',
+  'back_block'   => 'バックブロック',
+  'fore_counter' => 'フォアカウンター',
+  'back_counter' => 'バックカウンター'
+} %>
+
 <div class="form-container fade-in-up">
-  <%= form_with(model: match_info, data: { controller: "scoreboard" }) do |form| %>
+  <%= form_with(model: match_info, url: match_infos_path, method: :post,
+      data: { controller: "scoreboard" }) do |form| %>
+
+    <%= hidden_field_tag :draft_id, draft_id if draft_id.present? %>
 
     <%= render 'shared/error_messages', object: @match_info %>
 
     <div class="row mb-3">
       <div class="column">
         <%= form.label :match_date, "🗓️日付", style: "display: block" %>
-        <%= form.date_field :match_date , class: "form-control rounded-pill shadow-sm"%>
+        <%= form.date_field :match_date, class: "form-control rounded-pill shadow-sm" %>
       </div>
 
       <div class="column">
         <%= form.label :match_name, "🏆大会名", style: "display: block" %>
-        <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm", placeholder: "出場した大会名を入力" %>
+        <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm",
+            placeholder: "出場した大会名を入力" %>
       </div>
     </div>
 
@@ -19,23 +40,24 @@
       <div class="column">
         <%= form.label :player_name, "👤選手名", style: "display: block" %>
         <%= form.text_field :player_name,
-          class: "form-control rounded-pill shadow-sm",
-          placeholder: "分析する選手名を入力",
-          data: { scoreboard_target: "playerNameInput", action: "input->scoreboard#updateNames" } %>
+            class: "form-control rounded-pill shadow-sm",
+            placeholder: "分析する選手名を入力",
+            data: { scoreboard_target: "playerNameInput", action: "input->scoreboard#updateNames" } %>
       </div>
 
       <div class="column">
         <%= form.label :opponent_name, "👤対戦相手名", style: "display: block" %>
         <%= form.text_field :opponent_name,
-          class: "form-control rounded-pill shadow-sm",
-          placeholder: "対戦相手の名前を入力",
-          data: { scoreboard_target: "opponentNameInput", action: "input->scoreboard#updateNames" } %>
+            class: "form-control rounded-pill shadow-sm",
+            placeholder: "対戦相手の名前を入力",
+            data: { scoreboard_target: "opponentNameInput", action: "input->scoreboard#updateNames" } %>
       </div>
     </div>
 
     <div class="mb-4">
       <%= form.label :memo, "🗒️メモ", style: "display: block" %>
-      <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
+      <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm",
+          placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
     </div>
 
     <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
@@ -49,37 +71,52 @@
       </div>
     </div>
 
-    <%= render 'match_infos/scoreboard' %>
+    <%= render 'match_infos/scoreboard', saved_games: saved_games, max_games: max_games %>
 
-    <% match_info.scores.each do |score| %>
-      <%= form.fields_for :scores, score do |score_form| %>
-        <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
-          <%= score_form.select :batting_style, 
-            [
-              ['サーブ', 'serve'],
-              ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
-              ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
-              ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
-              ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
-              ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
-              ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
-              ['バックカウンター', 'back_counter']
-            ], {}, { class: "form-control medium-input" } %>
-
-          <% case score.batting_style %>
-          <% when "serve", "fore_drive", "back_drive",
-                "fore_push", "back_push", "fore_stop", "back_stop",
-                "fore_flick", "back_flick", "chiquita",
-                "fore_block", "back_block",
-                "fore_counter", "back_counter" %>
-            <%= render 'scores/score_fields', score_form: score_form, score: score %>
-          <% end %>
+    <% Score.allowed_batting_styles.each do |style| %>
+      <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+        <div class="mb-2 fw-bold"><%= batting_style_names[style] || style %></div>
+        <div class="row">
+          <div class="column">
+            <%= label_tag "game_scores[#{style}][score]", "得点数",
+                style: "color: #4169E1; font-weight: bold;" %>
+            <div class="number-input d-flex align-items-center">
+              <button type="button"
+                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
+                class="plus">+</button>
+              <%= number_field_tag "game_scores[#{style}][score]", 0,
+                  class: "form-control small-input", min: 0 %>
+              <button type="button"
+                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));"
+                class="minus">-</button>
+            </div>
+          </div>
+          <div class="column">
+            <%= label_tag "game_scores[#{style}][lost_score]", "失点数",
+                style: "color: #B22222; font-weight: bold;" %>
+            <div class="number-input d-flex align-items-center">
+              <button type="button"
+                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
+                class="plus">+</button>
+              <%= number_field_tag "game_scores[#{style}][lost_score]", 0,
+                  class: "form-control small-input", min: 0 %>
+              <button type="button"
+                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));"
+                class="minus">-</button>
+            </div>
+          </div>
         </div>
-      <% end %>
+      </div>
     <% end %>
 
     <div class="center-text">
-      <%= form.submit "🚀 試合を分析する", class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
+      <% if current_game_number <= max_games %>
+        <%= form.submit "#{current_game_number}ゲーム目終了",
+            formaction: end_game_match_infos_path,
+            class: "btn btn-secondary px-4 py-2 mt-4 me-2 rounded-pill shadow" %>
+      <% end %>
+      <%= form.submit "🚀 試合を分析する",
+          class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
     </div>
   <% end %>
 </div>

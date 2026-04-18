@@ -6,15 +6,19 @@ module ApplicationHelper
   end
 
   def calculate_batting_score_data(batting_scores)
-    batting_scores.map { |score| build_score_data(score) }
-      .sort_by { |entry| -entry[:rate] }
+    aggregated = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
+      build_aggregated_score_data(batting_style, scores)
+    end
+    aggregated.sort_by { |entry| -entry[:rate] }
   end
 
   private
 
-  def build_score_data(score)
-    total = score.score + score.lost_score
-    rate = total.positive? ? (score.score.to_f / total * 100).round : 0
-    { batting_style: score.batting_style, rate: rate, score: score.score, lost_score: score.lost_score }
+  def build_aggregated_score_data(batting_style, scores)
+    total_score = scores.sum(&:score)
+    total_lost = scores.sum(&:lost_score)
+    total = total_score + total_lost
+    rate = total.positive? ? (total_score.to_f / total * 100).round : 0
+    { batting_style: batting_style, rate: rate, score: total_score, lost_score: total_lost }
   end
 end

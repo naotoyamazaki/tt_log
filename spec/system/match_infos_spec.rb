@@ -22,11 +22,10 @@ RSpec.describe '試合情報の投稿', type: :system do
     fill_in '👤対戦相手名', with: '佐藤'
     fill_in '🗒️メモ', with: 'テストメモです'
 
-    all('select[name$="[batting_style]"]')[0].select 'サーブ'
+    # game_scores[serve][score] など固定の名前でフィールドが並んでいる
     all('input[name$="[score]"]')[0].fill_in with: 3
     all('input[name$="[lost_score]"]')[0].fill_in with: 1
 
-    all('select[name$="[batting_style]"]')[1].select 'フォアドライブ'
     all('input[name$="[score]"]')[1].fill_in with: 2
     all('input[name$="[lost_score]"]')[1].fill_in with: 1
 

@@ -38,57 +38,128 @@
       <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
     </div>
 
-    <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
-      <h3 class="text-center">分析フォームの使い方</h3>
-      <div>
-        試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
-        例：分析する選手がサービスエースで得点 → サーブの得点数に1をプラスする。<br>
-        例：分析する選手がサービスミスで失点 → サーブの失点数に1をプラスする。<br>
-        例：分析する選手がフォアドライブで得点 → フォアドライブの得点数に1をプラスする。<br>
-        例：分析する選手がフォアドライブで失点 → フォアドライブの失点数に1をプラスする。
-      </div>
-    </div>
+    <% games = match_info.games.order(:game_number) %>
 
-    <%= render 'match_infos/scoreboard' %>
+    <%= render 'match_infos/scoreboard',
+               saved_games: games,
+               max_games: match_info.match_format || 5 %>
 
-    <% batting_styles_order = [
-      'serve',
-      'fore_drive', 'back_drive',
-      'fore_push', 'back_push',
-      'fore_stop', 'back_stop',
-      'fore_flick', 'back_flick',
-      'chiquita',
-      'fore_block', 'back_block',
-      'fore_counter', 'back_counter'
+    <% batting_styles_order = %w[
+      serve
+      fore_drive back_drive
+      fore_push back_push
+      fore_stop back_stop
+      fore_flick back_flick
+      chiquita
+      fore_block back_block
+      fore_counter back_counter
     ] %>
 
-    <% sorted_scores = match_info.scores.sort_by { |score| batting_styles_order.index(score.batting_style) || 999 } %>
+    <% batting_style_options = [
+      ['サーブ', 'serve'],
+      ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
+      ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
+      ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
+      ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
+      ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
+      ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
+      ['バックカウンター', 'back_counter']
+    ] %>
 
-    <% sorted_scores.each do |score| %>
-      <%= form.fields_for :scores, score do |score_form| %>
-        <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
-          <%= score_form.select :batting_style,
-            [
-              ['サーブ', 'serve'],
-              ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
-              ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
-              ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
-              ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
-              ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
-              ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
-              ['バックカウンター', 'back_counter']
-            ], {}, { class: "form-control medium-input" } %>
+    <% if games.any? %>
 
-          <% case score.batting_style %>
-          <% when "serve", "fore_drive", "back_drive",
-                "fore_push", "back_push", "fore_stop", "back_stop",
-                "fore_flick", "back_flick", "chiquita",
-                "fore_block", "back_block",
-                "fore_counter", "back_counter" %>
-            <%= render 'scores/score_fields', score_form: score_form, score: score %>
-          <% end %>
+      <div class="analysis-header mb-3 p-3 rounded" style="background-color: #1A237E; color: #fff;">
+        <h3 class="text-center">ゲーム別得点編集</h3>
+        <div>
+          編集したいゲームのタブを選択して、各技術の得点・失点数を修正してください。
         </div>
+      </div>
+
+      <ul class="nav nav-tabs mb-3" id="gameEditTabs" role="tablist">
+        <% games.each_with_index do |game, idx| %>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link <%= idx == 0 ? 'active' : '' %>"
+                    id="game-tab-<%= game.id %>"
+                    data-bs-toggle="tab"
+                    data-bs-target="#game-panel-<%= game.id %>"
+                    data-player-score="<%= game.player_score.to_i %>"
+                    data-opponent-score="<%= game.opponent_score.to_i %>"
+                    data-game-idx="<%= idx %>"
+                    data-scoreboard-target="gameTab"
+                    type="button"
+                    role="tab"
+                    aria-controls="game-panel-<%= game.id %>"
+                    aria-selected="<%= idx == 0 ? 'true' : 'false' %>">
+              ゲーム<%= game.game_number %>
+              <span class="badge bg-secondary ms-1">
+                <%= game.player_score.to_i %>-<%= game.opponent_score.to_i %>
+              </span>
+            </button>
+          </li>
+        <% end %>
+      </ul>
+
+      <div class="tab-content" id="gameEditTabsContent">
+        <% games.each_with_index do |game, idx| %>
+          <div class="tab-pane fade <%= idx == 0 ? 'show active' : '' %>"
+               id="game-panel-<%= game.id %>"
+               role="tabpanel"
+               aria-labelledby="game-tab-<%= game.id %>">
+
+            <%= form.fields_for :games, game do |game_form| %>
+              <% sorted_game_scores = game.scores.sort_by { |s| batting_styles_order.index(s.batting_style) || 999 } %>
+              <% sorted_game_scores.each do |score| %>
+                <%= game_form.fields_for :scores, score do |score_form| %>
+                  <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+                    <%= score_form.select :batting_style,
+                        batting_style_options,
+                        {},
+                        { class: "form-control medium-input" } %>
+                    <%= render 'scores/score_fields', score_form: score_form, score: score %>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+
+          </div>
+        <% end %>
+      </div>
+
+    <% else %>
+
+      <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
+        <h3 class="text-center">分析フォームの使い方</h3>
+        <div>
+          試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
+          例：分析する選手がサービスエースで得点 → サーブの得点数に1をプラスする。<br>
+          例：分析する選手がサービスミスで失点 → サーブの失点数に1をプラスする。<br>
+          例：分析する選手がフォアドライブで得点 → フォアドライブの得点数に1をプラスする。<br>
+          例：分析する選手がフォアドライブで失点 → フォアドライブの失点数に1をプラスする。
+        </div>
+      </div>
+
+      <% sorted_scores = match_info.scores.sort_by { |score| batting_styles_order.index(score.batting_style) || 999 } %>
+
+      <% sorted_scores.each do |score| %>
+        <%= form.fields_for :scores, score do |score_form| %>
+          <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+            <%= score_form.select :batting_style,
+                batting_style_options,
+                {},
+                { class: "form-control medium-input" } %>
+
+            <% case score.batting_style %>
+            <% when "serve", "fore_drive", "back_drive",
+                  "fore_push", "back_push", "fore_stop", "back_stop",
+                  "fore_flick", "back_flick", "chiquita",
+                  "fore_block", "back_block",
+                  "fore_counter", "back_counter" %>
+              <%= render 'scores/score_fields', score_form: score_form, score: score %>
+            <% end %>
+          </div>
+        <% end %>
       <% end %>
+
     <% end %>
 
     <div class="center-text">

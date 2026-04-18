@@ -227,9 +227,9 @@ select {
 
 .scoreboard-display {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 .scoreboard-section {
@@ -250,7 +250,7 @@ select {
 }
 
 .scoreboard-score {
-  font-size: 6rem;
+  font-size: 3.5rem;
   font-weight: bold;
   line-height: 1;
   margin-top: 0.5rem;
@@ -289,6 +289,25 @@ select {
   opacity: 0.3;
   padding: 0.125rem;
   line-height: 1;
+}
+
+.game-score-result {
+  font-size: 1rem;
+  padding: 0.125rem 0.25rem;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1.3;
+  font-weight: bold;
+}
+
+.game-score-result.game-won {
+  background-color: rgba(165, 214, 167, 0.4);
+  color: #1B5E20;
+}
+
+.game-score-result.game-lost {
+  background-color: rgba(239, 154, 154, 0.4);
+  color: #B71C1C;
 }
 
 .game-history-row {

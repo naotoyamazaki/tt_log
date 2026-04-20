@@ -23,15 +23,20 @@
       <div class="game-scores-container">
         <div class="game-wins-left" data-scoreboard-target="playerWins"><%= player_wins %></div>
         <div class="game-history" data-scoreboard-target="gameHistory">
-          <% max_games.times do |i| %>
+          <% 7.times do |i| %>
             <% game = saved_games[i] %>
+            <% hidden = i >= max_games ? ' d-none' : '' %>
             <% if game %>
               <% ps = game.player_score.to_i; os = game.opponent_score.to_i %>
-              <div class="game-score-result <%= ps > os ? 'game-won' : 'game-lost' %>" data-game-idx="<%= i %>">
+              <div class="game-score-result <%= ps > os ? 'game-won' : 'game-lost' %><%= hidden %>"
+                   data-game-idx="<%= i %>"
+                   data-scoreboard-target="gameSlot">
                 <%= "#{ps}-#{os}" %>
               </div>
             <% else %>
-              <div class="game-score-placeholder" data-game-idx="<%= i %>">ー</div>
+              <div class="game-score-placeholder<%= hidden %>"
+                   data-game-idx="<%= i %>"
+                   data-scoreboard-target="gameSlot">ー</div>
             <% end %>
           <% end %>
         </div>

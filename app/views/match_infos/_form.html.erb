@@ -36,6 +36,18 @@
       </div>
     </div>
 
+    <% if @draft_id.nil? %>
+      <div class="row mb-3">
+        <div class="column">
+          <%= form.label :match_format, "🎮試合形式（ゲームマッチ数）", style: "display: block" %>
+          <%= form.select :match_format, [[3, 3], [5, 5], [7, 7]],
+              { selected: 5 },
+              class: "form-select",
+              data: { action: "change->scoreboard#changeFormat" } %>
+        </div>
+      </div>
+    <% end %>
+
     <div class="row mb-3">
       <div class="column">
         <%= form.label :player_name, "👤選手名", style: "display: block" %>
@@ -118,5 +130,22 @@
       <%= form.submit "🚀 試合を分析する",
           class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
     </div>
+
+    <% if @draft_id.present? && @saved_games.any? %>
+      <div class="center-text mt-3">
+        <%= button_to "↩ 前のゲームを取り消す",
+            undo_game_match_infos_path,
+            method: :delete,
+            params: { draft_id: @draft_id },
+            data: { turbo_confirm: "直前のゲームの入力を取り消しますか？" },
+            class: "btn btn-outline-warning" %>
+      </div>
+    <% end %>
+
+    <% if @draft_id.present? %>
+      <div class="center-text mt-2">
+        <%= link_to "途中で中断する", match_infos_path, class: "btn btn-outline-secondary" %>
+      </div>
+    <% end %>
   <% end %>
 </div>

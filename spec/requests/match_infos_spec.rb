@@ -143,6 +143,79 @@ RSpec.describe "MatchInfos", type: :request do
     end
   end
 
+  describe "DELETE /match_infos/undo_game" do
+    context "下書きに1ゲームある場合" do
+      let!(:draft) { create(:match_info, user: user, draft: true) }
+      let!(:game) { create(:game, match_info: draft, game_number: 1, player_score: 11, opponent_score: 8) }
+
+      it "ゲームが削除されてMatchInfoも削除され新規フォームへリダイレクトする" do
+        expect do
+          delete undo_game_match_infos_path, params: { draft_id: draft.id }
+        end.to change(Game, :count).by(-1).and change(MatchInfo, :count).by(-1)
+        expect(response).to redirect_to(new_match_info_path)
+      end
+    end
+
+    context "下書きに2ゲームある場合" do
+      let!(:draft) { create(:match_info, user: user, draft: true) }
+      let!(:game1) { create(:game, match_info: draft, game_number: 1, player_score: 11, opponent_score: 8) }
+      let!(:game2) { create(:game, match_info: draft, game_number: 2, player_score: 9, opponent_score: 11) }
+
+      it "最後のゲームのみ削除されて draft のフォームへリダイレクトする" do
+        expect do
+          delete undo_game_match_infos_path, params: { draft_id: draft.id }
+        end.to change(Game, :count).by(-1).and change(MatchInfo, :count).by(0)
+        expect(response).to redirect_to(new_match_info_path(draft_id: draft.id))
+        expect(draft.reload.games.count).to eq(1)
+      end
+    end
+
+    context "draft_id が存在しない場合" do
+      it "新規フォームへリダイレクトする" do
+        delete undo_game_match_infos_path, params: { draft_id: 999_999 }
+        expect(response).to redirect_to(new_match_info_path)
+      end
+    end
+  end
+
+  describe "POST /match_infos/end_game (draft フラグ)" do
+    let(:game_scores) do
+      {
+        "serve" => { "score" => "5", "lost_score" => "2" }
+      }
+    end
+    let(:match_info_params) do
+      attributes_for(:match_info).merge(player_name: "選手A", opponent_name: "選手B")
+    end
+
+    it "end_game 後に draft が true になること" do
+      post end_game_match_infos_path, params: {
+        match_info: match_info_params,
+        game_scores: game_scores
+      }
+      expect(MatchInfo.last.draft).to be true
+    end
+  end
+
+  describe "POST /match_infos (draft フラグ)" do
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(
+          player_name: "選手A",
+          opponent_name: "選手B"
+        ),
+        game_scores: {
+          "serve" => { "score" => "3", "lost_score" => "1" }
+        }
+      }
+    end
+
+    it "create 後に draft が false になること" do
+      post match_infos_path, params: params
+      expect(MatchInfo.last.draft).to be false
+    end
+  end
+
   describe "PATCH /match_infos/:id" do
     let(:match_info) { create(:match_info, user: user) }
 

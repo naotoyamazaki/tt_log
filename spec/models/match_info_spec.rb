@@ -39,4 +39,46 @@ RSpec.describe MatchInfo, type: :model do
       expect(match_info.errors[:opponent_name]).to include(I18n.t('errors.messages.blank'))
     end
   end
+
+  describe "#game_by_game_score_data" do
+    let(:match_info) { create(:match_info) }
+
+    context "ゲームデータがない場合" do
+      it "空配列を返すこと" do
+        expect(match_info.game_by_game_score_data).to eq([])
+      end
+    end
+
+    context "ゲームデータがある場合" do
+      let!(:game1) { create(:game, match_info: match_info, game_number: 1, player_score: 11, opponent_score: 8) }
+      let!(:game2) { create(:game, match_info: match_info, game_number: 2, player_score: 7, opponent_score: 11) }
+
+      before do
+        create(:score, match_info: match_info, game: game1, batting_style: :fore_drive, score: 5, lost_score: 2)
+        create(:score, match_info: match_info, game: game2, batting_style: :fore_drive, score: 2, lost_score: 4)
+      end
+
+      it "ゲーム番号順にデータを返すこと" do
+        data = match_info.game_by_game_score_data
+        expect(data.length).to eq(2)
+        expect(data[0][:game_number]).to eq(1)
+        expect(data[1][:game_number]).to eq(2)
+      end
+
+      it "スコアと勝敗結果を含むこと" do
+        data = match_info.game_by_game_score_data
+        expect(data[0][:score]).to eq("11-8")
+        expect(data[0][:result]).to eq("勝ち")
+        expect(data[1][:score]).to eq("7-11")
+        expect(data[1][:result]).to eq("負け")
+      end
+
+      it "技術別データを含むこと" do
+        data = match_info.game_by_game_score_data
+        expect(data[0][:techniques]).to be_an(Array)
+        expect(data[0][:techniques].first).to include("得点")
+        expect(data[0][:techniques].first).to include("失点")
+      end
+    end
+  end
 end

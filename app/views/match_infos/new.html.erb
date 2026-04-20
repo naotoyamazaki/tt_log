@@ -1,6 +1,11 @@
 <h1 class="center-text">📝 試合分析フォーム</h1>
 
-<%= render "form", match_info: @match_info %>
+<%= render "form",
+    match_info: @match_info,
+    draft_id: @draft_id,
+    current_game_number: @current_game_number || 1,
+    saved_games: @saved_games || [],
+    max_games: @max_games || 5 %>
 
 <br>
 

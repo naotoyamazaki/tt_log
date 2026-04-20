@@ -5,6 +5,7 @@ class MatchInfo < ApplicationRecord
   has_many :scores, dependent: :destroy
   accepts_nested_attributes_for :scores, update_only: true
   has_many :games, dependent: :destroy
+  accepts_nested_attributes_for :games
   attr_accessor :player_name, :opponent_name
 
   validates :match_date, presence: true
@@ -36,6 +37,29 @@ class MatchInfo < ApplicationRecord
 
   def batting_score_data
     prepare_batting_score_data(scores.where.not(batting_style: :receive))
+  end
+
+  def game_count_score
+    return nil if games.none?
+
+    player_wins = games.count { |g| g.player_score > g.opponent_score }
+    opponent_wins = games.count { |g| g.player_score < g.opponent_score }
+    "#{player_wins}-#{opponent_wins}"
+  end
+
+  def game_by_game_score_data
+    return [] if games.none?
+
+    games.order(:game_number).map do |game|
+      game_scores = game.scores.where.not(batting_style: :receive)
+      techniques = prepare_batting_score_data(game_scores)
+      {
+        game_number: game.game_number,
+        score: "#{game.player_score}-#{game.opponent_score}",
+        result: game.player_score > game.opponent_score ? "勝ち" : "負け",
+        techniques: techniques
+      }
+    end
   end
 
   def update_advice(advice)

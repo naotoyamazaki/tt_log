@@ -12,7 +12,10 @@ Rails.application.routes.draw do
   resources :password_resets, only: [:new, :create, :edit, :update]
 
   resources :match_infos do
-    get :autocomplete, on: :collection
+    collection do
+      get :autocomplete
+      post :end_game
+    end
   end
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?

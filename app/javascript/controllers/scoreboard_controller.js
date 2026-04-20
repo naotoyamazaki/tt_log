@@ -5,18 +5,34 @@ export default class extends Controller {
     "playerName", "opponentName",
     "playerPoints", "opponentPoints",
     "playerWins", "opponentWins",
-    "gameHistory",
+    "gameHistory", "gameTab",
     "playerNameInput", "opponentNameInput"
   ]
 
   connect() {
-    // すべてのnumber inputにイベントリスナーを追加
+    this.gameScores = {}
+    this.gameTabTargets.forEach(tab => {
+      const idx = tab.dataset.gameIdx
+      this.gameScores[idx] = {
+        player: parseInt(tab.dataset.playerScore) || 0,
+        opponent: parseInt(tab.dataset.opponentScore) || 0
+      }
+    })
+
     const numberInputs = this.element.querySelectorAll('input[type="number"]')
     numberInputs.forEach(input => {
       input.addEventListener('input', () => this.update())
     })
 
+    this.element.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+      tab.addEventListener('shown.bs.tab', (event) => this.onGameTabShown(event))
+    })
+
     this.update()
+  }
+
+  onGameTabShown(event) {
+    this.updateFromActivePanel()
   }
 
   updateNames() {
@@ -28,91 +44,78 @@ export default class extends Controller {
     }
   }
 
-  update() {
-    this.updateNames()
+  updateFromActivePanel() {
+    const activeTab = this.element.querySelector('[data-bs-toggle="tab"].active')
+    if (!activeTab) return false
 
-    // すべてのscoreとlost_scoreの値を合計
+    const panelSelector = activeTab.dataset.bsTarget
+    if (!panelSelector) return false
+
+    const panel = this.element.querySelector(panelSelector)
+    if (!panel) return false
+
     let playerTotal = 0
     let opponentTotal = 0
 
-    const scoreInputs = this.element.querySelectorAll('input[name*="[score]"]')
-    const lostScoreInputs = this.element.querySelectorAll('input[name*="[lost_score]"]')
-
-    scoreInputs.forEach(input => {
+    panel.querySelectorAll('input[name*="[score]"]').forEach(input => {
       playerTotal += parseInt(input.value) || 0
     })
-
-    lostScoreInputs.forEach(input => {
+    panel.querySelectorAll('input[name*="[lost_score]"]').forEach(input => {
       opponentTotal += parseInt(input.value) || 0
     })
 
-    // 得点数のみを更新（ゲーム数とゲームスコアは固定）
-    this.renderScoreboard(playerTotal, opponentTotal)
-  }
+    if (this.hasPlayerPointsTarget) this.playerPointsTarget.textContent = playerTotal
+    if (this.hasOpponentPointsTarget) this.opponentPointsTarget.textContent = opponentTotal
 
-  simulateGame(pRatio) {
-    let p = 0, o = 0
-    const target = 11
-    let currentError = 0
+    const badge = activeTab.querySelector('.badge')
+    if (badge) badge.textContent = `${playerTotal}-${opponentTotal}`
 
-    // Bresenhamアルゴリズムで点数を分配
-    let totalPoints = 0
-    const maxPoints = 200 // 安全のための上限
-
-    while (totalPoints < maxPoints) {
-      currentError += pRatio
-
-      if (currentError >= 0.5) {
-        p++
-        currentError -= 1
-      } else {
-        o++
-      }
-
-      totalPoints++
-
-      // デュース処理: 両者が10点以上で2点差がついたら終了
-      if (p >= target && p - o >= 2) break
-      if (o >= target && o - p >= 2) break
+    const gameIdx = activeTab.dataset.gameIdx
+    if (gameIdx !== undefined) {
+      this.gameScores[gameIdx] = { player: playerTotal, opponent: opponentTotal }
+      this.updateGameHistoryEntry(gameIdx, playerTotal, opponentTotal)
+      this.updateWins()
     }
 
-    return { p, o }
+    return true
   }
 
-  simulateMatch(playerTotal, opponentTotal, maxGames) {
-    const total = playerTotal + opponentTotal
-    if (total === 0) {
-      return { playerWins: 0, opponentWins: 0, games: [] }
-    }
+  updateGameHistoryEntry(gameIdx, playerTotal, opponentTotal) {
+    if (!this.hasGameHistoryTarget) return
+    const entry = this.gameHistoryTarget.querySelector(`[data-game-idx="${gameIdx}"]`)
+    if (!entry) return
 
-    const pRatio = playerTotal / total
-    const winsNeeded = Math.ceil(maxGames / 2)
+    entry.textContent = `${playerTotal}-${opponentTotal}`
+    entry.className = `game-score-result ${playerTotal > opponentTotal ? 'game-won' : 'game-lost'}`
+  }
 
+  updateWins() {
     let playerWins = 0
     let opponentWins = 0
-    const games = []
-
-    while (playerWins < winsNeeded && opponentWins < winsNeeded) {
-      const game = this.simulateGame(pRatio)
-      games.push(game)
-
-      if (game.p > game.o) {
-        playerWins++
-      } else {
-        opponentWins++
-      }
-    }
-
-    return { playerWins, opponentWins, games }
+    Object.values(this.gameScores).forEach(({ player, opponent }) => {
+      if (player > opponent) playerWins++
+      else if (opponent > player) opponentWins++
+    })
+    if (this.hasPlayerWinsTarget) this.playerWinsTarget.textContent = playerWins
+    if (this.hasOpponentWinsTarget) this.opponentWinsTarget.textContent = opponentWins
   }
 
-  renderScoreboard(playerTotal, opponentTotal) {
-    // 合計得点のみを表示（ゲーム数とゲームスコアは更新しない）
-    if (this.hasPlayerPointsTarget) {
-      this.playerPointsTarget.textContent = playerTotal
-    }
-    if (this.hasOpponentPointsTarget) {
-      this.opponentPointsTarget.textContent = opponentTotal
-    }
+  update() {
+    this.updateNames()
+
+    if (this.updateFromActivePanel()) return
+
+    let playerTotal = 0
+    let opponentTotal = 0
+
+    this.element.querySelectorAll('input[name*="[score]"]').forEach(input => {
+      playerTotal += parseInt(input.value) || 0
+    })
+    this.element.querySelectorAll('input[name*="[lost_score]"]').forEach(input => {
+      opponentTotal += parseInt(input.value) || 0
+    })
+
+    if (this.hasPlayerPointsTarget) this.playerPointsTarget.textContent = playerTotal
+    if (this.hasOpponentPointsTarget) this.opponentPointsTarget.textContent = opponentTotal
   }
 }

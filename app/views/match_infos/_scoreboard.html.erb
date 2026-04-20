@@ -1,3 +1,8 @@
+<% saved_games ||= [] %>
+<% max_games ||= 5 %>
+<% player_wins = saved_games.count { |g| g.player_score.to_i > g.opponent_score.to_i } %>
+<% opponent_wins = saved_games.count { |g| g.opponent_score.to_i > g.player_score.to_i } %>
+
 <div class="scoreboard-container">
   <div class="scoreboard-header">
     <div class="scoreboard-player-name" data-scoreboard-target="playerName">選手名</div>
@@ -16,15 +21,21 @@
     <div class="scoreboard-section scoreboard-center">
       <div class="scoreboard-label">ゲーム数</div>
       <div class="game-scores-container">
-        <div class="game-wins-left" data-scoreboard-target="playerWins">0</div>
+        <div class="game-wins-left" data-scoreboard-target="playerWins"><%= player_wins %></div>
         <div class="game-history" data-scoreboard-target="gameHistory">
-          <div class="game-score-placeholder">ー</div>
-          <div class="game-score-placeholder">ー</div>
-          <div class="game-score-placeholder">ー</div>
-          <div class="game-score-placeholder">ー</div>
-          <div class="game-score-placeholder">ー</div>
+          <% max_games.times do |i| %>
+            <% game = saved_games[i] %>
+            <% if game %>
+              <% ps = game.player_score.to_i; os = game.opponent_score.to_i %>
+              <div class="game-score-result <%= ps > os ? 'game-won' : 'game-lost' %>" data-game-idx="<%= i %>">
+                <%= "#{ps}-#{os}" %>
+              </div>
+            <% else %>
+              <div class="game-score-placeholder" data-game-idx="<%= i %>">ー</div>
+            <% end %>
+          <% end %>
         </div>
-        <div class="game-wins-right" data-scoreboard-target="opponentWins">0</div>
+        <div class="game-wins-right" data-scoreboard-target="opponentWins"><%= opponent_wins %></div>
       </div>
     </div>
 

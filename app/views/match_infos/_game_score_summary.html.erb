@@ -1,0 +1,9 @@
+<div class="game-score-summary d-flex flex-wrap gap-3">
+  <% match_info.games.order(:game_number).each do |game| %>
+    <% won = game.player_score > game.opponent_score %>
+    <div class="game-score-badge <%= won ? 'game-badge-won' : 'game-badge-lost' %>">
+      <span class="game-badge-label">第<%= game.game_number %>ゲーム</span>
+      <span class="game-badge-score"><%= game.player_score %>-<%= game.opponent_score %></span>
+    </div>
+  <% end %>
+</div>

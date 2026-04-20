@@ -49,7 +49,16 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @match_info.save! unless @match_info.persisted?
     @match_info.save! if @match_info.changed?
     create_game_with_scores(@match_info)
+    @match_info.update(draft: true)
     redirect_to new_match_info_path(draft_id: @match_info.id)
+  end
+
+  def undo_game
+    @match_info = current_user.match_infos.find_by(id: params[:draft_id])
+    return redirect_to new_match_info_path unless @match_info
+
+    delete_last_game(@match_info)
+    redirect_after_undo(@match_info)
   end
 
   def create # rubocop:disable Metrics/AbcSize
@@ -59,6 +68,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     respond_to do |format|
       if @match_info.save
         create_game_with_scores(@match_info)
+        @match_info.update(draft: false)
         format.html { redirect_to match_info_url(@match_info), notice: t('notices.match_info_created') }
         format.json { render :show, status: :created, location: @match_info }
       else
@@ -248,8 +258,22 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     redirect_to match_infos_path, alert: t('notices.match_info_not_found')
   end
 
+  def delete_last_game(match_info)
+    last_game = match_info.games.order(:game_number).last
+    last_game&.destroy
+  end
+
+  def redirect_after_undo(match_info)
+    if match_info.games.empty?
+      match_info.destroy
+      redirect_to new_match_info_path
+    else
+      redirect_to new_match_info_path(draft_id: match_info.id)
+    end
+  end
+
   def basic_match_info_params
-    params.require(:match_info).permit(:match_date, :match_name, :memo)
+    params.require(:match_info).permit(:match_date, :match_name, :memo, :match_format)
   end
 
   def game_score_params

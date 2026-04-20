@@ -6,7 +6,8 @@ export default class extends Controller {
     "playerPoints", "opponentPoints",
     "playerWins", "opponentWins",
     "gameHistory", "gameTab",
-    "playerNameInput", "opponentNameInput"
+    "playerNameInput", "opponentNameInput",
+    "gameSlot"
   ]
 
   connect() {
@@ -98,6 +99,13 @@ export default class extends Controller {
     })
     if (this.hasPlayerWinsTarget) this.playerWinsTarget.textContent = playerWins
     if (this.hasOpponentWinsTarget) this.opponentWinsTarget.textContent = opponentWins
+  }
+
+  changeFormat(event) {
+    const format = parseInt(event.target.value)
+    this.gameSlotTargets.forEach((slot, i) => {
+      slot.classList.toggle('d-none', i >= format)
+    })
   }
 
   update() {

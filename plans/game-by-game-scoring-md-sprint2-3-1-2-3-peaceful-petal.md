@@ -1,70 +1,144 @@
-# Sprint 2 修正プラン（追加）: スタイル調整
+# Sprint 3 実装プラン: 入力体験の向上
 
 ## Context
 
-Sprint 2 実装後の細かいUI調整。3点の修正が必要：
-1. 一覧画面のゲーム数バッジが小さく・暗色で見づらい
-2. 詳細画面のゲーム数バッジももう少し大きくしたい
-3. 分析フォームのスコアボードがスマホ表示で得点数が2行になり、2桁の数値がカード外にはみ出す
+Sprint 1・2でゲーム別得点記録・分析を実装済み。Sprint 3では入力体験を向上させる3機能を実装する。
+- **F11**: ゲーム入力の取り消し（Undo）
+- **F12**: 途中保存ボタン + 一覧でのドラフト表示（localStorage自動保存は次Sprint）
+- **F13**: 試合形式の選択（3/5/5/7ゲームマッチ）
 
-## 変更内容
+## ブランチ
 
-### 1. 一覧画面: `.game-count-chip` のサイズ・カラー変更
+`feature/sprint-3-input-ux`
 
-**ファイル:** `app/assets/stylesheets/match_infos.scss`
+---
 
-| プロパティ | 変更前 | 変更後 |
-|-----------|--------|--------|
-| `font-size` | `0.85rem` | `1rem` |
-| `color` | `#0D47A1`（濃紺） | `rgba(255,255,255,0.9)`（ホワイト系） |
-| `background-color` | `rgba(100,181,246,0.3)` | `rgba(255,255,255,0.15)`（半透明ホワイト、カードの暗背景に合わせる） |
+## F11: ゲーム入力の取り消し（Undo）
 
-### 2. 詳細ページ: `.game-count-badge` のサイズ変更（カラーはそのまま）
+直前に保存したゲームを削除し、前のゲーム番号の入力フォームに戻れる機能。
 
-**ファイル:** `app/assets/stylesheets/match_infos.scss`
+### 変更ファイル
 
-| プロパティ | 変更前 | 変更後 |
-|-----------|--------|--------|
-| `font-size` | `0.85rem` | `1rem` |
-
-### 3. スコアボード: スマホ表示時のサイズ調整
-
-**ファイル:** `app/assets/stylesheets/match_infos.scss`
-
-`@media (max-width: 768px)` ブロック内に以下を追加：
-
-```scss
-// 得点数（左右）を縮小して1行に収める
-.scoreboard-score {
-  font-size: 2.2rem;
-}
-
-// ゲーム数（左右の勝利数）を縮小
-.game-wins-left,
-.game-wins-right {
-  font-size: 2.4rem;
-}
-
-// 中央エリアの最小幅をリセット
-.scoreboard-center {
-  min-width: 0;
-}
-
-// コンテナのギャップを狭める
-.game-scores-container {
-  gap: 0.5rem;
-}
+**`config/routes.rb`**
+```ruby
+collection do
+  post :end_game
+  delete :undo_game  # 追加
+end
 ```
 
-## 変更ファイル
+**`app/controllers/match_infos_controller.rb`**
+- `undo_game` アクションを追加
+  - `params[:draft_id]` で MatchInfo を取得
+  - 最後のゲーム（`games.order(:game_number).last`）とその Scores を削除
+  - ゲームが0件になったら MatchInfo ごと削除して `new_match_info_path` へ
+  - ゲームが残る場合は `new_match_info_path(draft_id: @match_info.id)` へリダイレクト
+
+**`app/views/match_infos/_form.html.erb`**
+- `@draft_id.present? && @saved_games.any?` のときのみ表示するボタンを追加
+  ```erb
+  <%= button_to "↩ 前のゲームを取り消す",
+      undo_game_match_infos_path,
+      method: :delete,
+      params: { draft_id: @draft_id },
+      data: { turbo_confirm: "直前のゲームの入力を取り消しますか？" },
+      class: "btn btn-outline-warning" %>
+  ```
+
+---
+
+## F12: 途中保存 + ドラフト表示
+
+### DBマイグレーション
+
+`match_infos` テーブルに `draft` boolean カラムを追加：
+```ruby
+add_column :match_infos, :draft, :boolean, default: false, null: false
+```
+
+### 変更ファイル
+
+**`app/controllers/match_infos_controller.rb`**
+- `end_game`: MatchInfo 保存後に `match_info.update_columns(draft: true)` を呼ぶ
+- `create`: 保存後に `@match_info.update_columns(draft: false)` を呼ぶ（draft → 完了に変更）
+- `index`: ランサックのクエリは変えない（ドラフトも一覧に表示）
+
+**`app/views/match_infos/_form.html.erb`**
+- `@draft_id.present?` のときのみ「途中で中断する」リンクを表示
+  ```erb
+  <%= link_to "途中で中断する", match_infos_path, class: "btn btn-outline-secondary" %>
+  ```
+
+**`app/views/match_infos/_match_info_summary.html.erb`**
+- `match_info.draft?` のとき「下書き」バッジを表示
+- 「試合分析詳細」ボタンを「続きから入力」リンク（`new_match_info_path(draft_id: match_info.id)`）に差し替え
+- 通常の完了済み試合は変更なし
+
+---
+
+## F13: 試合形式の選択
+
+`match_format` カラムは既存（`default: 5`）。UIと連携のみ実装。
+
+### 変更ファイル
+
+**`app/views/match_infos/_form.html.erb`**
+- `@draft_id.nil?`（1ゲーム目のみ）のときに試合形式セレクターを表示
+  ```erb
+  <% if @draft_id.nil? %>
+    <%= f.select :match_format, [[3, 3], [5, 5], [7, 7]],
+        { selected: 5 },
+        class: "form-select",
+        data: { action: "change->scoreboard#changeFormat" } %>
+  <% end %>
+  ```
+
+**`app/controllers/match_infos_controller.rb`**
+- `basic_match_info_params` に `:match_format` を追加
+
+**`app/views/match_infos/_scoreboard.html.erb`**
+- `max_games` を 7 固定でレンダリングし、各スロットに `data-max-format` 属性を付与
+  ```erb
+  <div class="game-score-placeholder"
+       data-game-idx="<%= i %>"
+       data-scoreboard-target="gameSlot"
+       class="<%= i >= max_games ? 'd-none' : '' %>">ー</div>
+  ```
+
+**`app/javascript/controllers/scoreboard_controller.js`**
+- `static targets` に `gameSlot` を追加
+- `changeFormat(event)` アクションを追加
+  ```javascript
+  changeFormat(event) {
+    const format = parseInt(event.target.value)
+    this.gameSlotTargets.forEach((slot, i) => {
+      slot.classList.toggle('d-none', i >= format)
+    })
+  }
+  ```
+
+---
+
+## 変更ファイル一覧
 
 | ファイル | 変更内容 |
 |---------|---------|
-| `app/assets/stylesheets/match_infos.scss` | `.game-count-chip` サイズ・カラー変更、`.game-count-badge` サイズ変更、スコアボードのスマホ用メディアクエリ追加 |
+| `config/routes.rb` | `undo_game` ルート追加 |
+| `db/migrate/YYYYMMDD_add_draft_to_match_infos.rb` | `draft` カラム追加 |
+| `app/controllers/match_infos_controller.rb` | `undo_game` 追加、`draft` フラグ設定、`match_format` パラメータ追加 |
+| `app/views/match_infos/_form.html.erb` | Undo ボタン・中断リンク・形式セレクター追加 |
+| `app/views/match_infos/_match_info_summary.html.erb` | 下書きバッジ・「続きから」ボタン追加 |
+| `app/views/match_infos/_scoreboard.html.erb` | 7スロット固定 + `gameSlot` ターゲット追加 |
+| `app/javascript/controllers/scoreboard_controller.js` | `changeFormat` アクション追加 |
+| `spec/` | 各機能のテスト追加 |
+
+---
 
 ## 確認方法
 
-1. `bundle exec rubocop --parallel` でパスすること（SCSSは対象外だがRubyファイル無変更）
-2. 一覧画面のゲーム数バッジが白系カラーで少し大きく表示されること
-3. 詳細画面の「ゲーム別スコア」見出し横のバッジが少し大きく表示されること
-4. ブラウザの開発者ツールでスマホ幅（375px相当）にしたとき、スコアボードの得点数が1行・カード内に収まること（2桁でも）
+1. `bundle exec rails db:migrate` を実行
+2. `bundle exec rspec && bundle exec rubocop --parallel` がパスすること
+3. 試合形式で「3ゲーム」を選択するとスコアボードのスロットが3つになること
+4. 2ゲーム目以降のフォームで「↩ 前のゲームを取り消す」を押すと直前のゲームが削除され1つ前に戻ること
+5. 「途中で中断する」を押すと試合一覧に戻り、該当試合に「下書き」バッジが表示されること
+6. 「続きから入力」を押すと中断した続きから入力できること

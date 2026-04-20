@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     collection do
       get :autocomplete
       post :end_game
+      delete :undo_game
     end
   end
 

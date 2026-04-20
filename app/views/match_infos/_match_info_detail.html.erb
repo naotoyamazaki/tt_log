@@ -34,7 +34,7 @@
     <!-- ▼ ゲーム別スコア・得点推移セクション -->
     <% if match_info.games.any? %>
       <div class="section-card p-4 shadow-sm mb-4">
-        <h2 class="section-title mb-3">ゲーム別スコア</h2>
+        <h2 class="section-title mb-3">ゲーム別スコア <span class="game-count-badge ms-2"><%= match_info.game_count_score %></span></h2>
         <%= render partial: "game_score_summary", locals: { match_info: match_info } %>
       </div>
 

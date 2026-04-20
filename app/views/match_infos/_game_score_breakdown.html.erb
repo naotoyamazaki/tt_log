@@ -16,14 +16,19 @@
             <th>技術</th>
             <th>得点</th>
             <th>失点</th>
+            <th>得点率</th>
           </tr>
         </thead>
         <tbody>
           <% game_scores.each do |score| %>
+            <% next if score.score == 0 && score.lost_score == 0 %>
+            <% total = score.score + score.lost_score %>
+            <% rate = total > 0 ? (score.score.to_f / total * 100).round : 0 %>
             <tr>
               <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, score.batting_style)) %></td>
               <td><%= score.score %></td>
               <td><%= score.lost_score %></td>
+              <td><%= "#{rate}%" %></td>
             </tr>
           <% end %>
         </tbody>
@@ -36,14 +41,19 @@
           <th>技術</th>
           <th class="text-end">得点数</th>
           <th class="text-end">失点数</th>
+          <th class="text-end">得点率</th>
         </tr>
       </thead>
       <tbody>
         <% game_scores.each do |score| %>
+          <% next if score.score == 0 && score.lost_score == 0 %>
+          <% total = score.score + score.lost_score %>
+          <% rate = total > 0 ? (score.score.to_f / total * 100).round : 0 %>
           <tr>
             <td><%= Score.human_enum_name(:batting_style, score.batting_style) %></td>
             <td class="text-end"><%= score.score %></td>
             <td class="text-end"><%= score.lost_score %></td>
+            <td class="text-end"><%= "#{rate}%" %></td>
           </tr>
         <% end %>
       </tbody>

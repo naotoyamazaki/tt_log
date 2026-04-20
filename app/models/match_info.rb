@@ -39,6 +39,14 @@ class MatchInfo < ApplicationRecord
     prepare_batting_score_data(scores.where.not(batting_style: :receive))
   end
 
+  def game_count_score
+    return nil if games.none?
+
+    player_wins = games.count { |g| g.player_score > g.opponent_score }
+    opponent_wins = games.count { |g| g.player_score < g.opponent_score }
+    "#{player_wins}-#{opponent_wins}"
+  end
+
   def game_by_game_score_data
     return [] if games.none?
 

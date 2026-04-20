@@ -15,12 +15,8 @@
         日程:<%= match_info.match_date %>
       </p>
       <% if match_info.games.any? %>
-        <p class="card-text game-scores-inline mt-1">
-          <% match_info.games.order(:game_number).each do |game| %>
-            <span class="game-score-chip <%= game.player_score > game.opponent_score ? 'chip-won' : 'chip-lost' %>">
-              <%= game.player_score %>-<%= game.opponent_score %>
-            </span>
-          <% end %>
+        <p class="card-text mt-1">
+          <span class="game-count-chip"><%= match_info.game_count_score %></span>
         </p>
       <% end %>
       <%= link_to "試合分析詳細", match_info, class: "btn btn-info mt-2" %>

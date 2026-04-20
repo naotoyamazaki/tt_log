@@ -30,7 +30,7 @@ RSpec.describe '試合情報の投稿', type: :system do
       expect(page).to have_content('7-11')
     end
 
-    it '一覧ページのカードにゲームスコアが表示される' do
+    it '一覧ページのカードにゲーム数が表示される' do
       visit login_path
       fill_in 'メールアドレス', with: user.email
       fill_in 'パスワード', with: 'password'
@@ -38,8 +38,7 @@ RSpec.describe '試合情報の投稿', type: :system do
 
       visit match_infos_path
 
-      expect(page).to have_content('11-8')
-      expect(page).to have_content('7-11')
+      expect(page).to have_content('1-1')
     end
   end
 

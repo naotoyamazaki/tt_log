@@ -40,10 +40,6 @@
 
     <% games = match_info.games.order(:game_number) %>
 
-    <%= render 'match_infos/scoreboard',
-               saved_games: games,
-               max_games: match_info.match_format || 5 %>
-
     <% batting_styles_order = %w[
       serve
       fore_drive back_drive
@@ -74,6 +70,10 @@
           編集したいゲームのタブを選択して、各技術の得点・失点数を修正してください。
         </div>
       </div>
+
+      <%= render 'match_infos/scoreboard',
+                 saved_games: games,
+                 max_games: match_info.match_format || 5 %>
 
       <ul class="nav nav-tabs mb-3" id="gameEditTabs" role="tablist">
         <% games.each_with_index do |game, idx| %>

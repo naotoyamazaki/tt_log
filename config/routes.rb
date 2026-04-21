@@ -16,6 +16,8 @@ Rails.application.routes.draw do
       get :autocomplete
       post :end_game
       delete :undo_game
+      post :interrupt
+      post :restore_autosave
     end
   end
 

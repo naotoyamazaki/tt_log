@@ -49,7 +49,25 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @match_info.save! unless @match_info.persisted?
     @match_info.save! if @match_info.changed?
     create_game_with_scores(@match_info)
-    @match_info.update(draft: true)
+    @match_info.update!(draft: true, partial_game_data: nil)
+    redirect_to new_match_info_path(draft_id: @match_info.id)
+  end
+
+  def interrupt
+    player, opponent = find_or_create_players
+    @match_info = draft_or_new_match_info(player, opponent)
+    @match_info.assign_attributes(match_info_params)
+    @match_info.draft = true
+    @match_info.partial_game_data = game_score_params.to_h
+    @match_info.save!
+    redirect_to match_infos_path, notice: t('notices.match_info_interrupted')
+  end
+
+  def restore_autosave
+    player = Player.find_or_create_by(player_name: params[:player_name].to_s)
+    opponent = Player.find_or_create_by(player_name: params[:opponent_name].to_s)
+    @match_info = build_autosave_match_info(player, opponent)
+    @match_info.save!(validate: false)
     redirect_to new_match_info_path(draft_id: @match_info.id)
   end
 
@@ -113,6 +131,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @saved_games = []
     @current_game_number = 1
     @max_games = 5
+    @partial_scores = {}
   end
 
   def setup_draft_form(draft)
@@ -123,6 +142,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @saved_games = draft.games.order(:game_number)
     @current_game_number = @saved_games.count + 1
     @max_games = draft.match_format
+    @partial_scores = draft.partial_game_data || {}
   end
 
   def draft_or_new_match_info(player, opponent) # rubocop:disable Metrics/AbcSize
@@ -270,6 +290,20 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     else
       redirect_to new_match_info_path(draft_id: match_info.id)
     end
+  end
+
+  def build_autosave_match_info(player, opponent)
+    match_info = current_user.match_infos.new(
+      match_date: params[:match_date],
+      match_name: params[:match_name],
+      memo: params[:memo],
+      match_format: params[:match_format] || 5,
+      player: player,
+      opponent: opponent,
+      draft: true
+    )
+    match_info.partial_game_data = JSON.parse(params[:game_scores] || '{}')
+    match_info
   end
 
   def basic_match_info_params

@@ -59,7 +59,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @match_info.assign_attributes(match_info_params)
     @match_info.draft = true
     @match_info.partial_game_data = game_score_params.to_h
-    @match_info.save!
+    @match_info.save!(validate: false)
     redirect_to match_infos_path, notice: t('notices.match_info_interrupted')
   end
 
@@ -316,7 +316,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
   def match_info_params
     params.require(:match_info).permit(
-      :match_date, :match_name, :memo,
+      :match_date, :match_name, :memo, :match_format,
       scores_attributes: [:id, :batting_style, :score, :lost_score, :_destroy],
       games_attributes: [
         :id,

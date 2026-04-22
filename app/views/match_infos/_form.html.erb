@@ -139,9 +139,9 @@
 
     <% if @draft_id.present? && @saved_games.any? %>
       <div class="center-text mt-3">
-        <%= link_to "↩ 前のゲームを取り消す",
+        <%= link_to "↩ 前のゲームに戻る",
             undo_game_match_infos_path(draft_id: @draft_id),
-            data: { turbo_method: "delete", turbo_confirm: "直前のゲームの入力を取り消しますか？" },
+            data: { turbo_method: "delete" },
             class: "btn btn-outline-warning" %>
       </div>
     <% end %>

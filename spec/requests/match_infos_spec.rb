@@ -148,11 +148,11 @@ RSpec.describe "MatchInfos", type: :request do
       let!(:draft) { create(:match_info, user: user, draft: true) }
       let!(:game) { create(:game, match_info: draft, game_number: 1, player_score: 11, opponent_score: 8) }
 
-      it "ゲームが削除されてMatchInfoも削除され新規フォームへリダイレクトする" do
+      it "ゲームのみ削除されてMatchInfoは残り draft のフォームへリダイレクトする" do
         expect do
           delete undo_game_match_infos_path, params: { draft_id: draft.id }
-        end.to change(Game, :count).by(-1).and change(MatchInfo, :count).by(-1)
-        expect(response).to redirect_to(new_match_info_path)
+        end.to change(Game, :count).by(-1).and change(MatchInfo, :count).by(0)
+        expect(response).to redirect_to(new_match_info_path(draft_id: draft.id))
       end
     end
 

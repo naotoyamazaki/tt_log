@@ -75,8 +75,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @match_info = current_user.match_infos.find_by(id: params[:draft_id])
     return redirect_to new_match_info_path unless @match_info
 
-    delete_last_game(@match_info)
-    redirect_after_undo(@match_info)
+    restore_last_game_to_partial_data(@match_info)
+    redirect_to new_match_info_path(draft_id: @match_info.id)
   end
 
   def create # rubocop:disable Metrics/AbcSize
@@ -278,17 +278,22 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     redirect_to match_infos_path, alert: t('notices.match_info_not_found')
   end
 
-  def delete_last_game(match_info)
+  def restore_last_game_to_partial_data(match_info)
     last_game = match_info.games.order(:game_number).last
-    last_game&.destroy
+    return unless last_game
+
+    partial_data = reconstruct_partial_data(last_game)
+    last_game.destroy
+    match_info.partial_game_data = partial_data
+    match_info.save!(validate: false)
   end
 
-  def redirect_after_undo(match_info)
-    if match_info.games.empty?
-      match_info.destroy
-      redirect_to new_match_info_path
-    else
-      redirect_to new_match_info_path(draft_id: match_info.id)
+  def reconstruct_partial_data(game)
+    game.scores.each_with_object({}) do |score, hash|
+      hash[score.batting_style] = {
+        'score' => score.score,
+        'lost_score' => score.lost_score
+      }
     end
   end
 

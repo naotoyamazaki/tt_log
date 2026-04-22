@@ -2,6 +2,17 @@
 
 <%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success btn-center-below-h1" %>
 
+<div data-controller="auto-save" data-auto-save-page-value="index"
+     data-auto-save-restore-autosave-url-value="<%= restore_autosave_match_infos_path %>">
+  <div id="autosave-banner" class="alert alert-info d-flex align-items-center justify-content-between d-none mt-3">
+    <span>自動保存データがあります。続きから入力できます。</span>
+    <div class="d-flex gap-2 align-items-center">
+      <a href="#" id="autosave-restore-link" data-action="click->auto-save#restoreAutosave" class="btn btn-sm btn-primary">続きから入力</a>
+      <button id="autosave-dismiss" type="button" data-action="click->auto-save#dismissBanner" class="btn-close" aria-label="閉じる"></button>
+    </div>
+  </div>
+</div>
+
 <%= search_form_for @q, html: { class: "row justify-content-center align-items-center" } do |f| %>
   <div class="col-10 col-md-3 mb-2">
     <label class="visually-hidden" for="match_name">大会名</label>

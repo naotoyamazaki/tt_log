@@ -17,7 +17,8 @@
 
 <div class="form-container fade-in-up">
   <%= form_with(model: match_info, url: match_infos_path, method: :post,
-      data: { controller: "scoreboard" }) do |form| %>
+      data: { controller: "scoreboard auto-save",
+              auto_save_draft_id_value: draft_id.to_s }) do |form| %>
 
     <%= hidden_field_tag :draft_id, draft_id if draft_id.present? %>
 
@@ -96,8 +97,10 @@
               <button type="button"
                 onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
                 class="plus">+</button>
-              <%= number_field_tag "game_scores[#{style}][score]", 0,
-                  class: "form-control small-input", min: 0 %>
+              <%= number_field_tag "game_scores[#{style}][score]",
+                  @partial_scores&.dig(style.to_s, 'score') || 0,
+                  class: "form-control small-input", min: 0,
+                  data: { auto_save_target: "scoreField", auto_save_style_param: style, auto_save_kind_param: "score" } %>
               <button type="button"
                 onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));"
                 class="minus">-</button>
@@ -110,8 +113,10 @@
               <button type="button"
                 onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
                 class="plus">+</button>
-              <%= number_field_tag "game_scores[#{style}][lost_score]", 0,
-                  class: "form-control small-input", min: 0 %>
+              <%= number_field_tag "game_scores[#{style}][lost_score]",
+                  @partial_scores&.dig(style.to_s, 'lost_score') || 0,
+                  class: "form-control small-input", min: 0,
+                  data: { auto_save_target: "scoreField", auto_save_style_param: style, auto_save_kind_param: "lost_score" } %>
               <button type="button"
                 onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));"
                 class="minus">-</button>
@@ -128,22 +133,24 @@
             class: "btn btn-secondary px-4 py-2 mt-4 me-2 rounded-pill shadow" %>
       <% end %>
       <%= form.submit "🚀 試合を分析する",
-          class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
+          class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow",
+          data: { action: "click->auto-save#clearStorage" } %>
     </div>
 
     <% if @draft_id.present? && @saved_games.any? %>
       <div class="center-text mt-3">
-        <%= link_to "↩ 前のゲームを取り消す",
+        <%= link_to "↩ 前のゲームに戻る",
             undo_game_match_infos_path(draft_id: @draft_id),
-            data: { turbo_method: "delete", turbo_confirm: "直前のゲームの入力を取り消しますか？" },
+            data: { turbo_method: "delete" },
             class: "btn btn-outline-warning" %>
       </div>
     <% end %>
 
-    <% if @draft_id.present? %>
-      <div class="center-text mt-2">
-        <%= link_to "途中で中断する", match_infos_path, class: "btn btn-outline-secondary" %>
-      </div>
-    <% end %>
+    <div class="center-text mt-2">
+      <%= form.submit "途中で中断する",
+          formaction: interrupt_match_infos_path,
+          class: "btn btn-outline-secondary",
+          data: { action: "click->auto-save#clearStorage" } %>
+    </div>
   <% end %>
 </div>

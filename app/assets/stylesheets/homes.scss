@@ -136,6 +136,16 @@ section p {
   border-bottom-color: rgba(255, 255, 255, 0.5);
 }
 
+.start-section .btn-login {
+  color: white;
+  border-color: white;
+}
+
+.start-section .btn-login:hover {
+  background: white;
+  color: var(--tt-primary);
+}
+
 @media screen and (max-width: 768px) {
   .top-wrapper {
     height: 50vh;

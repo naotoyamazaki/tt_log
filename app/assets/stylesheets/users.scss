@@ -1,9 +1,7 @@
 .users-new,
 .users-create {
-  /* 会員登録フォームのコンテナ */
   .user-registration {
-    background-color: #4CAF50;
-    color: #FFFFFF;
+    background-color: var(--tt-bg-muted);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,66 +9,60 @@
     max-width: 100%;
   }
 
-  /* フォームのデザイン */
   .form-container {
     background: white;
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: var(--tt-radius);
+    box-shadow: var(--tt-shadow);
     max-width: 500px;
     width: 100%;
     margin: 0 20px;
     box-sizing: border-box;
   }
 
-  /* 見出しデザイン */
   .center-text {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--tt-text);
     font-weight: bold;
   }
 
   .form-group label {
-    color: #333;
+    color: var(--tt-text);
   }
 
-  /* 入力フィールド */
   .form-control {
-    border: 2px solid #ddd;
-    border-radius: 5px;
+    border: 1px solid var(--tt-border);
+    border-radius: var(--tt-radius);
     padding: 10px;
     font-size: 16px;
-    transition: all 0.3s ease-in-out;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  /* フォーカス時のエフェクト */
   .form-control:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    border-color: var(--tt-primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+    outline: none;
   }
 
-  /* フォームのボタン */
   .btn-blue-primary {
-    background: #1A237E;
+    background: var(--tt-primary);
     color: white;
     border: none;
     font-weight: bold;
     padding: 12px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+    border-radius: 6px;
+    transition: background 0.2s ease;
     width: 100%;
   }
 
   .btn-blue-primary:hover {
-    background: #00B0FF;
-    transform: scale(1.05);
+    background: var(--tt-primary-dark);
   }
 
-  /* ログインリンク */
   .center-link a {
-    color: #1A237E;
+    color: var(--tt-primary);
     font-weight: bold;
     text-decoration: none;
   }

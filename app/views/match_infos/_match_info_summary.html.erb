@@ -1,22 +1,28 @@
 <div class="col-lg-3 col-md-4 col-sm-6 my-3"> <!-- PCでは3列、スマホでは2列で表示 -->
 <a href="<%= match_info.draft? ? new_match_info_path(draft_id: match_info.id) : match_info_path(match_info) %>"
-   class="text-decoration-none text-white">
+   class="text-decoration-none">
   <div class="card fade-in-up">
     <div class="card-body">
       <h5 class="card-title">
         <i class="fas fa-user"></i>
-        選手名:<%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %>
+        <%= match_info.player.player_name %> VS <%= match_info.opponent.player_name %>
         <% if match_info.draft? %>
           <span class="badge bg-warning text-dark ms-1">下書き</span>
+        <% elsif match_info.games.any? %>
+          <% player_wins = match_info.games.count { |g| g.player_score > g.opponent_score } %>
+          <% opponent_wins = match_info.games.count { |g| g.player_score < g.opponent_score } %>
+          <span class="<%= player_wins > opponent_wins ? 'badge-win' : 'badge-lose' %> ms-1">
+            <%= player_wins > opponent_wins ? '勝利' : '敗北' %>
+          </span>
         <% end %>
       </h5>
       <p class="card-text">
         <i class="fas fa-trophy"></i>
-        大会名:<%= match_info.match_name %>
+        <%= match_info.match_name %>
       </p>
       <p class="card-text">
         <i class="fas fa-calendar-alt"></i>
-        日程:<%= match_info.match_date %>
+        <%= match_info.match_date %>
       </p>
       <% if match_info.games.any? %>
         <p class="card-text mt-1">

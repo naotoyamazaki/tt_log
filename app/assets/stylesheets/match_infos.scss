@@ -170,12 +170,50 @@ body {
 /* 分析作成・編集ページ  new/edit/ */
 .form-container {
   max-width: 640px;
-  margin: 0 auto 1rem;
+  margin: 0 auto;
   background-color: var(--tt-bg-muted);
   border: 1px solid var(--tt-border);
   padding: 2rem;
   border-radius: var(--tt-radius);
-  box-shadow: var(--tt-shadow-sm);
+  box-shadow: var(--tt-shadow);
+
+  label {
+    display: block;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--tt-primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+    outline: none;
+  }
+}
+
+/* 分析フォームのヘッダー */
+.analysis-header {
+  background-color: var(--tt-primary);
+  color: #fff;
+}
+
+/* 得点数・失点数ラベル */
+.score-label {
+  font-weight: bold;
+  color: var(--tt-text);
+}
+
+.score-label-win {
+  font-weight: bold;
+  color: var(--tt-primary);
+}
+
+.score-label-lose {
+  font-weight: bold;
+  color: #ef4444;
+}
+
+/* 技術カード */
+.batting-style-card {
+  border-left: 4px solid var(--tt-accent);
 }
 
 // 浮き上がるアニメーション
@@ -235,7 +273,7 @@ select {
 
 /* スコアボード */
 .scoreboard-container {
-  background: linear-gradient(135deg, var(--tt-primary-dark), var(--tt-primary));
+  background: var(--tt-primary);
   border-radius: var(--tt-radius);
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -340,7 +378,7 @@ select {
 
 .game-score-result.game-won {
   background-color: rgba(165, 214, 167, 0.4);
-  color: #1B5E20;
+  color: var(--tt-primary);
 }
 
 .game-score-result.game-lost {

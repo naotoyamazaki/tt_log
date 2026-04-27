@@ -13,7 +13,8 @@
   </div>
 </div>
 
-<%= search_form_for @q, html: { class: "row justify-content-center align-items-center" } do |f| %>
+<div class="search-form-wrapper">
+<%= search_form_for @q, html: { class: "row justify-content-center align-items-center g-2" } do |f| %>
   <div class="col-10 col-md-3 mb-2">
     <label class="visually-hidden" for="match_name">大会名</label>
     <div class="input-group" data-controller="autocomplete" data-autocomplete-url-value="<%= autocomplete_match_infos_path(field: 'match_name') %>" data-autocomplete-min-length-value="1">
@@ -47,6 +48,7 @@
     </button>
   </div>
 <% end %>
+</div>
 
 
 <% if @match_infos.empty? %>

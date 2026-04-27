@@ -1,6 +1,6 @@
 /* 分析一覧ページ  index*/
 body {
-  background-color: #F5F5F5; // 明るめの背景
+  background-color: var(--tt-bg-muted);
 }
 
 #match_infos {
@@ -11,92 +11,129 @@ body {
 
 /* 分析開始ボタン */
 .btn-success {
-  background: #4CAF50;
-  color: #F5F5F5;
+  background: var(--tt-primary);
+  color: #fff;
+  border: none;
 }
 
 .btn-success:hover {
-  background: #1B5E20;
-  color: #F5F5F5;
+  background: var(--tt-primary-dark);
+  color: #fff;
 }
 
 .btn-center-below-h1 {
-  display: block; // ブロック要素として表示
-  margin: 20px auto; // 上下のマージンを適宜設定し、自動で左右中央揃え
-  width: fit-content; // ボタンの内容に合わせて幅を自動調整
+  display: block;
+  margin: 20px auto;
+  width: fit-content;
 }
 
-/* indexカードのデザイン調整*/
+/* indexカードのデザイン調整 */
 .card {
-  background: linear-gradient(135deg, #4CAF50, #1B5E20);
+  background: var(--tt-bg);
+  border: 1px solid var(--tt-border);
   text-align: center;
   height: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: var(--tt-radius);
+  box-shadow: var(--tt-shadow-sm);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: var(--tt-text);
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: var(--tt-shadow);
   }
 
   .card-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--tt-border);
     padding-bottom: 10px;
+    color: var(--tt-text);
   }
 
   .card-text {
-    font-size: .875rem; /* 日付と対戦者情報のフォントサイズを少し小さく */
+    font-size: .875rem;
+    color: var(--tt-text-sub);
   }
 
   .card-text i {
-    margin-right: 8px; /* アイコンとテキストの間にスペースを追加 */
+    margin-right: 8px;
+  }
+
+  .badge-win {
+    display: inline-block;
+    background-color: var(--tt-primary-light);
+    color: var(--tt-primary);
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .badge-lose {
+    display: inline-block;
+    background-color: #fee2e2;
+    color: #ef4444;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
   }
 
   .btn-info {
-    background:#00B0FF;
-    color: #000; /* ボタンのテキスト色を暗色に */
-    border-radius: .25rem; /* 角の丸みを調整 */
+    background: var(--tt-accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--tt-radius);
   }
 
   .btn-info:hover {
-    background:#1A237E;
-    color: #F5F5F5;
+    background: #0284c7;
+    color: #fff;
   }
 }
 
-//ページネーションのデザイン
-.pagination>li>a {          
-  border: none;     //枠線をなくす
-  color: #696969;   //文字の色を変える
+// ページネーションのデザイン
+.pagination > li > a {
+  border: none;
+  color: var(--tt-text-sub);
   border-radius: 15px;
 }
 
-.page-item.active
-.page-link {
+.page-item.active .page-link {
   z-index: 3;
-  background-color: #4CAF50;
+  background-color: var(--tt-primary);
+  border-color: var(--tt-primary);
 }
 
-//ホバー時のデザイン
-.pagination>li>a:hover {
-  color: #1B5E20;
+// ホバー時のデザイン
+.pagination > li > a:hover {
+  color: var(--tt-primary);
+  background-color: var(--tt-primary-light);
 }
 
 // 「前へ」「次へ」のボタンのデザイン調整
 .page-item:first-child .page-link,
 .page-item:last-child .page-link {
-  background: none;  // 背景を削除
-  border: none;      // 枠線を削除
-  color: #696969;    // 文字の色を統一
-  font-size: 1.2em;  // アイコンのサイズを調整（必要なら）
-  padding: 5px 10px; // アイコンの間隔調整（必要なら）
+  background: none;
+  border: none;
+  color: var(--tt-text-sub);
+  font-size: 1.2em;
+  padding: 5px 10px;
+}
+
+/* 検索フォームラッパー */
+.search-form-wrapper {
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+  background: var(--tt-bg-muted);
+  border: 1px solid var(--tt-border);
+  border-radius: var(--tt-radius);
+  padding: 1rem;
 }
 
 /* オートコンプリート */
@@ -111,9 +148,9 @@ body {
     z-index: 1000;
     max-height: 200px;
     overflow-y: auto;
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
+    background: var(--tt-bg);
+    border: 1px solid var(--tt-border);
+    border-radius: var(--tt-radius);
     margin-top: 2px;
     padding: 0;
 
@@ -123,7 +160,7 @@ body {
       list-style: none;
 
       &:hover, &.active {
-        background-color: #0d6efd;
+        background-color: var(--tt-primary);
         color: white;
       }
     }
@@ -132,21 +169,22 @@ body {
 
 /* 分析作成・編集ページ  new/edit/ */
 .form-container {
-  width: 35%; /* 好みの幅に設定 */
-  margin: 0 auto; /* 中央揃え */
-  background-color: #F5F5F5;
+  max-width: 640px;
+  margin: 0 auto 1rem;
+  background-color: var(--tt-bg-muted);
+  border: 1px solid var(--tt-border);
   padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 176, 255, 0.2); /* ネオンブルー系の影 */
-  margin-bottom: 1rem;
+  border-radius: var(--tt-radius);
+  box-shadow: var(--tt-shadow-sm);
 }
 
-//浮き上がるアニメーション
+// 浮き上がるアニメーション
 .fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
   opacity: 0;
   transform: translateY(20px);
 }
+
 @keyframes fadeInUp {
   to {
     opacity: 1;
@@ -166,7 +204,7 @@ body {
 
 select {
   text-align: center;
-  text-align-last: center; /* Firefox以外でも効果を出す */
+  text-align-last: center;
 }
 
 /* メモの横幅を広げる */
@@ -184,9 +222,9 @@ select {
   width: 70px;
 }
 
-//分析一覧ページへ
+// 分析一覧ページへ
 .center-link a {
-  color: #1A237E;
+  color: var(--tt-primary);
   font-weight: bold;
   text-decoration: none;
 }
@@ -197,11 +235,11 @@ select {
 
 /* スコアボード */
 .scoreboard-container {
-  background: linear-gradient(135deg, #1B5E20, #4CAF50);
-  border-radius: 12px;
+  background: linear-gradient(135deg, var(--tt-primary-dark), var(--tt-primary));
+  border-radius: var(--tt-radius);
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--tt-shadow);
   color: white;
 }
 
@@ -329,17 +367,20 @@ select {
 
 /* 分析詳細ページ show */
 .show-container {
-  width: 35%;
+  max-width: 800px;
+  width: 95%;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  background-color: var(--tt-bg);
+  border: 1px solid var(--tt-border);
+  border-radius: var(--tt-radius);
+  box-shadow: var(--tt-shadow);
 }
 
 .section-card {
-  background-color: #f5f5f5;
-  border-radius: 10px;
+  background-color: var(--tt-bg-muted);
+  border: 1px solid var(--tt-border);
+  border-radius: var(--tt-radius);
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -347,46 +388,47 @@ select {
 .section-title {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #1B5E20;
-  border-left: 6px solid #4CAF50;
+  color: var(--tt-primary);
+  border-left: 4px solid var(--tt-primary);
   padding-left: 0.5rem;
   margin-bottom: 1rem;
 }
 
 .table {
-  background-color: #ffffff; /* テーブル本体は白 */
+  background-color: var(--tt-bg);
   border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ここで影を追加！ */
-  border-radius: 8px; /* テーブル全体に角丸 */
-  overflow: hidden; /* 角丸を反映させるため */
+  box-shadow: var(--tt-shadow-sm);
+  border-radius: var(--tt-radius);
+  overflow: hidden;
 }
 
 .table th {
-  background-color: #E8F5E9; /* ヘッダー背景：薄グリーン */
-  color: #1B5E20;
+  background-color: var(--tt-primary-light);
+  color: var(--tt-primary);
   font-weight: bold;
   font-size: 1rem;
-  border-bottom: 2px solid #4CAF50;
+  border-bottom: 2px solid var(--tt-primary);
 }
 
 .table td {
-  background-color: #ffffff; /* 行背景は白 */
-  border: 1px solid #C8E6C9;
+  background-color: var(--tt-bg);
+  border: 1px solid var(--tt-border);
   font-size: 0.95rem;
   padding: 0.75rem;
 }
-  
+
 .table tr:hover td {
-  background-color: #F1F8E9; /* ホバーでうっすら緑 */
+  background-color: var(--tt-primary-light);
 }
 
 .advice-section {
-  background: #E8F5E9;
-  border-left: 6px solid #4CAF50;
+  background: var(--tt-primary-light);
+  border-left: 4px solid var(--tt-primary);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--tt-radius);
   font-style: italic;
   margin-top: 1.5rem;
+  color: var(--tt-text);
 }
 
 .center-link {
@@ -403,29 +445,31 @@ select {
 
 .btn {
   padding: 0.5rem 1.5rem;
-  border-radius: 6px;
+  border-radius: var(--tt-radius);
 }
 
 .edit-btn {
-  background: #1B5E20;
-  color: #F5F5F5;
+  background: transparent;
+  color: var(--tt-primary);
+  border: 2px solid var(--tt-primary);
+  font-weight: bold;
 }
 
 .edit-btn:hover {
-  background: #F5F5F5;
-  color: #1B5E20;
-  border: 1px solid #1B5E20;
+  background: var(--tt-primary);
+  color: #fff;
 }
 
 .delete-btn {
-  background-color: #C62828;
-  color: #F5F5F5;
+  background: transparent;
+  color: #ef4444;
+  border: 2px solid #ef4444;
+  font-weight: bold;
 }
 
 .delete-btn:hover {
-  background-color: #F5F5F5;
-  color: #C62828;
-  border: 1px solid #C62828;
+  background-color: #ef4444;
+  color: #fff;
 }
 
 /* ゲーム別スコアバッジ（show ページ） */
@@ -438,21 +482,21 @@ select {
   flex-direction: column;
   align-items: center;
   padding: 0.5rem 0.75rem;
-  border-radius: 8px;
+  border-radius: var(--tt-radius);
   min-width: 72px;
   font-weight: bold;
 }
 
 .game-badge-won {
-  background-color: #E8F5E9;
-  border: 2px solid #4CAF50;
-  color: #1B5E20;
+  background-color: var(--tt-primary-light);
+  border: 2px solid var(--tt-primary);
+  color: var(--tt-primary);
 }
 
 .game-badge-lost {
-  background-color: #FFEBEE;
-  border: 2px solid #E57373;
-  color: #B71C1C;
+  background-color: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #ef4444;
 }
 
 .game-badge-label {
@@ -467,8 +511,8 @@ select {
 
 /* ゲーム別得点推移テーブル */
 .game-breakdown-card {
-  border: 1px solid #C8E6C9;
-  border-radius: 8px;
+  border: 1px solid var(--tt-border);
+  border-radius: var(--tt-radius);
   overflow: hidden;
 }
 
@@ -481,15 +525,15 @@ select {
 }
 
 .game-breakdown-won {
-  background-color: #E8F5E9;
-  color: #1B5E20;
-  border-bottom: 2px solid #4CAF50;
+  background-color: var(--tt-primary-light);
+  color: var(--tt-primary);
+  border-bottom: 2px solid var(--tt-primary);
 }
 
 .game-breakdown-lost {
-  background-color: #FFEBEE;
-  color: #B71C1C;
-  border-bottom: 2px solid #E57373;
+  background-color: #fee2e2;
+  color: #ef4444;
+  border-bottom: 2px solid #ef4444;
 }
 
 .game-breakdown-title {
@@ -507,8 +551,8 @@ select {
   border-radius: 4px;
   font-size: 1rem;
   font-weight: bold;
-  background-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
+  background-color: var(--tt-primary-light);
+  color: var(--tt-primary);
 }
 
 /* 詳細ページのゲーム別スコアセクション見出し内のゲーム数バッジ */
@@ -518,8 +562,8 @@ select {
   border-radius: 12px;
   font-size: 1rem;
   font-weight: bold;
-  background-color: rgba(100, 181, 246, 0.3);
-  color: #0D47A1;
+  background-color: var(--tt-primary-light);
+  color: var(--tt-primary);
   vertical-align: middle;
 }
 
@@ -546,7 +590,7 @@ select {
   }
 
   .card-body {
-    padding: .5rem; /* カード内のパディングを調整 */
+    padding: .5rem;
   }
 
   .form-container {

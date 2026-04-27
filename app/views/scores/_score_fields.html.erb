@@ -1,6 +1,6 @@
 <div class="row">
   <div class="column">
-    <%= score_form.label :score, "得点数", style: "color: #4169E1; font-weight: bold;" %>
+    <%= score_form.label :score, "得点数", class: "score-label-win" %>
     <div class="number-input d-flex align-items-center">
       <button type="button" onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));" class="plus">+</button>
       <%= score_form.number_field :score, class: "form-control small-input", min: 0, value: score.score || 0 %>
@@ -8,7 +8,7 @@
     </div>
   </div>
   <div class="column">
-    <%= score_form.label :lost_score, "失点数", style: "color: #B22222; font-weight: bold;" %>
+    <%= score_form.label :lost_score, "失点数", class: "score-label-lose" %>
     <div class="number-input d-flex align-items-center">
       <button type="button" onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));" class="plus">+</button>
       <%= score_form.number_field :lost_score, class: "form-control small-input", min: 0, value: score.lost_score || 0 %>

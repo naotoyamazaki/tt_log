@@ -26,12 +26,12 @@
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :match_date, "🗓️日付", style: "display: block" %>
+        <%= form.label :match_date, "🗓️日付" %>
         <%= form.date_field :match_date, class: "form-control rounded-pill shadow-sm" %>
       </div>
 
       <div class="column">
-        <%= form.label :match_name, "🏆大会名", style: "display: block" %>
+        <%= form.label :match_name, "🏆大会名" %>
         <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm",
             placeholder: "出場した大会名を入力" %>
       </div>
@@ -40,7 +40,7 @@
     <% if @draft_id.nil? %>
       <div class="row mb-3">
         <div class="column">
-          <%= form.label :match_format, "🎮試合形式（ゲームマッチ数）", style: "display: block" %>
+          <%= form.label :match_format, "🎮試合形式（ゲームマッチ数）" %>
           <%= form.select :match_format, [[3, 3], [5, 5], [7, 7]],
               { selected: 5 },
               class: "form-select",
@@ -51,7 +51,7 @@
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :player_name, "👤選手名", style: "display: block" %>
+        <%= form.label :player_name, "👤選手名" %>
         <%= form.text_field :player_name,
             class: "form-control rounded-pill shadow-sm",
             placeholder: "分析する選手名を入力",
@@ -59,7 +59,7 @@
       </div>
 
       <div class="column">
-        <%= form.label :opponent_name, "👤対戦相手名", style: "display: block" %>
+        <%= form.label :opponent_name, "👤対戦相手名" %>
         <%= form.text_field :opponent_name,
             class: "form-control rounded-pill shadow-sm",
             placeholder: "対戦相手の名前を入力",
@@ -68,12 +68,12 @@
     </div>
 
     <div class="mb-4">
-      <%= form.label :memo, "🗒️メモ", style: "display: block" %>
+      <%= form.label :memo, "🗒️メモ" %>
       <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm",
           placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
     </div>
 
-    <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
+    <div class="analysis-header mb-4 p-3 rounded">
       <h3 class="text-center">分析フォームの使い方</h3>
       <div>
         試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
@@ -87,12 +87,12 @@
     <%= render 'match_infos/scoreboard', saved_games: saved_games, max_games: max_games %>
 
     <% Score.allowed_batting_styles.each do |style| %>
-      <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+      <div class="batting-style-card card mb-3 p-3">
         <div class="mb-2 fw-bold"><%= batting_style_names[style] || style %></div>
         <div class="row">
           <div class="column">
             <%= label_tag "game_scores[#{style}][score]", "得点数",
-                style: "color: #4169E1; font-weight: bold;" %>
+                class: "score-label-win" %>
             <div class="number-input d-flex align-items-center">
               <button type="button"
                 onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
@@ -108,7 +108,7 @@
           </div>
           <div class="column">
             <%= label_tag "game_scores[#{style}][lost_score]", "失点数",
-                style: "color: #B22222; font-weight: bold;" %>
+                class: "score-label-lose" %>
             <div class="number-input d-flex align-items-center">
               <button type="button"
                 onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"

@@ -5,19 +5,19 @@
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :"🗓️日付", style: "display: block" %>
+        <%= form.label :"🗓️日付" %>
         <%= form.date_field :match_date , class: "form-control rounded-pill shadow-sm"%>
       </div>
 
       <div class="column">
-        <%= form.label :"🏆大会名", style: "display: block" %>
+        <%= form.label :"🏆大会名" %>
         <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm", placeholder: "出場した大会名を入力" %>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="column">
-        <%= form.label :"👤選手名", style: "display: block" %>
+        <%= form.label :"👤選手名" %>
         <%= form.text_field :player_name,
           class: "form-control rounded-pill shadow-sm",
           placeholder: "分析する選手名を入力",
@@ -25,7 +25,7 @@
       </div>
 
       <div class="column">
-        <%= form.label :"👤対戦相手名", style: "display: block" %>
+        <%= form.label :"👤対戦相手名" %>
         <%= form.text_field :opponent_name,
           class: "form-control rounded-pill shadow-sm",
           placeholder: "対戦相手の名前を入力",
@@ -34,7 +34,7 @@
     </div>
 
     <div class="mb-4">
-      <%= form.label :"🗒️メモ", style: "display: block" %>
+      <%= form.label :"🗒️メモ" %>
       <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
     </div>
 
@@ -64,7 +64,7 @@
 
     <% if games.any? %>
 
-      <div class="analysis-header mb-3 p-3 rounded" style="background-color: #1A237E; color: #fff;">
+      <div class="analysis-header mb-3 p-3 rounded">
         <h3 class="text-center">ゲーム別得点編集</h3>
         <div>
           編集したいゲームのタブを選択して、各技術の得点・失点数を修正してください。
@@ -110,7 +110,7 @@
               <% sorted_game_scores = game.scores.sort_by { |s| batting_styles_order.index(s.batting_style) || 999 } %>
               <% sorted_game_scores.each do |score| %>
                 <%= game_form.fields_for :scores, score do |score_form| %>
-                  <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+                  <div class="batting-style-card card mb-3 p-3">
                     <%= score_form.select :batting_style,
                         batting_style_options,
                         {},
@@ -127,7 +127,7 @@
 
     <% else %>
 
-      <div class="analysis-header mb-4 p-3 rounded" style="background-color: #1A237E; color: #fff;">
+      <div class="analysis-header mb-4 p-3 rounded">
         <h3 class="text-center">分析フォームの使い方</h3>
         <div>
           試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
@@ -142,7 +142,7 @@
 
       <% sorted_scores.each do |score| %>
         <%= form.fields_for :scores, score do |score_form| %>
-          <div class="card mb-3 p-3" style="border-left: 4px solid #00B0FF;">
+          <div class="batting-style-card card mb-3 p-3">
             <%= score_form.select :batting_style,
                 batting_style_options,
                 {},

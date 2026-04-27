@@ -84,6 +84,9 @@ $card-box-shadow:          0 1px 3px rgba(0,0,0,.08);
 
 /* 会員登録・ログインボタンデザイン */
 .btn-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--tt-primary);
   color: white;
   border: none;

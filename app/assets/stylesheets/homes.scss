@@ -20,23 +20,22 @@
 
 section {
   padding: 60px 0;
+  background-color: var(--tt-bg);
 }
 
 section p {
   max-width: 60%;
-  /* 幅を80%に設定（必要に応じて調整） */
   margin: 0 auto 30px;
-  /* 中央揃えと下のマージンを追加 */
+  color: var(--tt-text-sub);
 }
 
-//タイトル下線
+/* セクションタイトル */
 .section-header {
-  color: white;
-  border-bottom: 5px solid #fff;
+  color: var(--tt-text);
+  border-bottom: 4px solid var(--tt-primary);
   display: inline-block;
   padding-bottom: 5px;
   margin-bottom: 30px;
-  /* 下に空間を追加 */
 }
 
 .section-img {
@@ -47,17 +46,22 @@ section p {
   width: 30%;
 }
 
+/* T.T.LOGとは？セクション */
+.about-section {
+  background-color: var(--tt-bg-muted);
+}
+
 /* 吹き出しのデザイン */
 .chat-bubble {
-  background-color: #00B0FF;
+  background-color: var(--tt-primary-light);
   border-radius: 18px;
   padding: 20px;
   margin: 0 auto 30px;
   position: relative;
   max-width: 40%;
   text-align: center;
-  color: white;
-  border: 2px solid #FFFFFF;
+  color: var(--tt-text);
+  border: 1px solid var(--tt-border);
 }
 
 .chat-bubble::after {
@@ -70,12 +74,12 @@ section p {
 }
 
 .chat-bubble.right-bubble::after {
-  border-left-color: #00B0FF;
+  border-left-color: var(--tt-primary-light);
   right: 30px;
 }
 
 .chat-bubble.left-bubble::after {
-  border-right-color: #00B0FF;
+  border-right-color: var(--tt-primary-light);
   left: 30px;
 }
 
@@ -92,23 +96,24 @@ section p {
 .features-list li {
   flex: 0 1 430px;
   max-width: 90%;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid #00B0FF;
-  border-radius: 10px;
+  background-color: var(--tt-bg);
+  border: 1px solid var(--tt-border);
+  border-top: 3px solid var(--tt-primary);
+  border-radius: var(--tt-radius);
   padding: 20px;
   text-align: left;
-  transition: transform 0.3s ease, background-color 0.3s ease;
-  color: white;
+  box-shadow: var(--tt-shadow-sm);
+  transition: box-shadow 0.2s ease;
+  color: var(--tt-text);
 }
 
 .features-list li:hover {
-  transform: translateY(-5px);
-  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--tt-shadow);
 }
 
 .features-list .icon {
   display: inline-block;
-  background-color: #00B0FF;
+  background-color: var(--tt-primary);
   color: white;
   border-radius: 50%;
   padding: 10px;
@@ -119,14 +124,29 @@ section p {
   margin-right: 10px;
 }
 
+/* CTAセクション */
 .start-section {
-  background: linear-gradient(90deg, #4CAF50, #1A237E);
+  background-color: var(--tt-primary);
   color: white;
   padding: 80px 20px;
 }
 
-@media screen and (max-width: 768px) {
+.start-section .section-header {
+  color: white;
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
 
+.start-section .btn-login {
+  color: white;
+  border-color: white;
+}
+
+.start-section .btn-login:hover {
+  background: white;
+  color: var(--tt-primary);
+}
+
+@media screen and (max-width: 768px) {
   .top-wrapper {
     height: 50vh;
   }

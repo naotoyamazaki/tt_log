@@ -18,8 +18,10 @@ ja:
         batting_style:
           serve: サーブ
           receive: レシーブ
-          fore_drive: フォアドライブ
-          back_drive: バックドライブ
+          fore_drive_vs_topspin: 対上回転フォアドライブ
+          back_drive_vs_topspin: 対上回転バックドライブ
+          fore_drive_vs_backspin: 対下回転フォアドライブ
+          back_drive_vs_backspin: 対下回転バックドライブ
           fore_push: フォアツッツキ
           back_push: バックツッツキ
           fore_stop: フォアストップ
@@ -31,6 +33,9 @@ ja:
           back_block: バックブロック
           fore_counter: フォアカウンター
           back_counter: バックカウンター
+          fore_smash: フォアスマッシュ
+          back_smash: バックスマッシュ
+          net_or_edge: ネットorエッジ
   defaults:
     password_reset: "パスワードリセットのご案内"
   notices:

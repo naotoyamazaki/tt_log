@@ -74,7 +74,7 @@ RSpec.describe "MatchInfos", type: :request do
         ),
         game_scores: {
           "serve" => { "score" => "3", "lost_score" => "1" },
-          "fore_drive" => { "score" => "2", "lost_score" => "1" }
+          "fore_drive_vs_topspin" => { "score" => "2", "lost_score" => "1" }
         }
       }
     end
@@ -100,7 +100,7 @@ RSpec.describe "MatchInfos", type: :request do
     let(:game_scores) do
       {
         "serve" => { "score" => "5", "lost_score" => "2" },
-        "fore_drive" => { "score" => "6", "lost_score" => "3" }
+        "fore_drive_vs_topspin" => { "score" => "6", "lost_score" => "3" }
       }
     end
     let(:match_info_params) do

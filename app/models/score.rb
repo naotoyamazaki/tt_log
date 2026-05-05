@@ -4,13 +4,16 @@ class Score < ApplicationRecord
 
   enum :batting_style, {
     serve: 0, receive: 1,
-    fore_drive: 2, back_drive: 3,
+    fore_drive_vs_topspin: 15, back_drive_vs_topspin: 16,
+    fore_drive_vs_backspin: 17, back_drive_vs_backspin: 18,
     fore_push: 4, back_push: 5,
     fore_stop: 6, back_stop: 7,
     fore_flick: 8, back_flick: 9,
     chiquita: 10, fore_block: 11,
     back_block: 12, fore_counter: 13,
-    back_counter: 14
+    back_counter: 14,
+    fore_smash: 19, back_smash: 20,
+    net_or_edge: 21
   }
 
   def self.allowed_batting_styles

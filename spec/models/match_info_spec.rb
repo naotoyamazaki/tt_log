@@ -54,8 +54,10 @@ RSpec.describe MatchInfo, type: :model do
       let!(:game2) { create(:game, match_info: match_info, game_number: 2, player_score: 7, opponent_score: 11) }
 
       before do
-        create(:score, match_info: match_info, game: game1, batting_style: :fore_drive, score: 5, lost_score: 2)
-        create(:score, match_info: match_info, game: game2, batting_style: :fore_drive, score: 2, lost_score: 4)
+        create(:score, match_info: match_info, game: game1,
+                       batting_style: :fore_drive_vs_topspin, score: 5, lost_score: 2)
+        create(:score, match_info: match_info, game: game2,
+                       batting_style: :fore_drive_vs_topspin, score: 2, lost_score: 4)
       end
 
       it "ゲーム番号順にデータを返すこと" do

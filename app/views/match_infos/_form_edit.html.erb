@@ -41,25 +41,31 @@
     <% games = match_info.games.order(:game_number) %>
 
     <% batting_styles_order = %w[
-      serve
-      fore_drive back_drive
+      serve receive
+      fore_drive_vs_topspin back_drive_vs_topspin
+      fore_drive_vs_backspin back_drive_vs_backspin
       fore_push back_push
       fore_stop back_stop
       fore_flick back_flick
       chiquita
       fore_block back_block
       fore_counter back_counter
+      fore_smash back_smash
+      net_or_edge
     ] %>
 
     <% batting_style_options = [
-      ['サーブ', 'serve'],
-      ['フォアドライブ', 'fore_drive'], ['バックドライブ', 'back_drive'],
+      ['サーブ', 'serve'], ['レシーブ', 'receive'],
+      ['対上回転フォアドライブ', 'fore_drive_vs_topspin'], ['対上回転バックドライブ', 'back_drive_vs_topspin'],
+      ['対下回転フォアドライブ', 'fore_drive_vs_backspin'], ['対下回転バックドライブ', 'back_drive_vs_backspin'],
       ['フォアツッツキ', 'fore_push'], ['バックツッツキ', 'back_push'],
       ['フォアストップ', 'fore_stop'], ['バックストップ', 'back_stop'],
       ['フォアフリック', 'fore_flick'], ['バックフリック', 'back_flick'],
       ['チキータ', 'chiquita'], ['フォアブロック', 'fore_block'],
       ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
-      ['バックカウンター', 'back_counter']
+      ['バックカウンター', 'back_counter'],
+      ['フォアスマッシュ', 'fore_smash'], ['バックスマッシュ', 'back_smash'],
+      ['ネットorエッジ', 'net_or_edge']
     ] %>
 
     <% if games.any? %>
@@ -149,11 +155,14 @@
                 { class: "form-control medium-input" } %>
 
             <% case score.batting_style %>
-            <% when "serve", "fore_drive", "back_drive",
+            <% when "serve", "receive",
+                  "fore_drive_vs_topspin", "back_drive_vs_topspin",
+                  "fore_drive_vs_backspin", "back_drive_vs_backspin",
                   "fore_push", "back_push", "fore_stop", "back_stop",
                   "fore_flick", "back_flick", "chiquita",
                   "fore_block", "back_block",
-                  "fore_counter", "back_counter" %>
+                  "fore_counter", "back_counter",
+                  "fore_smash", "back_smash", "net_or_edge" %>
               <%= render 'scores/score_fields', score_form: score_form, score: score %>
             <% end %>
           </div>

@@ -3,6 +3,7 @@ module ApplicationHelper
 
   def abbreviate_batting_style(name)
     name.gsub('フォア', 'F').gsub('バック', 'B')
+      .gsub('対上回転', '対上').gsub('対下回転', '対下')
   end
 
   def calculate_batting_score_data(batting_scores)

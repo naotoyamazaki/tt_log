@@ -1,18 +1,24 @@
 <% batting_style_names = {
-  'serve'        => 'サーブ',
-  'fore_drive'   => 'フォアドライブ',
-  'back_drive'   => 'バックドライブ',
-  'fore_push'    => 'フォアツッツキ',
-  'back_push'    => 'バックツッツキ',
-  'fore_stop'    => 'フォアストップ',
-  'back_stop'    => 'バックストップ',
-  'fore_flick'   => 'フォアフリック',
-  'back_flick'   => 'バックフリック',
-  'chiquita'     => 'チキータ',
-  'fore_block'   => 'フォアブロック',
-  'back_block'   => 'バックブロック',
-  'fore_counter' => 'フォアカウンター',
-  'back_counter' => 'バックカウンター'
+  'serve'                  => 'サーブ',
+  'receive'                => 'レシーブ',
+  'fore_drive_vs_topspin'  => '対上回転フォアドライブ',
+  'back_drive_vs_topspin'  => '対上回転バックドライブ',
+  'fore_drive_vs_backspin' => '対下回転フォアドライブ',
+  'back_drive_vs_backspin' => '対下回転バックドライブ',
+  'fore_push'              => 'フォアツッツキ',
+  'back_push'              => 'バックツッツキ',
+  'fore_stop'              => 'フォアストップ',
+  'back_stop'              => 'バックストップ',
+  'fore_flick'             => 'フォアフリック',
+  'back_flick'             => 'バックフリック',
+  'chiquita'               => 'チキータ',
+  'fore_block'             => 'フォアブロック',
+  'back_block'             => 'バックブロック',
+  'fore_counter'           => 'フォアカウンター',
+  'back_counter'           => 'バックカウンター',
+  'fore_smash'             => 'フォアスマッシュ',
+  'back_smash'             => 'バックスマッシュ',
+  'net_or_edge'            => 'ネットorエッジ'
 } %>
 
 <div class="form-container fade-in-up">
@@ -76,11 +82,9 @@
     <div class="analysis-header mb-4 p-3 rounded">
       <h3 class="text-center">分析フォームの使い方</h3>
       <div>
-        試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
-        例：分析する選手がサービスエースで得点 → サーブの得点数に1をプラスする。<br>
-        例：分析する選手がサービスミスで失点 → サーブの失点数に1をプラスする。<br>
-        例：分析する選手がフォアドライブで得点 → フォアドライブの得点数に1をプラスする。<br>
-        例：分析する選手がフォアドライブで失点 → フォアドライブの失点数に1をプラスする。
+        試合で使用した<strong>各技術の得点率</strong>を分析します。<br>
+        得点したらその技術の「得点数」に、失点したら「失点数」に1ずつ加算してください。<br>
+        例：サービスエース → サーブの得点数 ＋1 ／ サービスミス → サーブの失点数 ＋1
       </div>
     </div>
 

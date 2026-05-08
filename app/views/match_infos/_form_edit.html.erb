@@ -1,3 +1,26 @@
+<% batting_style_names = {
+  'serve'                  => 'サーブ',
+  'receive'                => 'レシーブ',
+  'fore_drive_vs_topspin'  => '対上回転フォアドライブ',
+  'back_drive_vs_topspin'  => '対上回転バックドライブ',
+  'fore_drive_vs_backspin' => '対下回転フォアドライブ',
+  'back_drive_vs_backspin' => '対下回転バックドライブ',
+  'fore_push'              => 'フォアツッツキ',
+  'back_push'              => 'バックツッツキ',
+  'fore_stop'              => 'フォアストップ',
+  'back_stop'              => 'バックストップ',
+  'fore_flick'             => 'フォアフリック',
+  'back_flick'             => 'バックフリック',
+  'chiquita'               => 'チキータ',
+  'fore_block'             => 'フォアブロック',
+  'back_block'             => 'バックブロック',
+  'fore_counter'           => 'フォアカウンター',
+  'back_counter'           => 'バックカウンター',
+  'fore_smash'             => 'フォアスマッシュ',
+  'back_smash'             => 'バックスマッシュ',
+  'net_or_edge'            => 'ネットorエッジ'
+} %>
+
 <div class="form-container fade-in-up">
   <%= form_with(model: match_info, data: { controller: "scoreboard" }) do |form| %>
 
@@ -117,10 +140,8 @@
               <% sorted_game_scores.each do |score| %>
                 <%= game_form.fields_for :scores, score do |score_form| %>
                   <div class="batting-style-card card mb-3 p-3">
-                    <%= score_form.select :batting_style,
-                        batting_style_options,
-                        {},
-                        { class: "form-control medium-input" } %>
+                    <div class="mb-2 fw-bold"><%= batting_style_names[score.batting_style] || score.batting_style %></div>
+                    <%= score_form.hidden_field :batting_style %>
                     <%= render 'scores/score_fields', score_form: score_form, score: score %>
                   </div>
                 <% end %>
@@ -133,26 +154,13 @@
 
     <% else %>
 
-      <div class="analysis-header mb-4 p-3 rounded">
-        <h3 class="text-center">分析フォームの使い方</h3>
-        <div>
-          試合で使用した<strong>各技術（サーブ含む）</strong>の得点率を分析します。<br>
-          例：分析する選手がサービスエースで得点 → サーブの得点数に1をプラスする。<br>
-          例：分析する選手がサービスミスで失点 → サーブの失点数に1をプラスする。<br>
-          例：分析する選手がフォアドライブで得点 → フォアドライブの得点数に1をプラスする。<br>
-          例：分析する選手がフォアドライブで失点 → フォアドライブの失点数に1をプラスする。
-        </div>
-      </div>
-
       <% sorted_scores = match_info.scores.sort_by { |score| batting_styles_order.index(score.batting_style) || 999 } %>
 
       <% sorted_scores.each do |score| %>
         <%= form.fields_for :scores, score do |score_form| %>
           <div class="batting-style-card card mb-3 p-3">
-            <%= score_form.select :batting_style,
-                batting_style_options,
-                {},
-                { class: "form-control medium-input" } %>
+            <div class="mb-2 fw-bold"><%= batting_style_names[score.batting_style] || score.batting_style %></div>
+            <%= score_form.hidden_field :batting_style %>
 
             <% case score.batting_style %>
             <% when "serve", "receive",

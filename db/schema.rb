@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_05_225224) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_16_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,6 +48,20 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_05_225224) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "rallies", force: :cascade do |t|
+    t.bigint "match_info_id", null: false
+    t.bigint "game_id"
+    t.integer "game_number", null: false
+    t.integer "sequence_number", null: false
+    t.integer "winner", null: false
+    t.integer "batting_style", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_rallies_on_game_id"
+    t.index ["match_info_id", "game_number", "sequence_number"], name: "index_rallies_on_match_info_game_sequence", unique: true
+    t.index ["match_info_id"], name: "index_rallies_on_match_info_id"
+  end
+
   create_table "scores", force: :cascade do |t|
     t.bigint "match_info_id", null: false
     t.bigint "game_id"
@@ -81,6 +95,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_05_225224) do
   add_foreign_key "match_infos", "players"
   add_foreign_key "match_infos", "players", column: "opponent_id"
   add_foreign_key "match_infos", "users"
+  add_foreign_key "rallies", "games"
+  add_foreign_key "rallies", "match_infos"
   add_foreign_key "scores", "games"
   add_foreign_key "scores", "match_infos"
 end

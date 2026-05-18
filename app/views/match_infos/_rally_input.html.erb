@@ -1,0 +1,58 @@
+<% initial_rallies = local_assigns[:initial_rallies] %>
+
+<div class="rally-input-container">
+
+  <%# 現在のスコア表示 %>
+  <div class="rally-current-score mb-3">
+    <span class="rally-score-label">現在のスコア：</span>
+    <span class="rally-score-value" data-rally-input-target="currentScore">0 - 0</span>
+  </div>
+
+  <%# ステップ1: 誰が得点した？ %>
+  <div class="rally-step rally-step1" data-rally-input-target="step1">
+    <div class="rally-step-title mb-2">誰が得点した？</div>
+    <div class="rally-winner-buttons">
+      <button type="button" class="btn rally-winner-btn rally-winner-player"
+              data-action="click->rally-input#selectWinner"
+              data-winner="player">
+        自分の得点
+      </button>
+      <button type="button" class="btn rally-winner-btn rally-winner-opponent"
+              data-action="click->rally-input#selectWinner"
+              data-winner="opponent">
+        相手の得点
+      </button>
+    </div>
+  </div>
+
+  <%# ステップ2: どの技術で？ %>
+  <div class="rally-step rally-step2 d-none" data-rally-input-target="step2">
+    <div class="rally-step-title mb-2">どの技術で得点した？</div>
+    <div class="rally-style-buttons" data-rally-input-target="styleButtons">
+      <%# JS で動的に描画 %>
+    </div>
+    <div class="text-center mt-2">
+      <button type="button" class="btn rally-show-more-btn"
+              data-action="click->rally-input#toggleShowMore"
+              data-rally-input-target="showMore">
+        もっと見る ▼
+      </button>
+    </div>
+    <div class="mt-2">
+      <button type="button" class="btn rally-cancel-btn"
+              data-action="click->rally-input#undo">
+        ← 戻る
+      </button>
+    </div>
+  </div>
+
+  <%# 入力済みラリー一覧 %>
+  <div class="rally-list-section mt-3">
+    <div class="rally-list-header">入力済みラリー</div>
+    <div class="rally-list" data-rally-input-target="rallyList">
+      <div class="rally-list-empty">まだラリーが入力されていません</div>
+    </div>
+  </div>
+
+  <%# hidden field (フォーム送信用) — _form.html.erb 側で追加 %>
+</div>

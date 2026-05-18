@@ -29,11 +29,27 @@ export default class extends Controller {
       tab.addEventListener('shown.bs.tab', (event) => this.onGameTabShown(event))
     })
 
+    this._boundRallyScoreUpdated = this.onRallyScoreUpdated.bind(this)
+    this.element.addEventListener('rally:scoreUpdated', this._boundRallyScoreUpdated)
+
     this.update()
+  }
+
+  disconnect() {
+    if (this._boundRallyScoreUpdated) {
+      this.element.removeEventListener('rally:scoreUpdated', this._boundRallyScoreUpdated)
+    }
   }
 
   onGameTabShown(event) {
     this.updateFromActivePanel()
+  }
+
+  onRallyScoreUpdated(event) {
+    const { playerScore, opponentScore } = event.detail || {}
+    if (playerScore === undefined) return
+    if (this.hasPlayerPointsTarget) this.playerPointsTarget.textContent = playerScore
+    if (this.hasOpponentPointsTarget) this.opponentPointsTarget.textContent = opponentScore
   }
 
   updateNames() {

@@ -1,30 +1,10 @@
-<% batting_style_names = {
-  'serve'                  => 'サーブ',
-  'receive'                => 'レシーブ',
-  'fore_drive_vs_topspin'  => '対上回転フォアドライブ',
-  'back_drive_vs_topspin'  => '対上回転バックドライブ',
-  'fore_drive_vs_backspin' => '対下回転フォアドライブ',
-  'back_drive_vs_backspin' => '対下回転バックドライブ',
-  'fore_push'              => 'フォアツッツキ',
-  'back_push'              => 'バックツッツキ',
-  'fore_stop'              => 'フォアストップ',
-  'back_stop'              => 'バックストップ',
-  'fore_flick'             => 'フォアフリック',
-  'back_flick'             => 'バックフリック',
-  'chiquita'               => 'チキータ',
-  'fore_block'             => 'フォアブロック',
-  'back_block'             => 'バックブロック',
-  'fore_counter'           => 'フォアカウンター',
-  'back_counter'           => 'バックカウンター',
-  'fore_smash'             => 'フォアスマッシュ',
-  'back_smash'             => 'バックスマッシュ',
-  'net_or_edge'            => 'ネットorエッジ'
-} %>
 
 <div class="form-container fade-in-up">
+  <% initial_rallies_json = (@partial_scores&.dig('rallies') || []).to_json %>
   <%= form_with(model: match_info, url: match_infos_path, method: :post,
-      data: { controller: "scoreboard auto-save",
-              auto_save_draft_id_value: draft_id.to_s }) do |form| %>
+      data: { controller: "scoreboard auto-save rally-input",
+              auto_save_draft_id_value: draft_id.to_s,
+              rally_input_initial_rallies_value: initial_rallies_json }) do |form| %>
 
     <%= hidden_field_tag :draft_id, draft_id if draft_id.present? %>
 
@@ -80,61 +60,26 @@
     </div>
 
     <div class="analysis-header mb-4 p-3 rounded">
-      <h3 class="text-center">分析フォームの使い方</h3>
+      <h3 class="text-center">ラリー入力</h3>
       <div>
-        試合で使用した<strong>各技術の得点率</strong>を分析します。<br>
-        得点したらその技術の「得点数」に、失点したら「失点数」に1ずつ加算してください。<br>
-        例：サービスエース → サーブの得点数 ＋1 ／ サービスミス → サーブの失点数 ＋1
+        1本ずつ順番に「誰が得点したか」「どの技術で決めたか」を入力してください。<br>
+        入力したラリーデータから技術別の得点率を自動集計します。
       </div>
     </div>
 
     <%= render 'match_infos/scoreboard', saved_games: saved_games, max_games: max_games %>
 
-    <% Score.allowed_batting_styles.each do |style| %>
-      <div class="batting-style-card card mb-3 p-3">
-        <div class="mb-2 fw-bold"><%= batting_style_names[style] || style %></div>
-        <div class="row">
-          <div class="column">
-            <%= label_tag "game_scores[#{style}][score]", "得点数",
-                class: "score-label-win" %>
-            <div class="number-input d-flex align-items-center">
-              <button type="button"
-                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
-                class="plus">+</button>
-              <%= number_field_tag "game_scores[#{style}][score]",
-                  @partial_scores&.dig(style.to_s, 'score') || 0,
-                  class: "form-control small-input", min: 0,
-                  data: { auto_save_target: "scoreField", auto_save_style_param: style, auto_save_kind_param: "score" } %>
-              <button type="button"
-                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));"
-                class="minus">-</button>
-            </div>
-          </div>
-          <div class="column">
-            <%= label_tag "game_scores[#{style}][lost_score]", "失点数",
-                class: "score-label-lose" %>
-            <div class="number-input d-flex align-items-center">
-              <button type="button"
-                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));"
-                class="plus">+</button>
-              <%= number_field_tag "game_scores[#{style}][lost_score]",
-                  @partial_scores&.dig(style.to_s, 'lost_score') || 0,
-                  class: "form-control small-input", min: 0,
-                  data: { auto_save_target: "scoreField", auto_save_style_param: style, auto_save_kind_param: "lost_score" } %>
-              <button type="button"
-                onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));"
-                class="minus">-</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'match_infos/rally_input' %>
+
+    <input type="hidden" name="rallies" data-rally-input-target="serialized"
+           value="<%= initial_rallies_json %>">
 
     <div class="center-text">
       <% if current_game_number <= max_games %>
         <%= form.submit "#{current_game_number}ゲーム目終了",
             formaction: end_game_match_infos_path,
-            class: "btn btn-secondary px-4 py-2 mt-4 me-2 rounded-pill shadow" %>
+            class: "btn btn-secondary px-4 py-2 mt-4 me-2 rounded-pill shadow",
+            data: { rally_input_target: "endGameBtn" } %>
       <% end %>
       <%= form.submit "🚀 試合を分析する",
           class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow",

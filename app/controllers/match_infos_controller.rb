@@ -46,10 +46,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       return
     end
 
-    @match_info.save! unless @match_info.persisted?
-    @match_info.save! if @match_info.changed?
-    create_game_with_scores(@match_info)
-    @match_info.update!(draft: true, partial_game_data: nil)
+    persist_and_finalize_game
     redirect_to new_match_info_path(draft_id: @match_info.id)
   end
 
@@ -85,7 +82,11 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
     respond_to do |format|
       if @match_info.save
-        create_game_with_scores(@match_info)
+        if params[:rallies].present?
+          create_game_from_rallies(@match_info)
+        else
+          create_game_with_scores(@match_info)
+        end
         @match_info.update(draft: false)
         format.html { redirect_to match_info_url(@match_info), notice: t('notices.match_info_created') }
         format.json { render :show, status: :created, location: @match_info }
@@ -124,6 +125,17 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   private
+
+  def persist_and_finalize_game
+    @match_info.save! unless @match_info.persisted?
+    @match_info.save! if @match_info.changed?
+    if params[:rallies].present?
+      create_game_from_rallies(@match_info)
+    else
+      create_game_with_scores(@match_info)
+    end
+    @match_info.update!(draft: true, partial_game_data: nil)
+  end
 
   def setup_new_form
     @match_info = MatchInfo.new
@@ -282,10 +294,57 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     last_game = match_info.games.order(:game_number).last
     return unless last_game
 
-    partial_data = reconstruct_partial_data(last_game)
+    match_info.partial_game_data = extract_partial_data_from_game(last_game)
     last_game.destroy
-    match_info.partial_game_data = partial_data
     match_info.save!(validate: false)
+  end
+
+  def extract_partial_data_from_game(game)
+    if game.rallies.any?
+      rally_data = game.rallies.order(:sequence_number).map do |r|
+        { 'winner' => r.winner, 'batting_style' => r.batting_style }
+      end
+      { 'rallies' => rally_data }
+    else
+      reconstruct_partial_data(game)
+    end
+  end
+
+  def create_game_from_rallies(match_info)
+    rallies_data = JSON.parse(params[:rallies])
+    game = create_game_record_from_rallies(match_info, rallies_data)
+    persist_rally_records(match_info, game, rallies_data)
+    aggregate_scores_from_rallies(match_info, game)
+  end
+
+  def create_game_record_from_rallies(match_info, rallies_data)
+    game_number = match_info.games.count + 1
+    player_total = rallies_data.count { |r| r['winner'] == 'player' }
+    opponent_total = rallies_data.count { |r| r['winner'] == 'opponent' }
+    match_info.games.create!(
+      game_number: game_number, player_score: player_total, opponent_score: opponent_total
+    )
+  end
+
+  def persist_rally_records(match_info, game, rallies_data)
+    rallies_data.each_with_index do |r, i|
+      match_info.rallies.create!(
+        game_id: game.id, game_number: game.game_number,
+        sequence_number: i + 1, winner: r['winner'], batting_style: r['batting_style']
+      )
+    end
+  end
+
+  def aggregate_scores_from_rallies(match_info, game)
+    grouped = game.rallies.group_by(&:batting_style)
+    grouped.each do |style, rs|
+      player_wins = rs.count { |r| r.winner == 'player' }
+      opponent_wins = rs.count { |r| r.winner == 'opponent' }
+      match_info.scores.create!(
+        game_id: game.id, batting_style: style,
+        score: player_wins, lost_score: opponent_wins
+      )
+    end
   end
 
   def reconstruct_partial_data(game)

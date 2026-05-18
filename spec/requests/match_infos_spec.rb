@@ -197,6 +197,80 @@ RSpec.describe "MatchInfos", type: :request do
     end
   end
 
+  describe "POST /match_infos（rallies パラメータあり）" do
+    let(:rallies_data) do
+      [
+        { 'winner' => 'player', 'batting_style' => 'serve' },
+        { 'winner' => 'player', 'batting_style' => 'fore_drive_vs_topspin' },
+        { 'winner' => 'opponent', 'batting_style' => 'fore_drive_vs_topspin' },
+        { 'winner' => 'player', 'batting_style' => 'serve' }
+      ]
+    end
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(
+          player_name: "選手A",
+          opponent_name: "選手B"
+        ),
+        rallies: rallies_data.to_json
+      }
+    end
+
+    it 'Rally レコードが作成される' do
+      expect do
+        post match_infos_path, params: params
+      end.to change(Rally, :count).by(4)
+    end
+
+    it 'Score レコードがラリーから集計されて作成される' do
+      post match_infos_path, params: params
+      match_info = MatchInfo.last
+      # serve: player 2, opponent 0 / fore_drive_vs_topspin: player 1, opponent 1
+      expect(match_info.scores.count).to eq(2)
+      serve_score = match_info.scores.find_by(batting_style: :serve)
+      expect(serve_score.score).to eq(2)
+      expect(serve_score.lost_score).to eq(0)
+      fd_score = match_info.scores.find_by(batting_style: :fore_drive_vs_topspin)
+      expect(fd_score.score).to eq(1)
+      expect(fd_score.lost_score).to eq(1)
+    end
+
+    it 'Game の player_score と opponent_score がラリーから集計される' do
+      post match_infos_path, params: params
+      game = MatchInfo.last.games.first
+      expect(game.player_score).to eq(3)
+      expect(game.opponent_score).to eq(1)
+    end
+  end
+
+  describe "POST /match_infos（rallies パラメータなし ＝ 後方互換）" do
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(
+          player_name: "選手A",
+          opponent_name: "選手B"
+        ),
+        game_scores: {
+          "serve" => { "score" => "3", "lost_score" => "1" }
+        }
+      }
+    end
+
+    it 'Rally レコードが作成されない' do
+      expect do
+        post match_infos_path, params: params
+      end.not_to change(Rally, :count)
+    end
+
+    it 'Score レコードが game_scores から作成される' do
+      post match_infos_path, params: params
+      match_info = MatchInfo.last
+      expect(match_info.scores.count).to eq(1)
+      expect(match_info.scores.first.batting_style).to eq('serve')
+      expect(match_info.scores.first.score).to eq(3)
+    end
+  end
+
   describe "POST /match_infos (draft フラグ)" do
     let(:params) do
       {

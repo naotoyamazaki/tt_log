@@ -35,17 +35,19 @@ export default class extends Controller {
   static targets = [
     "step1", "step2", "styleButtons", "rallyList",
     "endGameBtn", "serialized", "currentScore",
-    "showMore"
+    "showMore", "serverSelect", "serverIndicator", "firstServerField"
   ]
 
   static values = {
-    initialRallies: String
+    initialRallies: String,
+    initialFirstServer: String
   }
 
   connect() {
     this.rallies = []
     this.selectedWinner = null
     this.showingAll = false
+    this.firstServer = null
 
     if (this.hasInitialRalliesValue && this.initialRalliesValue) {
       try {
@@ -58,15 +60,26 @@ export default class extends Controller {
       }
     }
 
+    if (this.hasInitialFirstServerValue && this.initialFirstServerValue) {
+      this.firstServer = this.initialFirstServerValue
+    }
+
     this.renderStyleButtons()
     this.renderRallyList()
     this.updateScore()
     this.updateEndGameButton()
     this.serializeRallies()
+    this.updateServerUI()
 
     this.element.addEventListener("rally:getRallies", (e) => {
       e.detail.rallies = [...this.rallies]
     })
+  }
+
+  selectServer(event) {
+    this.firstServer = event.currentTarget.dataset.server
+    this.updateServerUI()
+    this.serializeRallies()
   }
 
   selectWinner(event) {
@@ -115,6 +128,38 @@ export default class extends Controller {
     }
   }
 
+  getCurrentServer() {
+    if (!this.firstServer) return null
+    const total = this.rallies.length
+    let isFirstServerTurn
+    if (total < 20) {
+      isFirstServerTurn = Math.floor(total / 2) % 2 === 0
+    } else {
+      isFirstServerTurn = total % 2 === 0
+    }
+    return isFirstServerTurn ? this.firstServer : (this.firstServer === 'player' ? 'opponent' : 'player')
+  }
+
+  getServerLabel() {
+    const current = this.getCurrentServer()
+    if (!current) return ''
+    return current === 'player' ? '🏓 自分のサーブ中' : '🏓 相手のサーブ中'
+  }
+
+  updateServerUI() {
+    const hasServer = !!this.firstServer
+    if (this.hasServerSelectTarget) {
+      this.serverSelectTarget.classList.toggle('d-none', hasServer)
+    }
+    if (this.hasServerIndicatorTarget) {
+      this.serverIndicatorTarget.classList.toggle('d-none', !hasServer)
+      this.serverIndicatorTarget.textContent = this.getServerLabel()
+    }
+    if (this.hasStep1Target) {
+      this.step1Target.classList.toggle('d-none', !hasServer)
+    }
+  }
+
   renderStyleButtons() {
     if (!this.hasStyleButtonsTarget) return
     const styles = this.showingAll ? BATTING_STYLES_ALL : BATTING_STYLES_PRIMARY
@@ -156,10 +201,16 @@ export default class extends Controller {
     if (this.hasCurrentScoreTarget) {
       this.currentScoreTarget.textContent = `${playerScore} - ${opponentScore}`
     }
+
+    this.updateServerUI()
   }
 
   updateEndGameButton() {
     if (!this.hasEndGameBtnTarget) return
+    if (!this.firstServer) {
+      this.endGameBtnTarget.disabled = true
+      return
+    }
     const playerScore = this.rallies.filter(r => r.winner === 'player').length
     const opponentScore = this.rallies.filter(r => r.winner === 'opponent').length
     const canEnd = Math.max(playerScore, opponentScore) >= 11 &&
@@ -170,6 +221,9 @@ export default class extends Controller {
   serializeRallies() {
     if (this.hasSerializedTarget) {
       this.serializedTarget.value = JSON.stringify(this.rallies)
+    }
+    if (this.hasFirstServerFieldTarget) {
+      this.firstServerFieldTarget.value = this.firstServer || ''
     }
   }
 

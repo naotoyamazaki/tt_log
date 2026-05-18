@@ -304,7 +304,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       rally_data = game.rallies.order(:sequence_number).map do |r|
         { 'winner' => r.winner, 'batting_style' => r.batting_style }
       end
-      { 'rallies' => rally_data }
+      { 'rallies' => rally_data, 'first_server' => game.first_server }
     else
       reconstruct_partial_data(game)
     end
@@ -321,8 +321,10 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     game_number = match_info.games.count + 1
     player_total = rallies_data.count { |r| r['winner'] == 'player' }
     opponent_total = rallies_data.count { |r| r['winner'] == 'opponent' }
+    first_server = params[:first_server].presence
     match_info.games.create!(
-      game_number: game_number, player_score: player_total, opponent_score: opponent_total
+      game_number: game_number, player_score: player_total, opponent_score: opponent_total,
+      first_server: first_server
     )
   end
 

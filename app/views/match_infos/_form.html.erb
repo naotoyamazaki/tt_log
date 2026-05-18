@@ -1,10 +1,19 @@
 
 <div class="form-container fade-in-up">
   <% initial_rallies_json = (@partial_scores&.dig('rallies') || []).to_json %>
+  <%
+    last_game = @saved_games.last
+    initial_first_server = if last_game&.first_server
+                              last_game.first_server == 'player' ? 'opponent' : 'player'
+                            else
+                              nil
+                            end
+  %>
   <%= form_with(model: match_info, url: match_infos_path, method: :post,
       data: { controller: "scoreboard auto-save rally-input",
               auto_save_draft_id_value: draft_id.to_s,
-              rally_input_initial_rallies_value: initial_rallies_json }) do |form| %>
+              rally_input_initial_rallies_value: initial_rallies_json,
+              rally_input_initial_first_server_value: initial_first_server.to_s }) do |form| %>
 
     <%= hidden_field_tag :draft_id, draft_id if draft_id.present? %>
 
@@ -69,7 +78,7 @@
 
     <%= render 'match_infos/scoreboard', saved_games: saved_games, max_games: max_games %>
 
-    <%= render 'match_infos/rally_input' %>
+    <%= render 'match_infos/rally_input', initial_first_server: initial_first_server %>
 
     <input type="hidden" name="rallies" data-rally-input-target="serialized"
            value="<%= initial_rallies_json %>">

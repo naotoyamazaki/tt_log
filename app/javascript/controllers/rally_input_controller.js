@@ -70,6 +70,7 @@ export default class extends Controller {
     this.updateEndGameButton()
     this.serializeRallies()
     this.updateServerUI()
+    if (this.rallies.length > 0) this.dispatchScoreUpdated()
 
     this.element.addEventListener("rally:getRallies", (e) => {
       e.detail.rallies = [...this.rallies]

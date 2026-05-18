@@ -4,18 +4,18 @@
 <div class="rally-input-container">
 
   <%# サーブ選択エリア（未選択時のみ表示） %>
-  <div data-rally-input-target="serverSelect">
-    <div class="rally-server-select-title mb-2">誰がサーブ？</div>
+  <div class="rally-server-select-area" data-rally-input-target="serverSelect">
+    <div class="rally-server-select-title mb-3">🏓誰からサーブ？</div>
     <div class="rally-server-buttons">
       <button type="button" class="btn rally-server-btn rally-server-player"
               data-action="click->rally-input#selectServer"
               data-server="player">
-        自分がサーブ
+        自分からサーブ
       </button>
       <button type="button" class="btn rally-server-btn rally-server-opponent"
               data-action="click->rally-input#selectServer"
               data-server="opponent">
-        相手がサーブ
+        相手からサーブ
       </button>
     </div>
   </div>

@@ -610,6 +610,71 @@ select {
   margin-bottom: 1.5rem;
 }
 
+.rally-server-select-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 1rem;
+  margin-bottom: 0.75rem;
+  background: var(--tt-bg);
+  border: 1px solid var(--tt-border);
+  border-radius: var(--tt-radius);
+}
+
+.rally-server-select-title {
+  font-weight: bold;
+  font-size: 1.05rem;
+  color: var(--tt-text);
+  text-align: center;
+}
+
+.rally-server-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.rally-server-btn {
+  min-width: 140px;
+  padding: 0.875rem 1.25rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: var(--tt-radius);
+  border: 2px solid transparent;
+  transition: all 0.15s ease;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.rally-server-player {
+  background: var(--tt-primary-light);
+  color: var(--tt-primary);
+  border-color: var(--tt-primary);
+
+  &:hover {
+    background: var(--tt-primary);
+    color: #fff;
+  }
+}
+
+.rally-server-opponent {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #ef4444;
+
+  &:hover {
+    background: #ef4444;
+    color: #fff;
+  }
+}
+
 .rally-current-score {
   font-size: 1.1rem;
   font-weight: bold;

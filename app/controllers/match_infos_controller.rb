@@ -179,6 +179,21 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       @saved_games = []
       @current_game_number = 1
     end
+    restore_rally_params_to_partial_scores
+  end
+
+  def restore_rally_params_to_partial_scores
+    return if params[:rallies].blank?
+
+    rallies = JSON.parse(params[:rallies])
+    return unless rallies.is_a?(Array) && rallies.any?
+
+    @partial_scores = {
+      'rallies' => rallies,
+      'first_server' => params[:first_server].presence
+    }
+  rescue JSON::ParserError
+    nil
   end
 
   def create_game_with_scores(match_info)

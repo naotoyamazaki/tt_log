@@ -3,11 +3,10 @@
   <% initial_rallies_json = (@partial_scores&.dig('rallies') || []).to_json %>
   <%
     last_game = @saved_games.last
-    initial_first_server = if last_game&.first_server
-                              last_game.first_server == 'player' ? 'opponent' : 'player'
-                            else
-                              nil
-                            end
+    initial_first_server = @partial_scores&.dig('first_server') ||
+                           if last_game&.first_server
+                             last_game.first_server == 'player' ? 'opponent' : 'player'
+                           end
   %>
   <%= form_with(model: match_info, url: match_infos_path, method: :post,
       data: { controller: "scoreboard auto-save rally-input",

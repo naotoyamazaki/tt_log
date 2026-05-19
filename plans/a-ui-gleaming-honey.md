@@ -174,6 +174,13 @@ id, match_info_id, game_id (nullable), game_number, sequence_number, winner (enu
 **auto_save_controller.js の変更:**
 - 既存の score フィールド収集ロジックを rally リストの収集に置き換え
 
+**サーブ権トラッキング（Sprint 2 追加）:**
+- ゲーム開始前に「誰がサーブ？」ボタンを1回選択
+- ゲーム内のサーブ権は自動追跡（2本交代、デュース後1本交代）
+- ゲーム間は前ゲームの反対側が自動的にデフォルトになる
+- `games.first_server` カラム（nullable）に保存
+- データ収集のみ。分析活用は Sprint 4 以降
+
 ---
 
 ### Sprint 3: 得点推移表（Showページ）

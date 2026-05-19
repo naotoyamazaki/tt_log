@@ -179,6 +179,21 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       @saved_games = []
       @current_game_number = 1
     end
+    restore_rally_params_to_partial_scores
+  end
+
+  def restore_rally_params_to_partial_scores
+    return if params[:rallies].blank?
+
+    rallies = JSON.parse(params[:rallies])
+    return unless rallies.is_a?(Array) && rallies.any?
+
+    @partial_scores = {
+      'rallies' => rallies,
+      'first_server' => params[:first_server].presence
+    }
+  rescue JSON::ParserError
+    nil
   end
 
   def create_game_with_scores(match_info)
@@ -304,7 +319,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       rally_data = game.rallies.order(:sequence_number).map do |r|
         { 'winner' => r.winner, 'batting_style' => r.batting_style }
       end
-      { 'rallies' => rally_data }
+      { 'rallies' => rally_data, 'first_server' => game.first_server }
     else
       reconstruct_partial_data(game)
     end
@@ -321,8 +336,10 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     game_number = match_info.games.count + 1
     player_total = rallies_data.count { |r| r['winner'] == 'player' }
     opponent_total = rallies_data.count { |r| r['winner'] == 'opponent' }
+    first_server = params[:first_server].presence
     match_info.games.create!(
-      game_number: game_number, player_score: player_total, opponent_score: opponent_total
+      game_number: game_number, player_score: player_total, opponent_score: opponent_total,
+      first_server: first_server
     )
   end
 

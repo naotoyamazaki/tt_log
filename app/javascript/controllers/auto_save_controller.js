@@ -7,7 +7,7 @@ export default class extends Controller {
     restoreAutosaveUrl: String
   }
 
-  static targets = ["scoreField"]
+  static targets = ["scoreField", "rallyField"]
 
   connect() {
     this.STORAGE_KEY = "tt_log_autosave"
@@ -56,17 +56,7 @@ export default class extends Controller {
     const memoInput = form.querySelector('textarea[name="match_info[memo]"]')
     const matchFormatInput = form.querySelector('select[name="match_info[match_format]"]')
 
-    const gameScores = {}
-    if (this.hasScoreFieldTarget) {
-      this.scoreFieldTargets.forEach((input) => {
-        const style = input.dataset.autoSaveStyleParam
-        const kind = input.dataset.autoSaveKindParam
-        if (style && kind) {
-          gameScores[style] = gameScores[style] || {}
-          gameScores[style][kind] = parseInt(input.value, 10) || 0
-        }
-      })
-    }
+    const rallies = this._collectRallies()
 
     return {
       draft_id: draftIdInput ? draftIdInput.value : this.draftIdValue,
@@ -76,8 +66,20 @@ export default class extends Controller {
       opponent_name: opponentNameInput ? opponentNameInput.value : "",
       memo: memoInput ? memoInput.value : "",
       match_format: matchFormatInput ? matchFormatInput.value : "5",
-      game_scores: gameScores
+      rallies: rallies
     }
+  }
+
+  _collectRallies() {
+    const serializedInput = this.element.querySelector('input[name="rallies"]')
+    if (serializedInput && serializedInput.value) {
+      try {
+        return JSON.parse(serializedInput.value)
+      } catch (_e) {
+        // ignore
+      }
+    }
+    return []
   }
 
   checkAndShowBanner() {
@@ -134,11 +136,11 @@ export default class extends Controller {
       form.appendChild(input)
     })
 
-    const gameScoresInput = document.createElement("input")
-    gameScoresInput.type = "hidden"
-    gameScoresInput.name = "game_scores"
-    gameScoresInput.value = JSON.stringify(data.game_scores || {})
-    form.appendChild(gameScoresInput)
+    const ralliesInput = document.createElement("input")
+    ralliesInput.type = "hidden"
+    ralliesInput.name = "rallies_autosave"
+    ralliesInput.value = JSON.stringify(data.rallies || [])
+    form.appendChild(ralliesInput)
 
     localStorage.removeItem(this.STORAGE_KEY)
     document.body.appendChild(form)

@@ -61,7 +61,34 @@
 
 <script>
   (function () {
-    function initScoreProgression() {
+    var abbrTip = null;
+
+    if (!window._abbrTipListenerAdded) {
+      window._abbrTipListenerAdded = true;
+
+      document.addEventListener('click', function (e) {
+        var cell = e.target.closest('.score-progression-cell-abbr');
+        if (!cell) {
+          if (abbrTip) { abbrTip.remove(); abbrTip = null; }
+          return;
+        }
+        if (abbrTip) abbrTip.remove();
+        abbrTip = document.createElement('div');
+        abbrTip.className = 'abbr-tooltip-fixed';
+        abbrTip.textContent = cell.dataset.label;
+        abbrTip.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
+        document.body.appendChild(abbrTip);
+        var h = abbrTip.offsetHeight;
+        var w = abbrTip.offsetWidth;
+        var top = Math.max(4, e.clientY - h - 8);
+        var left = Math.max(4, Math.min(e.clientX - w / 2, window.innerWidth - w - 4));
+        abbrTip.style.top = top + 'px';
+        abbrTip.style.left = left + 'px';
+        setTimeout(function () { if (abbrTip) { abbrTip.remove(); abbrTip = null; } }, 1500);
+      });
+    }
+
+    function initScrollHint() {
       document.querySelectorAll('.score-progression-scroll-wrapper').forEach(function (wrapper) {
         if (wrapper.scrollWidth > wrapper.clientWidth) {
           wrapper.classList.add('scrollable');
@@ -78,26 +105,13 @@
           });
         }
       });
-
-      document.querySelectorAll('.score-progression-cell-abbr').forEach(function (cell) {
-        cell.style.cursor = 'pointer';
-        cell.addEventListener('click', function () {
-          var existing = cell.querySelector('.abbr-tooltip');
-          if (existing) { existing.remove(); return; }
-          var tip = document.createElement('span');
-          tip.className = 'abbr-tooltip';
-          tip.textContent = cell.dataset.label;
-          cell.appendChild(tip);
-          setTimeout(function () { if (tip.parentNode) tip.remove(); }, 1500);
-        });
-      });
     }
 
-    document.addEventListener('turbo:load', initScoreProgression);
+    document.addEventListener('turbo:load', initScrollHint);
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initScoreProgression);
+      document.addEventListener('DOMContentLoaded', initScrollHint);
     } else {
-      initScoreProgression();
+      initScrollHint();
     }
   }());
 </script>

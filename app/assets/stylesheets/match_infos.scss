@@ -1052,22 +1052,22 @@ select {
 
 .score-progression-cell {
   cursor: default;
-  position: relative;
 }
 
-.abbr-tooltip {
-  position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
+.score-progression-cell-abbr {
+  cursor: pointer;
+}
+
+.abbr-tooltip-fixed {
+  position: fixed;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   white-space: nowrap;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 4px;
   pointer-events: none;
-  z-index: 10;
+  z-index: 9999;
 }
 
 .score-progression-cell-player {

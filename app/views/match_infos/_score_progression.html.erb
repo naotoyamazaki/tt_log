@@ -1,0 +1,119 @@
+<%
+  # ゲーム番号ごとにラリーデータをグループ化
+  rallies_by_game = match_info.rallies.order(:game_number, :sequence_number).group_by(&:game_number)
+%>
+
+<% rallies_by_game.each do |game_number, rallies| %>
+  <%
+    max_seq = rallies.map(&:sequence_number).max
+    rallies_map = rallies.index_by(&:sequence_number)
+    player_name = match_info.player.player_name
+    opponent_name = match_info.opponent.player_name
+  %>
+  <div class="score-progression-game mb-4">
+    <div class="score-progression-game-title"><%= game_number %>ゲーム目</div>
+    <div class="score-progression-scroll-wrapper">
+      <table class="score-progression-table">
+        <thead>
+          <tr>
+            <th class="score-progression-name-col"></th>
+            <% (1..max_seq).each do |seq| %>
+              <th class="score-progression-seq-col"><%= seq %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 選手（player）行 -->
+          <tr>
+            <td class="score-progression-name-cell score-progression-player-name"><%= player_name %></td>
+            <% (1..max_seq).each do |seq| %>
+              <% rally = rallies_map[seq] %>
+              <% if rally && rally.player? %>
+                <% info = batting_style_abbr_info(rally.batting_style) %>
+                <td class="score-progression-cell score-progression-cell-player score-progression-cell-abbr"
+                    data-label="<%= info[:label] %>"
+                    title="<%= info[:label] %>"><%= info[:abbr_ja] || info[:abbr] %></td>
+              <% else %>
+                <td class="score-progression-cell"></td>
+              <% end %>
+            <% end %>
+          </tr>
+          <!-- 相手（opponent）行 -->
+          <tr>
+            <td class="score-progression-name-cell score-progression-opponent-name"><%= opponent_name %></td>
+            <% (1..max_seq).each do |seq| %>
+              <% rally = rallies_map[seq] %>
+              <% if rally && rally.opponent? %>
+                <% info = batting_style_abbr_info(rally.batting_style) %>
+                <td class="score-progression-cell score-progression-cell-opponent score-progression-cell-abbr"
+                    data-label="<%= info[:label] %>"
+                    title="<%= info[:label] %>"><%= info[:abbr_ja] || info[:abbr] %></td>
+              <% else %>
+                <td class="score-progression-cell"></td>
+              <% end %>
+            <% end %>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<script>
+  (function () {
+    var abbrTip = null;
+
+    if (!window._abbrTipListenerAdded) {
+      window._abbrTipListenerAdded = true;
+
+      document.addEventListener('click', function (e) {
+        var cell = e.target.closest('.score-progression-cell-abbr');
+        if (!cell) {
+          if (abbrTip) { abbrTip.remove(); abbrTip = null; }
+          return;
+        }
+        if (abbrTip) abbrTip.remove();
+        abbrTip = document.createElement('div');
+        abbrTip.className = 'abbr-tooltip-fixed';
+        abbrTip.textContent = cell.dataset.label;
+        abbrTip.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
+        document.body.appendChild(abbrTip);
+        var h = abbrTip.offsetHeight;
+        var w = abbrTip.offsetWidth;
+        var top = Math.max(4, e.clientY - h - 8);
+        var left = Math.max(4, Math.min(e.clientX - w / 2, window.innerWidth - w - 4));
+        abbrTip.style.top = top + 'px';
+        abbrTip.style.left = left + 'px';
+        setTimeout(function () { if (abbrTip) { abbrTip.remove(); abbrTip = null; } }, 1500);
+      });
+    }
+
+    function initScrollHint() {
+      document.querySelectorAll('.score-progression-scroll-wrapper').forEach(function (wrapper) {
+        if (wrapper.scrollWidth > wrapper.clientWidth) {
+          wrapper.classList.add('scrollable');
+          setTimeout(function () {
+            wrapper.scrollTo({ left: 48, behavior: 'smooth' });
+            setTimeout(function () {
+              wrapper.scrollTo({ left: 0, behavior: 'smooth' });
+            }, 600);
+          }, 600);
+          wrapper.addEventListener('scroll', function () {
+            if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 2) {
+              wrapper.classList.remove('scrollable');
+            } else {
+              wrapper.classList.add('scrollable');
+            }
+          });
+        }
+      });
+    }
+
+    document.addEventListener('turbo:load', initScrollHint);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initScrollHint);
+    } else {
+      initScrollHint();
+    }
+  }());
+</script>

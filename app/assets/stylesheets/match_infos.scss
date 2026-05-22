@@ -974,3 +974,135 @@ select {
     gap: 0.5rem;
   }
 }
+
+/* 得点推移表 */
+.score-progression-game {
+  overflow: hidden;
+}
+
+.score-progression-game-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--tt-primary);
+  margin-bottom: 0.5rem;
+}
+
+.score-progression-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+
+  &.scrollable::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2rem;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.9));
+    pointer-events: none;
+  }
+}
+
+.score-progression-table {
+  border-collapse: collapse;
+  min-width: max-content;
+  font-size: 0.8rem;
+
+  th, td {
+    border: 1px solid var(--tt-border);
+    padding: 0.25rem 0.4rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: var(--tt-bg-muted);
+    color: var(--tt-text-sub);
+    font-weight: bold;
+    font-size: 0.75rem;
+    min-width: 2.5rem;
+  }
+}
+
+.score-progression-name-col {
+  min-width: 7rem;
+  text-align: left !important;
+}
+
+.score-progression-seq-col {
+  min-width: 2.5rem;
+}
+
+.score-progression-name-cell {
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: left !important;
+  padding-right: 0.75rem !important;
+  white-space: nowrap;
+}
+
+.score-progression-player-name {
+  color: var(--tt-primary);
+}
+
+.score-progression-opponent-name {
+  color: #ef4444;
+}
+
+.score-progression-cell {
+  cursor: default;
+}
+
+.score-progression-cell-abbr {
+  cursor: pointer;
+}
+
+.abbr-tooltip-fixed {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.score-progression-cell-player {
+  background-color: var(--tt-primary-light);
+  color: var(--tt-primary);
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.score-progression-cell-opponent {
+  background-color: #fee2e2;
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .score-progression-table {
+    font-size: 0.75rem;
+
+    th {
+      min-width: 2rem;
+      font-size: 0.7rem;
+    }
+  }
+
+  .score-progression-name-col {
+    min-width: 5.5rem;
+  }
+
+  .score-progression-seq-col {
+    min-width: 2rem;
+  }
+
+  .score-progression-name-cell {
+    font-size: 0.8rem;
+  }
+}

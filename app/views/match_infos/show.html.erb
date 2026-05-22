@@ -31,6 +31,38 @@
   </button>
 </div>
 
+<% if @match_info.rallies.any? %>
+<div class="modal fade" id="abbrListModal" tabindex="-1" aria-labelledby="abbrListModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="abbrListModalLabel">略称一覧</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-muted mb-2">表中の略称をタップすると技術名が表示されます</p>
+        <table class="table table-sm table-bordered mb-0">
+          <thead>
+            <tr>
+              <th>略称</th>
+              <th>技術名</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% ApplicationHelper::BATTING_STYLE_ABBR_MAP.each do |_key, info| %>
+              <tr>
+                <td><%= info[:abbr_ja] || info[:abbr] %></td>
+                <td><%= info[:label] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
+
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

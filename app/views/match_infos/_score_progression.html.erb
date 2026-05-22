@@ -31,7 +31,7 @@
               <% if rally && rally.player? %>
                 <% info = batting_style_abbr_info(rally.batting_style) %>
                 <td class="score-progression-cell score-progression-cell-player"
-                    title="<%= info[:label] %>"><%= info[:abbr] %></td>
+                    title="<%= info[:label] %>"><%= info[:abbr_ja] || info[:abbr] %></td>
               <% else %>
                 <td class="score-progression-cell"></td>
               <% end %>
@@ -45,7 +45,7 @@
               <% if rally && rally.opponent? %>
                 <% info = batting_style_abbr_info(rally.batting_style) %>
                 <td class="score-progression-cell score-progression-cell-opponent"
-                    title="<%= info[:label] %>"><%= info[:abbr] %></td>
+                    title="<%= info[:label] %>"><%= info[:abbr_ja] || info[:abbr] %></td>
               <% else %>
                 <td class="score-progression-cell"></td>
               <% end %>
@@ -56,3 +56,56 @@
     </div>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.score-progression-scroll-wrapper').forEach(function (wrapper) {
+      if (wrapper.scrollWidth > wrapper.clientWidth) {
+        wrapper.classList.add('scrollable');
+        setTimeout(function () {
+          wrapper.scrollLeft = 40;
+          setTimeout(function () {
+            wrapper.scrollLeft = 0;
+          }, 300);
+        }, 500);
+        wrapper.addEventListener('scroll', function () {
+          if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 2) {
+            wrapper.classList.remove('scrollable');
+          } else {
+            wrapper.classList.add('scrollable');
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<div class="modal fade" id="abbrListModal" tabindex="-1" aria-labelledby="abbrListModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="abbrListModalLabel">略称一覧</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-muted mb-2">表中の略称をタップすると技術名が表示されます</p>
+        <table class="table table-sm table-bordered mb-0">
+          <thead>
+            <tr>
+              <th>略称</th>
+              <th>技術名</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% ApplicationHelper::BATTING_STYLE_ABBR_MAP.each do |_key, info| %>
+              <tr>
+                <td><%= info[:abbr_ja] || info[:abbr] %></td>
+                <td><%= info[:label] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -990,6 +990,18 @@ select {
 .score-progression-scroll-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative;
+
+  &.scrollable::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2rem;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.9));
+    pointer-events: none;
+  }
 }
 
 .score-progression-table {

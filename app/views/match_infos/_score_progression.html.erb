@@ -93,9 +93,11 @@
         if (wrapper.scrollWidth > wrapper.clientWidth) {
           wrapper.classList.add('scrollable');
           setTimeout(function () {
-            wrapper.scrollLeft = 40;
-            setTimeout(function () { wrapper.scrollLeft = 0; }, 300);
-          }, 500);
+            wrapper.scrollTo({ left: 48, behavior: 'smooth' });
+            setTimeout(function () {
+              wrapper.scrollTo({ left: 0, behavior: 'smooth' });
+            }, 600);
+          }, 600);
           wrapper.addEventListener('scroll', function () {
             if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 2) {
               wrapper.classList.remove('scrollable');

@@ -57,8 +57,9 @@ RSpec.describe ChatgptService do
           content = JSON.parse(body_json).dig("messages", 1, "content")
           expect(content).to include("技術別得点効率")
           expect(content).to include("サーブ・レシーブ局面分析")
-          expect(content).to include("スコア状況別分析")
-          expect(content).to include("連続失点パターン")
+          expect(content).to include("ゲームごとの技術の流れ")
+          expect(content).to include("得点/失点ラッシュと試合パターン")
+          expect(content).to include("スコア状況別分析（接戦・デュース）")
         end
       end
 

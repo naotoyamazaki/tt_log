@@ -70,24 +70,71 @@ RSpec.describe RallyContextBuilder do
     end
   end
 
-  describe "#situation_stats_text" do
+  describe "#game_flow_text" do
     before do
-      # 序盤: 0-0 → close
-      create_rally(1, :player, :serve)  # 1-0
-      create_rally(2, :player, :serve)  # 2-0
-      create_rally(3, :player, :serve)  # 3-0 → leading from here
-      create_rally(4, :player, :serve)  # 4-0
-      create_rally(5, :opponent, :serve) # 4-1
+      create_rally(1, :player, :fore_drive_vs_topspin)
+      create_rally(2, :player, :fore_drive_vs_topspin)
+      create_rally(3, :opponent, :fore_push)
+      create_rally(4, :player, :serve)
     end
 
-    it "接戦とリード時の分類を含むこと" do
+    it "ゲーム番号とスコアを含むこと" do
+      result = described_class.new(match_info).game_flow_text
+      expect(result).to include("第1ゲーム")
+    end
+
+    it "得点技術と失点技術を含むこと" do
+      result = described_class.new(match_info).game_flow_text
+      expect(result).to include("得点技術")
+      expect(result).to include("失点技術")
+    end
+
+    it "対上回転フォアドライブが得点技術に含まれること" do
+      result = described_class.new(match_info).game_flow_text
+      expect(result).to include("対上回転フォアドライブ")
+    end
+  end
+
+  describe "#situation_stats_text" do
+    before do
+      # 0-0 → :tied → player wins → 1-0
+      create_rally(1, :player, :serve)
+      # 1-0 → :close_one → player wins → 2-0
+      create_rally(2, :player, :serve)
+      # 2-0 → :close_two → player wins → 3-0 → now leading
+      create_rally(3, :player, :serve)
+      # 3-0 → :leading → player wins → 4-0
+      create_rally(4, :player, :serve)
+      # 4-0 → :leading → opponent wins → 4-1
+      create_rally(5, :opponent, :serve)
+    end
+
+    it "同点時の分類を含むこと" do
       result = described_class.new(match_info).situation_stats_text
-      expect(result).to include("接戦（±2点差）")
+      expect(result).to include("同点時")
+    end
+
+    it "±1点差の分類を含むこと" do
+      result = described_class.new(match_info).situation_stats_text
+      expect(result).to include("±1点差（接戦）")
+    end
+
+    it "±2点差の分類を含むこと" do
+      result = described_class.new(match_info).situation_stats_text
+      expect(result).to include("±2点差（接戦）")
+    end
+
+    it "リード時の分類を含むこと" do
+      result = described_class.new(match_info).situation_stats_text
       expect(result).to include("リード時（+3点以上）")
     end
 
+    it "得点技術を含むこと" do
+      result = described_class.new(match_info).situation_stats_text
+      expect(result).to include("得点技術")
+    end
+
     it "デュース判定が正しいこと" do
-      # 10-10になる状況を作る
       game2 = create(:game, match_info: match_info, game_number: 2, first_server: :player)
       10.times { |i| create_rally(i + 1, :player, :serve, game2) }
       10.times { |i| create_rally(i + 11, :opponent, :serve, game2) }
@@ -98,7 +145,7 @@ RSpec.describe RallyContextBuilder do
     end
   end
 
-  describe "#momentum_text" do
+  describe "#streak_and_pattern_text" do
     before do
       create_rally(1, :opponent, :serve)
       create_rally(2, :opponent, :serve)
@@ -106,16 +153,27 @@ RSpec.describe RallyContextBuilder do
       create_rally(4, :opponent, :serve)
       create_rally(5, :player, :fore_drive_vs_topspin)
       create_rally(6, :player, :fore_drive_vs_topspin)
+      create_rally(7, :player, :fore_drive_vs_topspin)
     end
 
     it "最大連続失点を返すこと" do
-      result = described_class.new(match_info).momentum_text
+      result = described_class.new(match_info).streak_and_pattern_text
       expect(result).to include("最大連続失点: 4本")
     end
 
+    it "最大連続得点を返すこと" do
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).to include("最大連続得点: 3本")
+    end
+
     it "立て直し技術を返すこと" do
-      result = described_class.new(match_info).momentum_text
+      result = described_class.new(match_info).streak_and_pattern_text
       expect(result).to include("対上回転フォアドライブ")
+    end
+
+    it "ゲームパターンを含むこと" do
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).to include("ゲームパターン")
     end
   end
 
@@ -128,16 +186,20 @@ RSpec.describe RallyContextBuilder do
       expect { described_class.new(match_info).serve_situation_text }.not_to raise_error
     end
 
+    it "game_flow_textが例外を出さないこと" do
+      expect { described_class.new(match_info).game_flow_text }.not_to raise_error
+    end
+
     it "situation_stats_textが例外を出さないこと" do
       expect { described_class.new(match_info).situation_stats_text }.not_to raise_error
     end
 
-    it "momentum_textが例外を出さないこと" do
-      expect { described_class.new(match_info).momentum_text }.not_to raise_error
+    it "streak_and_pattern_textが例外を出さないこと" do
+      expect { described_class.new(match_info).streak_and_pattern_text }.not_to raise_error
     end
 
-    it "momentum_textが連続失点0本を返すこと" do
-      result = described_class.new(match_info).momentum_text
+    it "streak_and_pattern_textが連続失点0本を返すこと" do
+      result = described_class.new(match_info).streak_and_pattern_text
       expect(result).to include("最大連続失点: 0本")
     end
   end

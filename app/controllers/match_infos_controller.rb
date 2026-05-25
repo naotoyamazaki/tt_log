@@ -12,8 +12,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     if @match_info.advice.present?
       @advice = @match_info.advice
     else
-      game_data = @match_info.game_by_game_score_data
-      advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json, game_data)
+      advice = ChatgptService.get_advice(@match_info)
       @match_info.update_advice(advice)
       @advice = advice
     end
@@ -100,11 +99,9 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
   def update
     set_players
-    original_batting_score_data = fetch_batting_score_data(@match_info)
 
     if update_match_info
       @match_info.games.each(&:recalculate_scores)
-      update_advice_if_needed(original_batting_score_data)
       update_response(success: true, notice: t('notices.match_info_updated'))
     else
       update_response(success: false)
@@ -261,25 +258,6 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
   def update_match_info
     @match_info.update(match_info_params.merge(player_id: @player.id, opponent_id: @opponent.id))
-  end
-
-  def fetch_batting_score_data(match_info)
-    match_info.scores.where.not(batting_style: :receive).map do |score|
-      { batting_style: score.batting_style, score: score.score, lost_score: score.lost_score }
-    end
-  end
-
-  def update_advice_if_needed(original_data)
-    return unless batting_score_changed?(original_data)
-
-    @match_info.update_advice(nil)
-    game_data = @match_info.game_by_game_score_data
-    advice = ChatgptService.get_advice(@match_info.batting_score_data.to_json, game_data)
-    @match_info.update_advice(advice)
-  end
-
-  def batting_score_changed?(original_data)
-    original_data != fetch_batting_score_data(@match_info)
   end
 
   def update_response(success:, notice: nil)

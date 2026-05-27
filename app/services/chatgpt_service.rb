@@ -23,9 +23,9 @@ class ChatgptService
       ]
 
       {
-        model: "gpt-4o-mini",
+        model: "gpt-5.4-mini",
         messages: messages,
-        max_tokens: 1200,
+        max_completion_tokens: 2500,
         temperature: 0.7
       }
     end
@@ -33,7 +33,9 @@ class ChatgptService
     def system_prompt
       "あなたは経験豊富な卓球コーチです。\n" \
         "提供されるデータは実際の試合を1ラリーずつ記録したものです。\n" \
-        "データを深く分析し、選手が次の練習・試合で即座に実践できる具体的なアドバイスを作成してください。"
+        "データを深く分析し、選手が次の練習・試合で即座に実践できる具体的なアドバイスを作成してください。\n" \
+        "なお、ネットorエッジはラッキー・アンラッキーな偶発的ポイントであるため、アドバイスの内容には含めないでください。\n" \
+        "6項目のアドバイスを出力したら必ず終了してください。追加提案や続きを促す文言は一切出力しないでください。"
     end
 
     def generate_headers(api_key)
@@ -83,6 +85,16 @@ class ChatgptService
         【試合結果】
         #{match_info.game_count_score}（ゲームスコア: #{game_score_text}）
 
+        #{rally_stats_text(builder)}
+
+        #{advice_format_instruction}
+
+        アドバイス:
+      TEXT
+    end
+
+    def rally_stats_text(builder)
+      <<~TEXT.chomp
         【技術別得点効率（高勝率→低勝率）】
         #{builder.technique_efficiency_text}
 
@@ -97,16 +109,19 @@ class ChatgptService
 
         【スコア状況別分析（接戦・デュース）】
         #{builder.situation_stats_text}
+      TEXT
+    end
 
-        以下の6項目について、具体的なアドバイスを作成してください:
-        1. サーブ戦術の改善
-        2. レシーブ戦術の改善
-        3. 得意技術の活用戦略
-        4. 弱点技術の改善方法
-        5. 試合の流れ・ラッシュへの対処法（得点/失点が続くときの傾向と先行逃げ切り・逆転の対策）
-        6. 接戦・デュースで勝ち切るための技術選択
-
-        アドバイス:
+    def advice_format_instruction
+      <<~TEXT.chomp
+        以下の6項目について、具体的なアドバイスを作成してください。
+        各項目は必ず下記のフォーマットで出力し、項目と項目の間は必ず1行空けてください:
+        1.【サーブ戦術の改善】アドバイス文
+        2.【レシーブ戦術の改善】アドバイス文
+        3.【得意技術の活用戦略】アドバイス文
+        4.【弱点技術の改善方法】アドバイス文
+        5.【試合の流れ・ラッシュへの対処法】アドバイス文
+        6.【接戦・デュースで勝ち切るための技術選択】アドバイス文
       TEXT
     end
 

@@ -1,4 +1,6 @@
 class RallyContextBuilder # rubocop:disable Metrics/ClassLength
+  NET_OR_EDGE_STYLE = 'net_or_edge'.freeze
+
   BATTING_STYLE_NAMES = {
     'serve' => 'サーブ',
     'receive' => 'レシーブ',
@@ -85,7 +87,9 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
   private
 
   def sorted_technique_stats
-    raw = @rallies.group_by(&:batting_style).map { |style, rs| technique_stat(style, rs) }
+    raw = @rallies.group_by(&:batting_style)
+      .reject { |style, _| style.to_s == NET_OR_EDGE_STYLE }
+      .map { |style, rs| technique_stat(style, rs) }
     raw.sort_by { |_, _, _, rate| -rate }
   end
 
@@ -116,14 +120,19 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
   end
 
   def build_game_technique_line(game_rallies, winner_side, label)
-    filtered = game_rallies.select { |r| r.winner == winner_side }
-    top = filtered.group_by(&:batting_style)
-      .map { |s, rs| [style_name(s), rs.size] }
-      .sort_by { |_, n| -n }
-      .first(3)
+    top = technique_top3(game_rallies, winner_side)
     return "  #{label}: なし" if top.empty?
 
     "  #{label}: #{top.map { |n, c| "#{n}(#{c})" }.join(', ')}"
+  end
+
+  def technique_top3(game_rallies, winner_side)
+    game_rallies
+      .select { |r| r.winner == winner_side && r.batting_style.to_s != NET_OR_EDGE_STYLE }
+      .group_by(&:batting_style)
+      .map { |s, rs| [style_name(s), rs.size] }
+      .sort_by { |_, n| -n }
+      .first(3)
   end
 
   def tally_granular_situation_stats
@@ -141,7 +150,7 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
       situation = classify_granular_situation(p_score, o_score)
       if rally.winner == 'player'
         stats[situation][0] += 1
-        stats[situation][2][style_name(rally.batting_style)] += 1
+        stats[situation][2][style_name(rally.batting_style)] += 1 unless rally.batting_style.to_s == NET_OR_EDGE_STYLE
       else
         stats[situation][1] += 1
       end
@@ -191,7 +200,9 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
         local_streak += 1
         max_streak = [max_streak, local_streak].max
       else
-        breakers[style_name(rally.batting_style)] += 1 if local_streak >= 2
+        if local_streak >= 2 && rally.batting_style.to_s != NET_OR_EDGE_STYLE
+          breakers[style_name(rally.batting_style)] += 1
+        end
         local_streak = 0
       end
     end

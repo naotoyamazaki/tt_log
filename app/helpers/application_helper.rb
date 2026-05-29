@@ -37,7 +37,7 @@ module ApplicationHelper
     aggregated = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
       build_aggregated_score_data(batting_style, scores)
     end
-    aggregated.sort_by { |entry| -entry[:rate] }
+    aggregated.sort_by { |entry| [-entry[:rate], -(entry[:score] + entry[:lost_score])] }
   end
 
   private

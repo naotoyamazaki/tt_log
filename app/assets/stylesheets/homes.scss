@@ -124,6 +124,15 @@ section p {
   margin-right: 10px;
 }
 
+/* CTAセクション「分析スタート」ボタン */
+.btn-start-cta {
+  color: var(--tt-primary-dark);
+}
+
+.btn-start-cta:hover {
+  color: var(--tt-primary-dark);
+}
+
 /* CTAセクション */
 .start-section {
   background-color: var(--tt-primary);

@@ -1,6 +1,8 @@
 <% match_info.games.order(:game_number).each do |game| %>
-  <% game_scores = game.scores.where.not(batting_style: :receive).order(:batting_style) %>
+  <% game_scores = game.scores.where.not(batting_style: :receive) %>
   <% next if game_scores.empty? %>
+  <% ranked_data = calculate_batting_score_data(game_scores).reject { |d| d[:score] == 0 && d[:lost_score] == 0 } %>
+  <% next if ranked_data.empty? %>
 
   <% won = game.player_score > game.opponent_score %>
   <div class="game-breakdown-card mb-4">
@@ -20,15 +22,12 @@
           </tr>
         </thead>
         <tbody>
-          <% game_scores.each do |score| %>
-            <% next if score.score == 0 && score.lost_score == 0 %>
-            <% total = score.score + score.lost_score %>
-            <% rate = total > 0 ? (score.score.to_f / total * 100).round : 0 %>
+          <% ranked_data.each do |data| %>
             <tr>
-              <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, score.batting_style)) %></td>
-              <td><%= score.score %></td>
-              <td><%= score.lost_score %></td>
-              <td><%= "#{rate}%" %></td>
+              <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, data[:batting_style])) %></td>
+              <td><%= data[:score] %></td>
+              <td><%= data[:lost_score] %></td>
+              <td><%= "#{data[:rate]}%" %></td>
             </tr>
           <% end %>
         </tbody>
@@ -45,15 +44,12 @@
         </tr>
       </thead>
       <tbody>
-        <% game_scores.each do |score| %>
-          <% next if score.score == 0 && score.lost_score == 0 %>
-          <% total = score.score + score.lost_score %>
-          <% rate = total > 0 ? (score.score.to_f / total * 100).round : 0 %>
+        <% ranked_data.each do |data| %>
           <tr>
-            <td><%= Score.human_enum_name(:batting_style, score.batting_style) %></td>
-            <td class="text-end"><%= score.score %></td>
-            <td class="text-end"><%= score.lost_score %></td>
-            <td class="text-end"><%= "#{rate}%" %></td>
+            <td><%= Score.human_enum_name(:batting_style, data[:batting_style]) %></td>
+            <td class="text-end"><%= data[:score] %></td>
+            <td class="text-end"><%= data[:lost_score] %></td>
+            <td class="text-end"><%= "#{data[:rate]}%" %></td>
           </tr>
         <% end %>
       </tbody>

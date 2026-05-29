@@ -28,8 +28,8 @@ RSpec.describe "MatchInfos#update", type: :request do
     }
   end
 
-  it "打撃スコアが変わったら advice を nil にし、ChatgptService を呼び出して新しいアドバイスを保存する" do
-    allow(ChatgptService).to receive(:get_advice).and_return("新しいアドバイス")
+  it "打撃スコアが変わっても advice はそのまま維持され、ChatgptService を呼び出さない" do
+    allow(ChatgptService).to receive(:get_advice)
 
     patch match_info_path(match_info), params: {
       match_info: valid_base_params.merge(
@@ -47,8 +47,8 @@ RSpec.describe "MatchInfos#update", type: :request do
 
     expect(response).to have_http_status(:found).or have_http_status(:see_other)
     match_info.reload
-    expect(match_info.advice).to eq("新しいアドバイス")
-    expect(ChatgptService).to have_received(:get_advice)
+    expect(match_info.advice).to eq("old")
+    expect(ChatgptService).not_to have_received(:get_advice)
   end
 
   it "打撃スコアが変わらなければ advice を維持し、ChatgptService を呼び出さない" do

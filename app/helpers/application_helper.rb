@@ -40,6 +40,24 @@ module ApplicationHelper
     aggregated.sort_by { |entry| [-entry[:rate], -(entry[:score] + entry[:lost_score])] }
   end
 
+  def player_scoring_techniques(batting_scores)
+    aggregated = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
+      build_aggregated_score_data(batting_style, scores)
+    end
+    aggregated
+      .reject { |entry| entry[:score].zero? && entry[:lost_score].zero? }
+      .sort_by { |entry| [-entry[:score], -entry[:lost_score]] }
+  end
+
+  def opponent_scoring_techniques(batting_scores)
+    aggregated = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
+      build_opponent_score_data(batting_style, scores)
+    end
+    aggregated
+      .reject { |entry| entry[:score].zero? && entry[:lost_score].zero? }
+      .sort_by { |entry| [-entry[:lost_score], -entry[:score]] }
+  end
+
   private
 
   def build_aggregated_score_data(batting_style, scores)
@@ -48,5 +66,12 @@ module ApplicationHelper
     total = total_score + total_lost
     rate = total.positive? ? (total_score.to_f / total * 100).round : 0
     { batting_style: batting_style, rate: rate, score: total_score, lost_score: total_lost }
+  end
+
+  def build_opponent_score_data(batting_style, scores)
+    data = build_aggregated_score_data(batting_style, scores)
+    total = data[:score] + data[:lost_score]
+    opponent_rate = total.positive? ? (data[:lost_score].to_f / total * 100).round : 0
+    data.merge(opponent_rate: opponent_rate)
   end
 end

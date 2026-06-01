@@ -47,48 +47,27 @@
     <div class="section-card p-4 shadow-sm mb-4">
       <div class="ranking-section">
         <h3 class="section-title mb-3">技術ごとの得点率ランキング</h3>
-        <div class="overflow-auto d-md-none">
-          <table class="table text-nowrap">
-            <thead>
-              <tr>
-                <th>技術</th>
-                <th>得点</th>
-                <th>失点</th>
-                <th>得点率</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% calculate_batting_score_data(@batting_scores).each do |data| %>
-                <tr>
-                  <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, data[:batting_style])) %></td>
-                  <td><%= data[:score] %></td>
-                  <td><%= data[:lost_score] %></td>
-                  <td><%= "#{data[:rate]}%" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-        <table class="table d-none d-md-table">
-          <thead>
-            <tr>
-              <th>技術</th>
-              <th class="text-end">得点数</th>
-              <th class="text-end">失点数</th>
-              <th class="text-end">得点率</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% calculate_batting_score_data(@batting_scores).each do |data| %>
-              <tr>
-                <td><%= Score.human_enum_name(:batting_style, data[:batting_style]) %></td>
-                <td class="text-end"><%= data[:score] %></td>
-                <td class="text-end"><%= data[:lost_score] %></td>
-                <td class="text-end"><%= "#{data[:rate]}%" %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+        <% has_rally_data = @match_info.games.any? { |game| game.rallies.any? } %>
+
+        <% if has_rally_data %>
+          <h4 class="h5 mb-3">自分の得点技術ランキング</h4>
+          <%= render partial: "batting_score_table",
+                     locals: { data: player_scoring_techniques(@batting_scores),
+                               rate_key: :rate,
+                               rate_label: "得点率" } %>
+
+          <h4 class="h5 mt-4 mb-3">相手の得点技術ランキング</h4>
+          <%= render partial: "batting_score_table",
+                     locals: { data: opponent_scoring_techniques(@batting_scores),
+                               rate_key: :opponent_rate,
+                               rate_label: "相手得点率" } %>
+        <% else %>
+          <% ranked_data = calculate_batting_score_data(@batting_scores) %>
+          <%= render partial: "batting_score_table",
+                     locals: { data: ranked_data,
+                               rate_key: :rate,
+                               rate_label: "得点率" } %>
+        <% end %>
 
       </div>
     </div>

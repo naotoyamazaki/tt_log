@@ -1,8 +1,11 @@
 <% match_info.games.order(:game_number).each do |game| %>
-  <% game_scores = game.scores.where.not(batting_style: :receive) %>
+  <% game_scores = game.scores.reject { |score| score.batting_style == "receive" } %>
   <% next if game_scores.empty? %>
-  <% ranked_data = calculate_batting_score_data(game_scores).reject { |d| d[:score] == 0 && d[:lost_score] == 0 } %>
-  <% next if ranked_data.empty? %>
+  <% has_rally_data = game.rallies.any? %>
+  <% ranked_data = calculate_batting_score_data(game_scores).reject { |data| data[:score].zero? && data[:lost_score].zero? } %>
+  <% player_ranked_data = player_scoring_techniques(game_scores) %>
+  <% opponent_ranked_data = opponent_scoring_techniques(game_scores) %>
+  <% next if has_rally_data ? player_ranked_data.empty? && opponent_ranked_data.empty? : ranked_data.empty? %>
 
   <% won = game.player_score > game.opponent_score %>
   <div class="game-breakdown-card mb-4">
@@ -11,48 +14,23 @@
       <span class="game-breakdown-score"><%= game.player_score %>-<%= game.opponent_score %></span>
     </div>
 
-    <div class="overflow-auto d-md-none">
-      <table class="table text-nowrap mb-0">
-        <thead>
-          <tr>
-            <th>技術</th>
-            <th>得点</th>
-            <th>失点</th>
-            <th>得点率</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% ranked_data.each do |data| %>
-            <tr>
-              <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, data[:batting_style])) %></td>
-              <td><%= data[:score] %></td>
-              <td><%= data[:lost_score] %></td>
-              <td><%= "#{data[:rate]}%" %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+    <% if has_rally_data %>
+      <h4 class="h6 mt-3 mb-2">自分の得点技術</h4>
+      <%= render partial: "batting_score_table",
+                 locals: { data: player_ranked_data,
+                           rate_key: :rate,
+                           rate_label: "得点率" } %>
 
-    <table class="table d-none d-md-table mb-0">
-      <thead>
-        <tr>
-          <th>技術</th>
-          <th class="text-end">得点数</th>
-          <th class="text-end">失点数</th>
-          <th class="text-end">得点率</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% ranked_data.each do |data| %>
-          <tr>
-            <td><%= Score.human_enum_name(:batting_style, data[:batting_style]) %></td>
-            <td class="text-end"><%= data[:score] %></td>
-            <td class="text-end"><%= data[:lost_score] %></td>
-            <td class="text-end"><%= "#{data[:rate]}%" %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+      <h4 class="h6 mt-4 mb-2">相手の得点技術</h4>
+      <%= render partial: "batting_score_table",
+                 locals: { data: opponent_ranked_data,
+                           rate_key: :opponent_rate,
+                           rate_label: "相手得点率" } %>
+    <% else %>
+      <%= render partial: "batting_score_table",
+                 locals: { data: ranked_data,
+                           rate_key: :rate,
+                           rate_label: "得点率" } %>
+    <% end %>
   </div>
 <% end %>

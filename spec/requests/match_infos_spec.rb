@@ -41,6 +41,42 @@ RSpec.describe "MatchInfos", type: :request do
       end
     end
 
+    context "ラリーベースのゲームデータがある場合" do
+      let!(:game) { create(:game, match_info: match_info, game_number: 1, player_score: 2, opponent_score: 1) }
+
+      before do
+        create(:score, match_info: match_info, game: game, batting_style: :serve, score: 1, lost_score: 0)
+        create(:score, match_info: match_info, game: game, batting_style: :fore_push, score: 1, lost_score: 1)
+        create(:rally, match_info: match_info, game: game, game_number: 1,
+                       sequence_number: 1, winner: :player, batting_style: :serve)
+        allow(ChatgptService).to receive(:get_advice).and_return("テストアドバイス")
+      end
+
+      it "自分と相手の得点技術ランキングが表示されること" do
+        get match_info_path(match_info)
+
+        expect(response.body).to include("自分の得点技術ランキング")
+        expect(response.body).to include("相手の得点技術ランキング")
+        expect(response.body).to include("相手得点率")
+      end
+    end
+
+    context "旧形式のゲームデータがある場合" do
+      let!(:game) { create(:game, match_info: match_info, game_number: 1, player_score: 3, opponent_score: 1) }
+
+      before do
+        create(:score, match_info: match_info, game: game, batting_style: :serve, score: 3, lost_score: 1)
+        allow(ChatgptService).to receive(:get_advice).and_return("テストアドバイス")
+      end
+
+      it "従来の単一ランキングが表示されること" do
+        get match_info_path(match_info)
+
+        expect(response.body).to include("技術ごとの得点率ランキング")
+        expect(response.body).not_to include("相手の得点技術ランキング")
+      end
+    end
+
     context "ゲームデータがない場合" do
       it "ゲーム別スコアセクションが表示されないこと" do
         get match_info_path(match_info)

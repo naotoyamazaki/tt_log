@@ -1,0 +1,43 @@
+<div class="overflow-auto d-md-none">
+  <table class="table text-nowrap mb-0">
+    <thead>
+      <tr>
+        <th>技術</th>
+        <th>得点</th>
+        <th>失点</th>
+        <th><%= rate_label %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.each do |score_data| %>
+        <tr>
+          <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, score_data[:batting_style])) %></td>
+          <td><%= score_data[:score] %></td>
+          <td><%= score_data[:lost_score] %></td>
+          <td><%= "#{score_data[rate_key]}%" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<table class="table d-none d-md-table mb-0">
+  <thead>
+    <tr>
+      <th>技術</th>
+      <th class="text-end">得点数</th>
+      <th class="text-end">失点数</th>
+      <th class="text-end"><%= rate_label %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% data.each do |score_data| %>
+      <tr>
+        <td><%= Score.human_enum_name(:batting_style, score_data[:batting_style]) %></td>
+        <td class="text-end"><%= score_data[:score] %></td>
+        <td class="text-end"><%= score_data[:lost_score] %></td>
+        <td class="text-end"><%= "#{score_data[rate_key]}%" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

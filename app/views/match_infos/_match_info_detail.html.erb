@@ -50,17 +50,23 @@
         <% has_rally_data = @match_info.games.any? { |game| game.rallies.any? } %>
 
         <% if has_rally_data %>
-          <h4 class="h5 mb-3">自分の得点技術ランキング</h4>
+          <div class="ranking-section-header ranking-section-header-player mb-2">
+            <i class="bi bi-person-fill me-1"></i>自分の得点技術ランキング
+          </div>
           <%= render partial: "batting_score_table",
                      locals: { data: player_scoring_techniques(@batting_scores),
                                rate_key: :rate,
-                               rate_label: "得点率" } %>
+                               rate_label: "得点率",
+                               theme: :player } %>
 
-          <h4 class="h5 mt-4 mb-3">相手の得点技術ランキング</h4>
+          <div class="ranking-section-header ranking-section-header-opponent mt-4 mb-2">
+            <i class="bi bi-shield-fill me-1"></i>相手の得点技術ランキング
+          </div>
           <%= render partial: "batting_score_table",
                      locals: { data: opponent_scoring_techniques(@batting_scores),
                                rate_key: :opponent_rate,
-                               rate_label: "相手得点率" } %>
+                               rate_label: "相手得点率",
+                               theme: :opponent } %>
         <% else %>
           <% ranked_data = calculate_batting_score_data(@batting_scores) %>
           <%= render partial: "batting_score_table",

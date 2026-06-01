@@ -15,17 +15,23 @@
     </div>
 
     <% if has_rally_data %>
-      <h4 class="h6 mt-3 mb-2">自分の得点技術</h4>
+      <div class="ranking-section-header ranking-section-header-player mt-3 mb-2">
+        <i class="bi bi-person-fill me-1"></i>自分の得点技術
+      </div>
       <%= render partial: "batting_score_table",
                  locals: { data: player_ranked_data,
                            rate_key: :rate,
-                           rate_label: "得点率" } %>
+                           rate_label: "得点率",
+                           theme: :player } %>
 
-      <h4 class="h6 mt-4 mb-2">相手の得点技術</h4>
+      <div class="ranking-section-header ranking-section-header-opponent mt-3 mb-2">
+        <i class="bi bi-shield-fill me-1"></i>相手の得点技術
+      </div>
       <%= render partial: "batting_score_table",
                  locals: { data: opponent_ranked_data,
                            rate_key: :opponent_rate,
-                           rate_label: "相手得点率" } %>
+                           rate_label: "相手得点率",
+                           theme: :opponent } %>
     <% else %>
       <%= render partial: "batting_score_table",
                  locals: { data: ranked_data,

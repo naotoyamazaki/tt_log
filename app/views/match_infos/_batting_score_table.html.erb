@@ -1,20 +1,32 @@
+<%
+  theme = local_assigns.fetch(:theme, :legacy)
+  bar_class      = theme == :opponent ? 'rate-bar-fill-opponent' : 'rate-bar-fill-player'
+  rank_cls       = theme == :opponent ? 'rank-badge-opponent'    : 'rank-badge-player'
+  header_cls     = case theme
+                   when :player   then 'ranking-table-player-header'
+                   when :opponent then 'ranking-table-opponent-header'
+                   end
+%>
+
 <div class="overflow-auto d-md-none">
   <table class="table text-nowrap mb-0">
-    <thead>
+    <thead class="<%= header_cls %>">
       <tr>
+        <th class="text-center rank-col">#</th>
         <th>技術</th>
-        <th>得点</th>
-        <th>失点</th>
-        <th><%= rate_label %></th>
+        <th class="text-center">得点</th>
+        <th class="text-center">失点</th>
+        <th class="text-center"><%= rate_label %></th>
       </tr>
     </thead>
     <tbody>
-      <% data.each do |score_data| %>
+      <% data.each.with_index(1) do |score_data, rank| %>
         <tr>
+          <td class="text-center"><span class="rank-badge <%= rank_cls %>"><%= rank %></span></td>
           <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, score_data[:batting_style])) %></td>
-          <td><%= score_data[:score] %></td>
-          <td><%= score_data[:lost_score] %></td>
-          <td><%= "#{score_data[rate_key]}%" %></td>
+          <td class="text-center"><%= score_data[:score] %></td>
+          <td class="text-center"><%= score_data[:lost_score] %></td>
+          <td class="text-center"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
         </tr>
       <% end %>
     </tbody>
@@ -22,21 +34,29 @@
 </div>
 
 <table class="table d-none d-md-table mb-0">
-  <thead>
+  <thead class="<%= header_cls %>">
     <tr>
-      <th>技術</th>
+      <th class="text-center rank-col">#</th>
+      <th>技術名</th>
       <th class="text-end">得点数</th>
       <th class="text-end">失点数</th>
       <th class="text-end"><%= rate_label %></th>
+      <th class="rate-bar-col"></th>
     </tr>
   </thead>
   <tbody>
-    <% data.each do |score_data| %>
+    <% data.each.with_index(1) do |score_data, rank| %>
       <tr>
+        <td class="text-center"><span class="rank-badge <%= rank_cls %>"><%= rank %></span></td>
         <td><%= Score.human_enum_name(:batting_style, score_data[:batting_style]) %></td>
         <td class="text-end"><%= score_data[:score] %></td>
         <td class="text-end"><%= score_data[:lost_score] %></td>
-        <td class="text-end"><%= "#{score_data[rate_key]}%" %></td>
+        <td class="text-end"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
+        <td class="align-middle">
+          <div class="rate-bar-container">
+            <div class="<%= bar_class %>" style="width: <%= score_data[rate_key] %>%;"></div>
+          </div>
+        </td>
       </tr>
     <% end %>
   </tbody>

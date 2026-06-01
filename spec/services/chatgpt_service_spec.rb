@@ -63,11 +63,11 @@ RSpec.describe ChatgptService do
         end
       end
 
-      it "max_tokensが1200であること" do
+      it "max_completion_tokensが2500であること" do
         described_class.get_advice(match_info)
         expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
           body = JSON.parse(body_json)
-          expect(body["max_tokens"]).to eq(1200)
+          expect(body["max_completion_tokens"]).to eq(2500)
         end
       end
     end

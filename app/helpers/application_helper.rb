@@ -42,14 +42,14 @@ module ApplicationHelper
 
   def player_scoring_techniques(batting_scores)
     entries = aggregate_entries(batting_scores, :build_aggregated_score_data)
-      .reject { |e| e[:score].zero? && e[:lost_score].zero? }
+      .reject { |e| e[:score].zero? }
       .sort_by { |e| [-e[:score], -e[:lost_score]] }
     append_share(entries, :score)
   end
 
   def opponent_scoring_techniques(batting_scores)
     entries = aggregate_entries(batting_scores, :build_opponent_score_data)
-      .reject { |e| e[:score].zero? && e[:lost_score].zero? }
+      .reject { |e| e[:lost_score].zero? }
       .sort_by { |e| [-e[:lost_score], -e[:score]] }
     append_share(entries, :lost_score)
   end

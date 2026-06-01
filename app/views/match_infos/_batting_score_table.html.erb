@@ -19,7 +19,9 @@
         <th class="text-center rank-col">#</th>
         <th>技術</th>
         <th class="text-center">得点数</th>
-        <% unless is_new %>
+        <% if is_new %>
+          <th class="text-center">使用率</th>
+        <% else %>
           <th class="text-center">失点数</th>
           <th class="text-center"><%= rate_label %></th>
         <% end %>
@@ -31,7 +33,9 @@
           <td class="text-center"><span class="rank-badge <%= rank_cls %>"><%= rank %></span></td>
           <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, score_data[:batting_style])) %></td>
           <td class="text-center"><%= score_data[score_key] %></td>
-          <% unless is_new %>
+          <% if is_new %>
+            <td class="text-center"><strong><%= score_data[:share] %>%</strong></td>
+          <% else %>
             <td class="text-center"><%= score_data[:lost_score] %></td>
             <td class="text-center"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
           <% end %>
@@ -51,7 +55,7 @@
         <th class="text-end">失点数</th>
         <th class="text-end"><%= rate_label %></th>
       <% end %>
-      <th class="rate-bar-col"></th>
+      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? '使用率' : '' %></th>
     </tr>
   </thead>
   <tbody>
@@ -65,9 +69,14 @@
           <td class="text-end"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
         <% end %>
         <td class="align-middle">
-          <div class="rate-bar-container">
-            <% bar_width = is_new ? score_data[:share] : score_data[rate_key] %>
-            <div class="<%= bar_class %>" style="width: <%= bar_width %>%;"></div>
+          <% bar_width = is_new ? score_data[:share] : score_data[rate_key] %>
+          <div class="d-flex align-items-center gap-2">
+            <div class="rate-bar-container flex-grow-1">
+              <div class="<%= bar_class %>" style="width: <%= bar_width %>%;"></div>
+            </div>
+            <% if is_new %>
+              <span class="rate-bar-pct"><%= bar_width %>%</span>
+            <% end %>
           </div>
         </td>
       </tr>

@@ -73,7 +73,7 @@ RSpec.describe "MatchInfos", type: :request do
       it "従来の単一ランキングが表示されること" do
         get match_info_path(match_info)
 
-        expect(response.body).to include("技術ごとの得点率ランキング")
+        expect(response.body).to include("技術ごとの得点数ランキング")
         expect(response.body).not_to include("相手の得点技術ランキング")
       end
     end

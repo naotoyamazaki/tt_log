@@ -39,14 +39,14 @@
       </div>
 
       <div class="section-card p-4 shadow-sm mb-4">
-        <h2 class="section-title mb-3">ゲーム別得点率</h2>
+        <h2 class="section-title mb-3">ゲーム別得点数</h2>
         <%= render partial: "game_score_breakdown", locals: { match_info: match_info } %>
       </div>
     <% end %>
 
     <div class="section-card p-4 shadow-sm mb-4">
       <div class="ranking-section">
-        <h3 class="section-title mb-3">技術ごとの得点率ランキング</h3>
+        <h3 class="section-title mb-3">技術ごとの得点数ランキング</h3>
         <% has_rally_data = @match_info.games.any? { |game| game.rallies.any? } %>
 
         <% if has_rally_data %>

@@ -1,11 +1,15 @@
 <%
-  theme = local_assigns.fetch(:theme, :legacy)
-  bar_class      = theme == :opponent ? 'rate-bar-fill-opponent' : 'rate-bar-fill-player'
-  rank_cls       = theme == :opponent ? 'rank-badge-opponent'    : 'rank-badge-player'
-  header_cls     = case theme
-                   when :player   then 'ranking-table-player-header'
-                   when :opponent then 'ranking-table-opponent-header'
-                   end
+  theme      = local_assigns.fetch(:theme, :legacy)
+  is_new     = theme == :player || theme == :opponent
+  rate_key   = local_assigns.fetch(:rate_key, nil)
+  rate_label = local_assigns.fetch(:rate_label, nil)
+  bar_class  = theme == :opponent ? 'rate-bar-fill-opponent' : 'rate-bar-fill-player'
+  rank_cls   = theme == :opponent ? 'rank-badge-opponent'    : 'rank-badge-player'
+  header_cls = case theme
+               when :player   then 'ranking-table-player-header'
+               when :opponent then 'ranking-table-opponent-header'
+               end
+  score_key  = theme == :opponent ? :lost_score : :score
 %>
 
 <div class="overflow-auto d-md-none">
@@ -14,9 +18,11 @@
       <tr>
         <th class="text-center rank-col">#</th>
         <th>技術</th>
-        <th class="text-center">得点</th>
-        <th class="text-center">失点</th>
-        <th class="text-center"><%= rate_label %></th>
+        <th class="text-center">得点数</th>
+        <% unless is_new %>
+          <th class="text-center">失点数</th>
+          <th class="text-center"><%= rate_label %></th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -24,9 +30,11 @@
         <tr>
           <td class="text-center"><span class="rank-badge <%= rank_cls %>"><%= rank %></span></td>
           <td><%= abbreviate_batting_style(Score.human_enum_name(:batting_style, score_data[:batting_style])) %></td>
-          <td class="text-center"><%= score_data[:score] %></td>
-          <td class="text-center"><%= score_data[:lost_score] %></td>
-          <td class="text-center"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
+          <td class="text-center"><%= score_data[score_key] %></td>
+          <% unless is_new %>
+            <td class="text-center"><%= score_data[:lost_score] %></td>
+            <td class="text-center"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
@@ -39,8 +47,10 @@
       <th class="text-center rank-col">#</th>
       <th>技術名</th>
       <th class="text-end">得点数</th>
-      <th class="text-end">失点数</th>
-      <th class="text-end"><%= rate_label %></th>
+      <% unless is_new %>
+        <th class="text-end">失点数</th>
+        <th class="text-end"><%= rate_label %></th>
+      <% end %>
       <th class="rate-bar-col"></th>
     </tr>
   </thead>
@@ -49,12 +59,15 @@
       <tr>
         <td class="text-center"><span class="rank-badge <%= rank_cls %>"><%= rank %></span></td>
         <td><%= Score.human_enum_name(:batting_style, score_data[:batting_style]) %></td>
-        <td class="text-end"><%= score_data[:score] %></td>
-        <td class="text-end"><%= score_data[:lost_score] %></td>
-        <td class="text-end"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
+        <td class="text-end"><%= score_data[score_key] %></td>
+        <% unless is_new %>
+          <td class="text-end"><%= score_data[:lost_score] %></td>
+          <td class="text-end"><strong><%= "#{score_data[rate_key]}%" %></strong></td>
+        <% end %>
         <td class="align-middle">
           <div class="rate-bar-container">
-            <div class="<%= bar_class %>" style="width: <%= score_data[rate_key] %>%;"></div>
+            <% bar_width = is_new ? score_data[:share] : score_data[rate_key] %>
+            <div class="<%= bar_class %>" style="width: <%= bar_width %>%;"></div>
           </div>
         </td>
       </tr>

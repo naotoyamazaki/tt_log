@@ -55,8 +55,6 @@
           </div>
           <%= render partial: "batting_score_table",
                      locals: { data: player_scoring_techniques(@batting_scores),
-                               rate_key: :rate,
-                               rate_label: "得点率",
                                theme: :player } %>
 
           <div class="ranking-section-header ranking-section-header-opponent mt-4 mb-2">
@@ -64,8 +62,6 @@
           </div>
           <%= render partial: "batting_score_table",
                      locals: { data: opponent_scoring_techniques(@batting_scores),
-                               rate_key: :opponent_rate,
-                               rate_label: "相手得点率",
                                theme: :opponent } %>
         <% else %>
           <% ranked_data = calculate_batting_score_data(@batting_scores) %>

@@ -57,7 +57,8 @@ RSpec.describe "MatchInfos", type: :request do
 
         expect(response.body).to include("自分の得点技術ランキング")
         expect(response.body).to include("相手の得点技術ランキング")
-        expect(response.body).to include("相手得点率")
+        expect(response.body).to include("ranking-table-player-header")
+        expect(response.body).to include("ranking-table-opponent-header")
       end
     end
 

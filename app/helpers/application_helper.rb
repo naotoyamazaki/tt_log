@@ -41,24 +41,34 @@ module ApplicationHelper
   end
 
   def player_scoring_techniques(batting_scores)
-    aggregated = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
-      build_aggregated_score_data(batting_style, scores)
-    end
-    aggregated
-      .reject { |entry| entry[:score].zero? && entry[:lost_score].zero? }
-      .sort_by { |entry| [-entry[:score], -entry[:lost_score]] }
+    entries = aggregate_entries(batting_scores, :build_aggregated_score_data)
+      .reject { |e| e[:score].zero? && e[:lost_score].zero? }
+      .sort_by { |e| [-e[:score], -e[:lost_score]] }
+    append_share(entries, :score)
   end
 
   def opponent_scoring_techniques(batting_scores)
-    aggregated = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
-      build_opponent_score_data(batting_style, scores)
-    end
-    aggregated
-      .reject { |entry| entry[:score].zero? && entry[:lost_score].zero? }
-      .sort_by { |entry| [-entry[:lost_score], -entry[:score]] }
+    entries = aggregate_entries(batting_scores, :build_opponent_score_data)
+      .reject { |e| e[:score].zero? && e[:lost_score].zero? }
+      .sort_by { |e| [-e[:lost_score], -e[:score]] }
+    append_share(entries, :lost_score)
   end
 
   private
+
+  def aggregate_entries(batting_scores, builder)
+    batting_scores.group_by(&:batting_style).map do |batting_style, scores|
+      send(builder, batting_style, scores)
+    end
+  end
+
+  def append_share(entries, score_key)
+    total = entries.sum { |e| e[score_key] }
+    entries.map do |e|
+      share = total.positive? ? (e[score_key].to_f / total * 100).round : 0
+      e.merge(share: share)
+    end
+  end
 
   def build_aggregated_score_data(batting_style, scores)
     total_score = scores.sum(&:score)

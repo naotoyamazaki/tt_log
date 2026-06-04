@@ -34,7 +34,7 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
 
   def technique_efficiency_text
     sorted_technique_stats
-      .map { |name, wins, losses, rate| "#{name}: 得点 #{wins} / 失点 #{losses}（勝率 #{rate}%）" }
+      .map { |name, wins, losses, rate| "#{name}: 自分得点 #{wins} / 相手得点 #{losses}（自分の得点率 #{rate}%）" }
       .join("\n")
   end
 
@@ -56,8 +56,8 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
 
       result_label = game.player_score > game.opponent_score ? "勝ち" : "負け"
       lines << "第#{game_num}ゲーム（#{game.player_score}-#{game.opponent_score} #{result_label}）:"
-      lines << build_game_technique_line(game_rallies, 'player', '得点技術')
-      lines << build_game_technique_line(game_rallies, 'opponent', '失点技術')
+      lines << build_game_technique_line(game_rallies, 'player', '自分の得点技術')
+      lines << build_game_technique_line(game_rallies, 'opponent', '相手の得点技術')
     end
     lines.join("\n")
   end

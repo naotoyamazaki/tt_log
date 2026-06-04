@@ -31,7 +31,7 @@ RSpec.describe RallyContextBuilder do
 
     it "得点と失点を含むこと" do
       result = described_class.new(match_info).technique_efficiency_text
-      expect(result).to include("得点 3 / 失点 1")
+      expect(result).to include("自分得点 3 / 相手得点 1")
     end
   end
 
@@ -83,10 +83,10 @@ RSpec.describe RallyContextBuilder do
       expect(result).to include("第1ゲーム")
     end
 
-    it "得点技術と失点技術を含むこと" do
+    it "自分の得点技術と相手の得点技術を含むこと" do
       result = described_class.new(match_info).game_flow_text
-      expect(result).to include("得点技術")
-      expect(result).to include("失点技術")
+      expect(result).to include("自分の得点技術")
+      expect(result).to include("相手の得点技術")
     end
 
     it "対上回転フォアドライブが得点技術に含まれること" do

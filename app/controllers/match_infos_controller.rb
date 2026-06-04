@@ -239,7 +239,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   def set_match_info_scores
-    @match_info = MatchInfo.find(params[:id])
+    @match_info = current_user.match_infos.includes(games: [:rallies, :scores]).find(params[:id])
     @batting_scores = @match_info.scores.where.not(batting_style: :receive)
   end
 

@@ -6,8 +6,11 @@ class MatchInfo < ApplicationRecord
   accepts_nested_attributes_for :scores, update_only: true
   has_many :games, dependent: :destroy
   has_many :rallies, dependent: :destroy
+  has_many :serve_receive_patterns, dependent: :destroy
   accepts_nested_attributes_for :games
   attr_accessor :player_name, :opponent_name
+
+  enum :analysis_type, { technique: 0, serve_receive: 1 }
 
   validates :match_date, presence: true
   validates :match_name, presence: true

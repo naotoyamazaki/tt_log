@@ -18,6 +18,9 @@ Rails.application.routes.draw do
       delete :undo_game
       post :interrupt
       post :restore_autosave
+      get  :new_serve_receive
+      post :create_serve_receive
+      post :end_game_serve_receive
     end
   end
 

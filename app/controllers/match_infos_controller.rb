@@ -121,6 +121,50 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     render partial: "match_infos/autocomplete_results", locals: { candidates: candidates.first(10) }
   end
 
+  def new_serve_receive
+    @match_info = MatchInfo.new
+    @match_info.analysis_type = :serve_receive
+    @draft_id = nil
+    @saved_games = []
+    @current_game_number = 1
+    @max_games = 5
+    @partial_scores = {}
+  end
+
+  def create_serve_receive # rubocop:disable Metrics/AbcSize
+    player, opponent = find_or_create_players
+    @match_info = draft_or_new_match_info(player, opponent)
+    @match_info.analysis_type = :serve_receive
+
+    respond_to do |format|
+      if @match_info.save
+        create_game_from_patterns(@match_info) if params[:patterns].present?
+        @match_info.update(draft: false)
+        format.html { redirect_to match_info_url(@match_info), notice: t('notices.match_info_created') }
+        format.json { render :show, status: :created, location: @match_info }
+      else
+        set_form_state_for_serve_receive_error
+        format.html { render :new_serve_receive, status: :unprocessable_entity }
+        format.json { render json: @match_info.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def end_game_serve_receive
+    player, opponent = find_or_create_players
+    @match_info = draft_or_new_match_info(player, opponent)
+    @match_info.analysis_type = :serve_receive
+
+    unless @match_info.valid?
+      set_form_state_for_serve_receive_error
+      render :new_serve_receive, status: :unprocessable_entity
+      return
+    end
+
+    persist_and_finalize_game_serve_receive
+    redirect_to new_serve_receive_match_infos_path(draft_id: @match_info.id)
+  end
+
   private
 
   def persist_and_finalize_game
@@ -363,6 +407,65 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     )
     match_info.partial_game_data = JSON.parse(params[:game_scores] || '{}')
     match_info
+  end
+
+  def persist_and_finalize_game_serve_receive
+    @match_info.save! unless @match_info.persisted?
+    @match_info.save! if @match_info.changed?
+    create_game_from_patterns(@match_info) if params[:patterns].present?
+    @match_info.update!(draft: true, partial_game_data: nil)
+  end
+
+  def set_form_state_for_serve_receive_error
+    @draft_id = params[:draft_id]
+    @max_games = @match_info.match_format || 5
+    if @match_info.persisted?
+      @saved_games = @match_info.games.order(:game_number)
+      @current_game_number = @saved_games.count + 1
+    else
+      @saved_games = []
+      @current_game_number = 1
+    end
+  end
+
+  def create_game_from_patterns(match_info)
+    patterns_data = JSON.parse(params[:patterns])
+    return unless patterns_data.is_a?(Array) && patterns_data.any?
+
+    game = create_game_record_from_patterns(match_info, patterns_data)
+    persist_pattern_records(match_info, game, patterns_data, game.game_number)
+  rescue JSON::ParserError
+    nil
+  end
+
+  def create_game_record_from_patterns(match_info, patterns)
+    game_number = match_info.games.count + 1
+    player_total = patterns.count { |p| p['won'] == true }
+    opponent_total = patterns.count { |p| p['won'] == false }
+    first_server = params[:first_server].presence
+    match_info.games.create!(
+      game_number: game_number, player_score: player_total, opponent_score: opponent_total,
+      first_server: first_server
+    )
+  end
+
+  def persist_pattern_records(match_info, game, patterns, game_number)
+    patterns.each_with_index do |p, i|
+      spins = p['serve_spins']
+      spins = spins.is_a?(Array) ? spins.map(&:to_i) : []
+      match_info.serve_receive_patterns.create!(
+        game_id: game.id,
+        game_number: game_number,
+        sequence_number: i + 1,
+        origin: p['origin'],
+        serve_length: p['serve_length'].presence,
+        serve_spins: spins,
+        receive_style: p['receive_style'].presence,
+        attack_style: p['attack_style'],
+        decided_at: p['decided_at'],
+        won: p['won']
+      )
+    end
   end
 
   def basic_match_info_params

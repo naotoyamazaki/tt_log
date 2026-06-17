@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_18_052507) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_18_060001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_18_052507) do
     t.integer "match_format", default: 5
     t.boolean "draft", default: false, null: false
     t.jsonb "partial_game_data"
+    t.integer "analysis_type", default: 0, null: false
     t.index ["opponent_id"], name: "index_match_infos_on_opponent_id"
     t.index ["player_id"], name: "index_match_infos_on_player_id"
     t.index ["user_id"], name: "index_match_infos_on_user_id"
@@ -75,6 +76,25 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_18_052507) do
     t.index ["match_info_id"], name: "index_scores_on_match_info_id"
   end
 
+  create_table "serve_receive_patterns", force: :cascade do |t|
+    t.bigint "match_info_id", null: false
+    t.bigint "game_id"
+    t.integer "game_number", null: false
+    t.integer "sequence_number", null: false
+    t.integer "origin", null: false
+    t.integer "serve_length"
+    t.integer "serve_spins", default: [], array: true
+    t.integer "receive_style"
+    t.integer "attack_style", null: false
+    t.integer "decided_at", null: false
+    t.boolean "won", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_serve_receive_patterns_on_game_id"
+    t.index ["match_info_id", "game_number", "sequence_number"], name: "index_srp_on_match_info_game_sequence", unique: true
+    t.index ["match_info_id"], name: "index_serve_receive_patterns_on_match_info_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "crypted_password"
@@ -100,4 +120,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_18_052507) do
   add_foreign_key "rallies", "match_infos"
   add_foreign_key "scores", "games"
   add_foreign_key "scores", "match_infos"
+  add_foreign_key "serve_receive_patterns", "games"
+  add_foreign_key "serve_receive_patterns", "match_infos"
 end

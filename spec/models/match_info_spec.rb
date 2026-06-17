@@ -83,4 +83,24 @@ RSpec.describe MatchInfo, type: :model do
       end
     end
   end
+
+  describe "analysis_type enum" do
+    it "デフォルトでtechniqueであること" do
+      match_info = FactoryBot.create(:match_info)
+      expect(match_info.technique?).to be true
+    end
+
+    it "serve_receiveに変更できること" do
+      match_info = FactoryBot.create(:match_info)
+      match_info.serve_receive!
+      expect(match_info.serve_receive?).to be true
+    end
+  end
+
+  describe "serve_receive_patterns関連" do
+    it "has_many serve_receive_patternsを持つこと" do
+      match_info = FactoryBot.create(:match_info)
+      expect(match_info).to respond_to(:serve_receive_patterns)
+    end
+  end
 end

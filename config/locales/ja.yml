@@ -36,6 +36,24 @@ ja:
           fore_smash: フォアスマッシュ
           back_smash: バックスマッシュ
           net_or_edge: ネットorエッジ
+      serve_receive_pattern:
+        origin:
+          serve: 自分のサーブ
+          receive: 自分のレシーブ
+        serve_length:
+          long: ロング
+          half_long: ハーフロング
+          short: ショート
+        decided_at:
+          attack_ball: 3・4球目
+          follow_ball: 5・6球目
+          rally: ラリー
+        serve_spin:
+          backspin: 下回転
+          topspin: 上回転
+          no_spin: ナックル
+          pro_sidespin: 順横回転
+          anti_sidespin: 逆横回転
   defaults:
     password_reset: "パスワードリセットのご案内"
   notices:

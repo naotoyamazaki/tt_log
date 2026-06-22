@@ -15,7 +15,10 @@ class ServeReceivePattern < ApplicationRecord
     back_block: 12, fore_counter: 13,
     back_counter: 14,
     fore_smash: 19, back_smash: 20,
-    net_or_edge: 21
+    net_or_edge: 21,
+    service_ace: 22,
+    receive_ace: 23,
+    receive_miss: 24
   }, prefix: :attack
 
   # receive_style は attack_style と同一のキー・整数マッピングを持つため enum 定義は行わない。

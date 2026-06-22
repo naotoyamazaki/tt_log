@@ -73,6 +73,34 @@ RSpec.describe ServeReceivePattern, type: :model do
       allowed = ServeReceivePattern.allowed_attack_styles
       expect(allowed).to include('fore_drive_vs_topspin', 'fore_drive_vs_backspin')
     end
+
+    it "service_aceが含まれること" do
+      expect(ServeReceivePattern.allowed_attack_styles).to include('service_ace')
+    end
+
+    it "receive_aceが含まれること" do
+      expect(ServeReceivePattern.allowed_attack_styles).to include('receive_ace')
+    end
+  end
+
+  describe "attack_style enum" do
+    it "service_aceが22番として定義されていること" do
+      expect(ServeReceivePattern.attack_styles['service_ace']).to eq(22)
+    end
+
+    it "receive_aceが23番として定義されていること" do
+      expect(ServeReceivePattern.attack_styles['receive_ace']).to eq(23)
+    end
+
+    it "receive_missが24番として定義されていること" do
+      expect(ServeReceivePattern.attack_styles['receive_miss']).to eq(24)
+    end
+  end
+
+  describe ".allowed_attack_styles (receive_miss)" do
+    it "receive_missが含まれること" do
+      expect(ServeReceivePattern.allowed_attack_styles).to include('receive_miss')
+    end
   end
 
   describe "serve_spinsの配列保存" do

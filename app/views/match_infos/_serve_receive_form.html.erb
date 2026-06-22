@@ -1,0 +1,101 @@
+
+<div class="form-container fade-in-up">
+  <%
+    last_game = saved_games.last
+    initial_first_server = if last_game&.first_server
+                             last_game.first_server == 'player' ? 'opponent' : 'player'
+                           end
+  %>
+  <%= form_with(model: match_info, url: create_serve_receive_match_infos_path, method: :post,
+      data: { controller: "scoreboard serve-receive-input",
+              "serve-receive-input-initial-first-server-value": initial_first_server.to_s }) do |form| %>
+
+    <%= hidden_field_tag :draft_id, draft_id if draft_id.present? %>
+
+    <%= render 'shared/error_messages', object: @match_info %>
+
+    <div class="row mb-3">
+      <div class="column">
+        <%= form.label :match_date, "🗓️日付" %>
+        <%= form.date_field :match_date, class: "form-control rounded-pill shadow-sm" %>
+      </div>
+
+      <div class="column">
+        <%= form.label :match_name, "🏆大会名" %>
+        <%= form.text_field :match_name, class: "form-control rounded-pill shadow-sm",
+            placeholder: "出場した大会名を入力" %>
+      </div>
+    </div>
+
+    <% if draft_id.nil? %>
+      <div class="row mb-3">
+        <div class="column">
+          <%= form.label :match_format, "🎮試合形式（ゲームマッチ数）" %>
+          <%= form.select :match_format, [[3, 3], [5, 5], [7, 7]],
+              { selected: 5 },
+              class: "form-select",
+              data: { action: "change->scoreboard#changeFormat" } %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="row mb-3">
+      <div class="column">
+        <%= form.label :player_name, "👤選手名" %>
+        <%= form.text_field :player_name,
+            class: "form-control rounded-pill shadow-sm",
+            placeholder: "分析する選手名を入力",
+            data: { scoreboard_target: "playerNameInput", action: "input->scoreboard#updateNames" } %>
+      </div>
+
+      <div class="column">
+        <%= form.label :opponent_name, "👤対戦相手名" %>
+        <%= form.text_field :opponent_name,
+            class: "form-control rounded-pill shadow-sm",
+            placeholder: "対戦相手の名前を入力",
+            data: { scoreboard_target: "opponentNameInput", action: "input->scoreboard#updateNames" } %>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :memo, "🗒️メモ" %>
+      <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm",
+          placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>
+    </div>
+
+    <div class="analysis-header mb-4 p-3 rounded">
+      <h3 class="text-center">サーブ・レシーブ入力</h3>
+      <div>
+        試合動画を見ながら、1本ずつサーブ・レシーブの内容と結果を入力してください。<br>
+        サーブの長さ・回転・3球目技術、レシーブ技術・4球目技術と結果を記録します。
+      </div>
+    </div>
+
+    <%= render 'match_infos/scoreboard', saved_games: saved_games, max_games: max_games %>
+
+    <%= render 'match_infos/serve_receive_input' %>
+
+    <input type="hidden" name="patterns" data-serve-receive-input-target="serialized" value="">
+    <input type="hidden" name="first_server" data-serve-receive-input-target="firstServerField" value="">
+
+    <div class="center-text">
+      <% if current_game_number <= max_games %>
+        <%= form.submit "#{current_game_number}ゲーム目終了",
+            formaction: end_game_serve_receive_match_infos_path,
+            class: "btn btn-secondary px-4 py-2 mt-4 me-2 rounded-pill shadow",
+            data: { "serve-receive-input-target": "endGameBtn" } %>
+      <% end %>
+      <%= form.submit "🚀 試合を分析する",
+          class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
+    </div>
+
+    <% if draft_id.present? && saved_games.any? %>
+      <div class="center-text mt-3">
+        <%= link_to "↩ 前のゲームに戻る",
+            undo_game_match_infos_path(draft_id: draft_id),
+            data: { turbo_method: "delete" },
+            class: "btn btn-outline-warning" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

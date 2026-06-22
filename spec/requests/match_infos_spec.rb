@@ -349,4 +349,95 @@ RSpec.describe "MatchInfos", type: :request do
       expect(response).to redirect_to(match_infos_path)
     end
   end
+
+  describe "GET /match_infos/new_serve_receive" do
+    it "200を返すこと" do
+      get new_serve_receive_match_infos_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "未ログインの場合はリダイレクトされること" do
+      delete logout_path
+      get new_serve_receive_match_infos_path
+      expect(response).to have_http_status(:redirect)
+    end
+  end
+
+  describe "POST /match_infos/create_serve_receive" do
+    let(:patterns_data) do
+      [
+        { 'origin' => 'serve', 'serve_length' => 'short', 'serve_spins' => [0],
+          'receive_style' => nil, 'attack_style' => 'fore_drive_vs_backspin',
+          'decided_at' => 'attack_ball', 'won' => true },
+        { 'origin' => 'receive', 'serve_length' => nil, 'serve_spins' => [],
+          'receive_style' => 'chiquita', 'attack_style' => 'back_drive_vs_topspin',
+          'decided_at' => 'follow_ball', 'won' => false }
+      ]
+    end
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(
+          player_name: "選手A",
+          opponent_name: "選手B"
+        ),
+        patterns: patterns_data.to_json,
+        first_server: 'player'
+      }
+    end
+
+    it "ServeReceivePattern レコードが作成されること" do
+      expect do
+        post create_serve_receive_match_infos_path, params: params
+      end.to change(ServeReceivePattern, :count).by(2)
+    end
+
+    it "MatchInfo が analysis_type: serve_receive で作成されること" do
+      post create_serve_receive_match_infos_path, params: params
+      expect(MatchInfo.last.analysis_type).to eq('serve_receive')
+    end
+
+    it "未ログインの場合はリダイレクトされること" do
+      delete logout_path
+      post create_serve_receive_match_infos_path, params: params
+      expect(response).to have_http_status(:redirect)
+    end
+  end
+
+  describe "POST /match_infos/end_game_serve_receive" do
+    let(:patterns_data) do
+      Array.new(13) do |i|
+        { 'origin' => 'serve', 'serve_length' => 'short', 'serve_spins' => [0],
+          'receive_style' => nil, 'attack_style' => 'fore_drive_vs_backspin',
+          'decided_at' => 'attack_ball', 'won' => i < 11 }
+      end
+    end
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(
+          player_name: "選手A",
+          opponent_name: "選手B"
+        ),
+        patterns: patterns_data.to_json,
+        first_server: 'player'
+      }
+    end
+
+    it "Game が作成されること" do
+      expect do
+        post end_game_serve_receive_match_infos_path, params: params
+      end.to change(Game, :count).by(1)
+    end
+
+    it "ServeReceivePattern が作成されること" do
+      expect do
+        post end_game_serve_receive_match_infos_path, params: params
+      end.to change(ServeReceivePattern, :count).by(13)
+    end
+
+    it "new_serve_receive フォームへリダイレクトすること" do
+      post end_game_serve_receive_match_infos_path, params: params
+      draft = MatchInfo.last
+      expect(response).to redirect_to(new_serve_receive_match_infos_path(draft_id: draft.id))
+    end
+  end
 end

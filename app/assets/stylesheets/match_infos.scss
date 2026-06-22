@@ -720,8 +720,18 @@ select {
   }
 }
 
+.rally-result-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .rally-winner-btn {
-  flex: 1;
+  width: 100%;
   padding: 0.875rem 1rem;
   font-size: 1rem;
   font-weight: bold;
@@ -767,10 +777,27 @@ select {
   color: var(--tt-text);
   transition: all 0.15s ease;
 
-  &:hover {
+  &:hover, &.active {
     background: var(--tt-primary);
     color: #fff;
     border-color: var(--tt-primary);
+  }
+}
+
+.rally-style-btn--ace {
+  font-weight: bold;
+}
+
+.rally-style-btn--miss {
+  font-weight: bold;
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #ef4444;
+
+  &:hover {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
   }
 }
 

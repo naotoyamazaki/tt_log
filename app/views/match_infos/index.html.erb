@@ -1,8 +1,8 @@
 <h1 class="center-text">📝 試合分析一覧</h1>
 
 <div class="d-flex justify-content-center gap-2 mb-3">
-  <%= link_to "試合分析を開始", new_match_info_path, class: "btn btn-success" %>
   <%= link_to "サーブ・レシーブ分析を開始", new_serve_receive_match_infos_path, class: "btn btn-primary" %>
+  <%= link_to "技術別得点率分析を開始", new_match_info_path, class: "btn btn-success" %>
 </div>
 
 <div data-controller="auto-save" data-auto-save-page-value="index"

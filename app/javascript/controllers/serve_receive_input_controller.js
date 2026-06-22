@@ -20,7 +20,10 @@ const BATTING_STYLE_NAMES = {
   back_counter: 'バックカウンター',
   fore_smash: 'フォアスマッシュ',
   back_smash: 'バックスマッシュ',
-  net_or_edge: 'ネットorエッジ'
+  net_or_edge: 'ネットorエッジ',
+  service_ace: 'サービスエース',
+  receive_ace: 'レシーブエース',
+  receive_miss: 'レシーブミス'
 }
 
 const ATTACK_STYLES = Object.keys(BATTING_STYLE_NAMES).filter(s => s !== 'serve' && s !== 'receive')
@@ -140,6 +143,7 @@ export default class extends Controller {
       if (this.hasStepReceiveAttackTarget) this.stepReceiveAttackTarget.classList.remove('d-none')
     } else if (step === 'result') {
       if (this.hasStepResultTarget) this.stepResultTarget.classList.remove('d-none')
+      this.updateResultButtonLabels()
     }
   }
 
@@ -159,6 +163,10 @@ export default class extends Controller {
     const spin = parseInt(event.currentTarget.dataset.spin)
     const idx = this.selectedSpins.indexOf(spin)
     if (idx === -1) {
+      const exclusions = { 0: 1, 1: 0, 3: 4, 4: 3 }
+      if (exclusions[spin] !== undefined) {
+        this.selectedSpins = this.selectedSpins.filter(s => s !== exclusions[spin])
+      }
       this.selectedSpins.push(spin)
     } else {
       this.selectedSpins.splice(idx, 1)
@@ -199,7 +207,7 @@ export default class extends Controller {
     const won = event.currentTarget.dataset.won === 'true'
     const decidedAt = event.currentTarget.dataset.decidedAt
 
-    const pattern = {
+    this._commitPattern({
       origin: this.draft.origin,
       serve_length: this.draft.serve_length || null,
       serve_spins: this.draft.serve_spins || [],
@@ -207,16 +215,50 @@ export default class extends Controller {
       attack_style: this.draft.attack_style,
       decided_at: decidedAt,
       won: won
-    }
+    })
+  }
 
+  selectServiceAce() {
+    this._commitPattern({
+      origin: this.draft.origin,
+      serve_length: this.draft.serve_length || null,
+      serve_spins: this.draft.serve_spins || [],
+      receive_style: null,
+      attack_style: 'service_ace',
+      decided_at: 'attack_ball',
+      won: true
+    })
+  }
+
+  selectReceiveAce() {
+    this._commitPattern({
+      origin: this.draft.origin,
+      serve_length: null,
+      serve_spins: [],
+      receive_style: this.draft.receive_style || null,
+      attack_style: 'receive_ace',
+      decided_at: 'attack_ball',
+      won: true
+    })
+  }
+
+  selectReceiveMiss() {
+    this._commitPattern({
+      origin: this.draft.origin,
+      serve_length: null,
+      serve_spins: [],
+      receive_style: this.draft.receive_style || null,
+      attack_style: 'receive_miss',
+      decided_at: 'attack_ball',
+      won: false
+    })
+  }
+
+  _commitPattern(pattern) {
     this.patterns.push(pattern)
     this.draft = {}
     this.selectedSpins = []
-
-    // すべてのステップを隠す
     this.showStep('origin')
-    // origin step は即座に次の状態に進む（サーバーに従って自動）
-
     this.renderPatternList()
     this.updateScore()
     this.updateEndGameButton()
@@ -260,16 +302,20 @@ export default class extends Controller {
   // ========== レンダリング ==========
 
   renderAttackButtons() {
-    const html = ATTACK_STYLES.map(style => {
+    const regularStyles = ATTACK_STYLES.filter(s => s !== 'service_ace' && s !== 'receive_ace' && s !== 'receive_miss')
+
+    const serviceAceBtn = `<button type="button" class="btn rally-style-btn rally-style-btn--ace"
+      data-action="click->serve-receive-input#selectServiceAce">サービスエース</button>`
+    const serveHtml = serviceAceBtn + regularStyles.map(style => {
       const name = BATTING_STYLE_NAMES[style] || style
       return `<button type="button" class="btn rally-style-btn"
         data-action="click->serve-receive-input#selectServeAttack"
         data-style="${style}">${name}</button>`
     }).join('')
 
-    if (this.hasServeAttackButtonsTarget) this.serveAttackButtonsTarget.innerHTML = html
+    if (this.hasServeAttackButtonsTarget) this.serveAttackButtonsTarget.innerHTML = serveHtml
 
-    const receiveHtml = ATTACK_STYLES.map(style => {
+    const receiveHtml = regularStyles.map(style => {
       const name = BATTING_STYLE_NAMES[style] || style
       return `<button type="button" class="btn rally-style-btn"
         data-action="click->serve-receive-input#selectReceiveStyle"
@@ -278,7 +324,11 @@ export default class extends Controller {
 
     if (this.hasReceiveStyleButtonsTarget) this.receiveStyleButtonsTarget.innerHTML = receiveHtml
 
-    const receiveAttackHtml = ATTACK_STYLES.map(style => {
+    const receiveAceBtn = `<button type="button" class="btn rally-style-btn rally-style-btn--ace"
+      data-action="click->serve-receive-input#selectReceiveAce">レシーブエース</button>`
+    const receiveMissBtn = `<button type="button" class="btn rally-style-btn rally-style-btn--miss"
+      data-action="click->serve-receive-input#selectReceiveMiss">レシーブミス</button>`
+    const receiveAttackHtml = receiveAceBtn + receiveMissBtn + regularStyles.map(style => {
       const name = BATTING_STYLE_NAMES[style] || style
       return `<button type="button" class="btn rally-style-btn"
         data-action="click->serve-receive-input#selectReceiveAttack"
@@ -316,6 +366,32 @@ export default class extends Controller {
     }).join('')
 
     this.patternListTarget.innerHTML = items
+  }
+
+  updateResultButtonLabels() {
+    if (!this.hasStepResultTarget) return
+    const isReceive = this.draft.origin === 'receive'
+    const labels = isReceive
+      ? {
+          'true-attack_ball': '4球目で自分が得点',
+          'false-attack_ball': '4球目で自分が失点',
+          'true-follow_ball': '6球目で自分が得点',
+          'false-follow_ball': '6球目で自分が失点',
+          'true-rally': '7球目以降で得点',
+          'false-rally': '7球目以降で失点'
+        }
+      : {
+          'true-attack_ball': '3球目で自分が得点',
+          'false-attack_ball': '3球目ミスで失点',
+          'true-follow_ball': '5球目で自分が得点',
+          'false-follow_ball': '5球目ミスで失点',
+          'true-rally': '7球目以降で得点',
+          'false-rally': '7球目以降で失点'
+        }
+    this.stepResultTarget.querySelectorAll('[data-decided-at]').forEach(btn => {
+      const key = `${btn.dataset.won}-${btn.dataset.decidedAt}`
+      if (labels[key]) btn.textContent = labels[key]
+    })
   }
 
   updateScore() {

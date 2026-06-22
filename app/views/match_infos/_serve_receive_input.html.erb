@@ -79,7 +79,7 @@
 
   <%# 3球目技術選択（origin=serve のとき） %>
   <div class="rally-step d-none" data-serve-receive-input-target="stepServeAttack">
-    <div class="rally-step-title mb-2">3球目は？（決まった技術）</div>
+    <div class="rally-step-title mb-2">3球目は？</div>
     <div class="rally-style-buttons" data-serve-receive-input-target="serveAttackButtons">
       <%# JS で動的に描画 %>
     </div>
@@ -103,7 +103,7 @@
 
   <%# 4球目技術選択（origin=receive のとき） %>
   <div class="rally-step d-none" data-serve-receive-input-target="stepReceiveAttack">
-    <div class="rally-step-title mb-2">4球目は？（決まった技術）</div>
+    <div class="rally-step-title mb-2">4球目は？</div>
     <div class="rally-style-buttons" data-serve-receive-input-target="receiveAttackButtons">
       <%# JS で動的に描画 %>
     </div>
@@ -113,39 +113,39 @@
     </div>
   </div>
 
-  <%# 結果6ボタン %>
+  <%# 結果6ボタン — 2列3行 %>
   <div class="rally-step d-none" data-serve-receive-input-target="stepResult">
     <div class="rally-step-title mb-2">結果は？</div>
-    <div class="rally-winner-buttons">
+    <div class="rally-result-buttons">
       <button type="button" class="btn rally-winner-btn rally-winner-player"
               data-action="click->serve-receive-input#selectResult"
               data-won="true" data-decided-at="attack_ball">
-        自分が得点（攻撃）
-      </button>
-      <button type="button" class="btn rally-winner-btn rally-winner-player"
-              data-action="click->serve-receive-input#selectResult"
-              data-won="true" data-decided-at="follow_ball">
-        自分が得点（続球）
-      </button>
-      <button type="button" class="btn rally-winner-btn rally-winner-player"
-              data-action="click->serve-receive-input#selectResult"
-              data-won="true" data-decided-at="rally">
-        自分が得点（ラリー）
+        3球目で自分が得点
       </button>
       <button type="button" class="btn rally-winner-btn rally-winner-opponent"
               data-action="click->serve-receive-input#selectResult"
               data-won="false" data-decided-at="attack_ball">
-        相手が得点（攻撃）
+        3球目ミスで失点
+      </button>
+      <button type="button" class="btn rally-winner-btn rally-winner-player"
+              data-action="click->serve-receive-input#selectResult"
+              data-won="true" data-decided-at="follow_ball">
+        5球目で自分が得点
       </button>
       <button type="button" class="btn rally-winner-btn rally-winner-opponent"
               data-action="click->serve-receive-input#selectResult"
               data-won="false" data-decided-at="follow_ball">
-        相手が得点（続球）
+        5球目ミスで失点
+      </button>
+      <button type="button" class="btn rally-winner-btn rally-winner-player"
+              data-action="click->serve-receive-input#selectResult"
+              data-won="true" data-decided-at="rally">
+        7球目以降で得点
       </button>
       <button type="button" class="btn rally-winner-btn rally-winner-opponent"
               data-action="click->serve-receive-input#selectResult"
               data-won="false" data-decided-at="rally">
-        相手が得点（ラリー）
+        7球目以降で失点
       </button>
     </div>
     <div class="mt-2">

@@ -54,6 +54,10 @@ ja:
           no_spin: ナックル
           pro_sidespin: 順横回転
           anti_sidespin: 逆横回転
+        attack_style:
+          service_ace: サービスエース
+          receive_ace: レシーブエース
+          receive_miss: レシーブミス
   defaults:
     password_reset: "パスワードリセットのご案内"
   notices:

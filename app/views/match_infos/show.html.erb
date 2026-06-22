@@ -1,29 +1,34 @@
 <h1 class="center-text">📝 試合分析詳細</h1>
 
-<%= render partial: "match_info_detail", locals: { match_info: @match_info } %>
+<% if @match_info.serve_receive? %>
+  <%= render 'match_infos/match_info_detail', match_info: @match_info %>
+  <%= render 'match_infos/serve_receive_analysis', srp_analysis: @srp_analysis %>
+<% else %>
+  <%= render partial: "match_info_detail", locals: { match_info: @match_info } %>
 
-<% if @match_info.rallies.any? %>
+  <% if @match_info.rallies.any? %>
+    <div class="show-container fade-in-up mb-4">
+      <div class="section-card p-4 shadow-sm">
+        <div class="d-flex align-items-center mb-3">
+          <h2 class="section-title mb-0 me-2">得点推移表</h2>
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#abbrListModal">
+            略称一覧
+          </button>
+        </div>
+        <p class="text-muted small mb-2">※ラリー入力時のデータに基づきます</p>
+        <%= render partial: "score_progression", locals: { match_info: @match_info } %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="show-container fade-in-up mb-4">
     <div class="section-card p-4 shadow-sm">
-      <div class="d-flex align-items-center mb-3">
-        <h2 class="section-title mb-0 me-2">得点推移表</h2>
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#abbrListModal">
-          略称一覧
-        </button>
+      <div class="advice-section">
+        <%= simple_format(@advice) %>
       </div>
-      <p class="text-muted small mb-2">※ラリー入力時のデータに基づきます</p>
-      <%= render partial: "score_progression", locals: { match_info: @match_info } %>
     </div>
   </div>
 <% end %>
-
-<div class="show-container fade-in-up mb-4">
-  <div class="section-card p-4 shadow-sm">
-    <div class="advice-section">
-      <%= simple_format(@advice) %>
-    </div>
-  </div>
-</div>
 
 <div class="center-button">
   <%= link_to "編集", edit_match_info_path(@match_info), class: "btn edit-btn" %>
@@ -32,7 +37,7 @@
   </button>
 </div>
 
-<% if @match_info.rallies.any? %>
+<% if !@match_info.serve_receive? && @match_info.rallies.any? %>
 <div class="modal fade" id="abbrListModal" tabindex="-1" aria-labelledby="abbrListModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">

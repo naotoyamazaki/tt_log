@@ -84,6 +84,25 @@ RSpec.describe "MatchInfos", type: :request do
         expect(response.body).not_to include("game-score-summary")
       end
     end
+
+    context "serve_receive? な match_info の場合" do
+      let(:srp_match_info) { create(:match_info, user: user, analysis_type: :serve_receive) }
+
+      it "200を返すこと" do
+        get match_info_path(srp_match_info)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "@srp_analysis が ServeReceiveAnalyzer のインスタンスであること" do
+        get match_info_path(srp_match_info)
+        expect(controller.instance_variable_get(:@srp_analysis)).to be_a(ServeReceiveAnalyzer)
+      end
+
+      it "AIアドバイス処理が呼ばれないこと" do
+        expect(ChatgptService).not_to receive(:get_advice)
+        get match_info_path(srp_match_info)
+      end
+    end
   end
 
   describe "GET /match_infos/new" do

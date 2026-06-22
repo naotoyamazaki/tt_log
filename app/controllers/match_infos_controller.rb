@@ -9,7 +9,9 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
   def show
     set_match_info_scores
-    if @match_info.advice.present?
+    if @match_info.serve_receive?
+      @srp_analysis = ServeReceiveAnalyzer.new(@match_info)
+    elsif @match_info.advice.present?
       @advice = @match_info.advice
     else
       advice = ChatgptService.get_advice(@match_info)

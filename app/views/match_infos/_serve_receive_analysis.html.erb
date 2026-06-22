@@ -1,0 +1,100 @@
+<% if srp_analysis.empty? %>
+  <div class="show-container fade-in-up mb-4">
+    <div class="section-card p-4 shadow-sm">
+      <p class="text-muted text-center mb-0">まだ得点データがありません</p>
+    </div>
+  </div>
+<% else %>
+  <%# サーブ起点の分析 %>
+  <div class="show-container fade-in-up mb-4">
+    <div class="section-card p-4 shadow-sm">
+      <h2 class="section-title mb-3">サーブ起点の分析</h2>
+
+      <h3 class="fs-5 mb-3">サーブ長さ別得点率</h3>
+      <% if srp_analysis.serve_length_stats.empty? %>
+        <p class="text-muted">データなし</p>
+      <% else %>
+        <%= render 'match_infos/serve_receive_score_table',
+                   data: srp_analysis.serve_length_stats,
+                   theme: :player %>
+      <% end %>
+
+      <h3 class="fs-5 mt-4 mb-3">サーブ→3球目 パターン別</h3>
+      <% if srp_analysis.serve_pattern_stats.empty? %>
+        <p class="text-muted">データなし</p>
+      <% else %>
+        <%= render 'match_infos/serve_receive_score_table',
+                   data: srp_analysis.serve_pattern_stats,
+                   theme: :player %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# レシーブ起点の分析 %>
+  <div class="show-container fade-in-up mb-4">
+    <div class="section-card p-4 shadow-sm">
+      <h2 class="section-title mb-3">レシーブ起点の分析</h2>
+
+      <h3 class="fs-5 mb-3">レシーブ技術別得点率</h3>
+      <% if srp_analysis.receive_style_stats.empty? %>
+        <p class="text-muted">データなし</p>
+      <% else %>
+        <%= render 'match_infos/serve_receive_score_table',
+                   data: srp_analysis.receive_style_stats,
+                   theme: :player %>
+      <% end %>
+
+      <h3 class="fs-5 mt-4 mb-3">レシーブ→4球目 パターン別</h3>
+      <% if srp_analysis.receive_pattern_stats.empty? %>
+        <p class="text-muted">データなし</p>
+      <% else %>
+        <%= render 'match_infos/serve_receive_score_table',
+                   data: srp_analysis.receive_pattern_stats,
+                   theme: :player %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# 決着タイミング分布 %>
+  <% dist = srp_analysis.decided_at_distribution %>
+  <div class="show-container fade-in-up mb-4">
+    <div class="section-card p-4 shadow-sm">
+      <h2 class="section-title mb-3">決着タイミング分布</h2>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <h3 class="fs-6 mb-2 text-center">サーブ起点</h3>
+          <% if dist[:serve].all? { |d| d[:score] + d[:lost_score] == 0 } %>
+            <p class="text-muted text-center">データなし</p>
+          <% else %>
+            <%= render 'match_infos/serve_receive_score_table',
+                       data: dist[:serve],
+                       theme: :player,
+                       show_share: false %>
+          <% end %>
+        </div>
+        <div class="col-md-4">
+          <h3 class="fs-6 mb-2 text-center">レシーブ起点</h3>
+          <% if dist[:receive].all? { |d| d[:score] + d[:lost_score] == 0 } %>
+            <p class="text-muted text-center">データなし</p>
+          <% else %>
+            <%= render 'match_infos/serve_receive_score_table',
+                       data: dist[:receive],
+                       theme: :player,
+                       show_share: false %>
+          <% end %>
+        </div>
+        <div class="col-md-4">
+          <h3 class="fs-6 mb-2 text-center">全体</h3>
+          <% if dist[:all].all? { |d| d[:score] + d[:lost_score] == 0 } %>
+            <p class="text-muted text-center">データなし</p>
+          <% else %>
+            <%= render 'match_infos/serve_receive_score_table',
+                       data: dist[:all],
+                       theme: :player,
+                       show_share: false %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

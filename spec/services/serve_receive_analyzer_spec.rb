@@ -90,22 +90,34 @@ RSpec.describe ServeReceiveAnalyzer do
     end
   end
 
-  describe '#receive_style_stats' do
-    context 'receive_style があるデータが存在する場合' do
+  describe '#receive_direct_stats' do
+    context 'レシーブエース・ミスのデータが存在する場合' do
       before do
         chiquita_val = ServeReceivePattern::RECEIVE_STYLE_VALUES[:chiquita]
-        2.times { create_receive_pattern(receive_style: chiquita_val, won: true) }
-        create_receive_pattern(receive_style: chiquita_val, won: false)
+        2.times { create_receive_pattern(receive_style: chiquita_val, attack_style: :receive_ace, won: true) }
+        create_receive_pattern(receive_style: chiquita_val, attack_style: :receive_miss, won: false)
       end
 
-      it '正しくラベルを表示すること' do
+      it 'レシーブ技術別の直接決着率を返すこと' do
         analyzer = described_class.new(match_info)
-        result = analyzer.receive_style_stats
+        result = analyzer.receive_direct_stats
         expect(result).not_to be_empty
         chiquita_stat = result.find { |s| s[:label].include?('チキータ') }
         expect(chiquita_stat).not_to be_nil
         expect(chiquita_stat[:score]).to eq(2)
         expect(chiquita_stat[:lost_score]).to eq(1)
+        expect(chiquita_stat[:rate]).to eq(67)
+      end
+    end
+
+    context 'レシーブエース・ミス以外のパターンしかない場合' do
+      before do
+        chiquita_val = ServeReceivePattern::RECEIVE_STYLE_VALUES[:chiquita]
+        create_receive_pattern(receive_style: chiquita_val, attack_style: :fore_drive_vs_backspin, won: true)
+      end
+
+      it '空を返すこと' do
+        expect(described_class.new(match_info).receive_direct_stats).to be_empty
       end
     end
   end
@@ -137,35 +149,75 @@ RSpec.describe ServeReceiveAnalyzer do
   end
 
   describe '#decided_at_distribution' do
-    before do
-      2.times { create_serve_pattern(decided_at: :attack_ball, won: true) }
-      create_serve_pattern(decided_at: :follow_ball, won: false)
-      2.times { create_receive_pattern(decided_at: :rally, won: true) }
+    context '通常パターン（サービスエース・レシーブエースなし）の場合' do
+      before do
+        2.times { create_serve_pattern(decided_at: :attack_ball, won: true) }
+        create_serve_pattern(decided_at: :follow_ball, won: false)
+        2.times { create_receive_pattern(decided_at: :rally, won: true) }
+      end
+
+      it 'サーブ起点のラベルが3球目・5球目・7球目以降になること' do
+        analyzer = described_class.new(match_info)
+        dist = analyzer.decided_at_distribution
+        serve = dist[:serve]
+        expect(serve.find { |d| d[:label] == '3球目' }[:score]).to eq(2)
+        expect(serve.find { |d| d[:label] == '5球目' }[:lost_score]).to eq(1)
+        expect(serve.find { |d| d[:label] == '7球目以降' }[:score]).to eq(0)
+      end
+
+      it 'serve / receive が分離されること' do
+        analyzer = described_class.new(match_info)
+        dist = analyzer.decided_at_distribution
+        serve_dist = dist[:serve]
+        receive_dist = dist[:receive]
+
+        expect(serve_dist.find { |d| d[:label] == '3球目' }[:score]).to eq(2)
+        expect(receive_dist.find { |d| d[:label] == '8球目以降' }[:score]).to eq(2)
+      end
+
+      it '得点率が計算されること' do
+        analyzer = described_class.new(match_info)
+        dist = analyzer.decided_at_distribution
+        attack_ball = dist[:serve].find { |d| d[:label] == '3球目' }
+        expect(attack_ball[:rate]).to eq(100)
+      end
     end
 
-    it 'attack_ball / follow_ball / rally それぞれ集計されること' do
-      analyzer = described_class.new(match_info)
-      dist = analyzer.decided_at_distribution
-      all = dist[:all]
-      attack_ball = all.find { |d| d[:label] == '3・4球目' }
-      follow_ball = all.find { |d| d[:label] == '5・6球目' }
-      rally = all.find { |d| d[:label] == 'ラリー' }
-      expect(attack_ball[:score]).to eq(2)
-      expect(follow_ball[:lost_score]).to eq(1)
-      expect(rally[:score]).to eq(2)
+    context 'サービスエースがある場合' do
+      before do
+        create_serve_pattern(attack_style: :service_ace, decided_at: :attack_ball, won: true)
+        create_serve_pattern(decided_at: :attack_ball, won: true)
+      end
+
+      it '1球目が独立した行として集計されること' do
+        analyzer = described_class.new(match_info)
+        dist = analyzer.decided_at_distribution
+        first_ball = dist[:serve].find { |d| d[:label] == '1球目' }
+        third_ball = dist[:serve].find { |d| d[:label] == '3球目' }
+        expect(first_ball[:score]).to eq(1)
+        expect(third_ball[:score]).to eq(1)
+      end
     end
 
-    it 'serve / receive が分離されること' do
-      analyzer = described_class.new(match_info)
-      dist = analyzer.decided_at_distribution
-      serve_dist = dist[:serve]
-      receive_dist = dist[:receive]
+    context 'レシーブエース・ミスがある場合' do
+      before do
+        chiquita_val = ServeReceivePattern::RECEIVE_STYLE_VALUES[:chiquita]
+        create_receive_pattern(receive_style: chiquita_val, attack_style: :receive_ace,
+                               decided_at: :attack_ball, won: true)
+        create_receive_pattern(receive_style: chiquita_val, attack_style: :receive_miss,
+                               decided_at: :attack_ball, won: false)
+        create_receive_pattern(decided_at: :attack_ball, won: true)
+      end
 
-      serve_attack = serve_dist.find { |d| d[:label] == '3・4球目' }
-      expect(serve_attack[:score]).to eq(2)
-
-      receive_rally = receive_dist.find { |d| d[:label] == 'ラリー' }
-      expect(receive_rally[:score]).to eq(2)
+      it '2球目が独立した行として集計されること' do
+        analyzer = described_class.new(match_info)
+        dist = analyzer.decided_at_distribution
+        second_ball = dist[:receive].find { |d| d[:label] == '2球目' }
+        fourth_ball = dist[:receive].find { |d| d[:label] == '4球目' }
+        expect(second_ball[:score]).to eq(1)
+        expect(second_ball[:lost_score]).to eq(1)
+        expect(fourth_ball[:score]).to eq(1)
+      end
     end
   end
 

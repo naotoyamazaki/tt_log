@@ -48,6 +48,14 @@ ja:
           attack_ball: 3・4球目
           follow_ball: 5・6球目
           rally: ラリー
+        decided_at_serve:
+          attack_ball: 3球目
+          follow_ball: 5球目
+          rally: 7球目以降
+        decided_at_receive:
+          attack_ball: 4球目
+          follow_ball: 6球目
+          rally: 8球目以降
         serve_spin:
           backspin: 下回転
           topspin: 上回転
@@ -58,6 +66,24 @@ ja:
           service_ace: サービスエース
           receive_ace: レシーブエース
           receive_miss: レシーブミス
+          fore_drive_vs_topspin: 対上回転フォアドライブ
+          back_drive_vs_topspin: 対上回転バックドライブ
+          fore_drive_vs_backspin: 対下回転フォアドライブ
+          back_drive_vs_backspin: 対下回転バックドライブ
+          fore_push: フォアツッツキ
+          back_push: バックツッツキ
+          fore_stop: フォアストップ
+          back_stop: バックストップ
+          fore_flick: フォアフリック
+          back_flick: バックフリック
+          chiquita: チキータ
+          fore_block: フォアブロック
+          back_block: バックブロック
+          fore_counter: フォアカウンター
+          back_counter: バックカウンター
+          fore_smash: フォアスマッシュ
+          back_smash: バックスマッシュ
+          net_or_edge: ネットorエッジ
   defaults:
     password_reset: "パスワードリセットのご案内"
   notices:

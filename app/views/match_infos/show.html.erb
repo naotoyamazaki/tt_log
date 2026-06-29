@@ -1,7 +1,6 @@
 <h1 class="center-text">📝 試合分析詳細</h1>
 
 <% if @match_info.serve_receive? %>
-  <%= render 'match_infos/match_info_detail', match_info: @match_info %>
   <%= render 'match_infos/serve_receive_analysis', srp_analysis: @srp_analysis %>
 <% else %>
   <%= render partial: "match_info_detail", locals: { match_info: @match_info } %>
@@ -31,7 +30,6 @@
 <% end %>
 
 <div class="center-button">
-  <%= link_to "編集", edit_match_info_path(@match_info), class: "btn edit-btn" %>
   <button type="button" class="btn delete-btn" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
     削除
   </button>

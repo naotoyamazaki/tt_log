@@ -124,6 +124,13 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   def new_serve_receive
+    if params[:draft_id].present?
+      draft = current_user.match_infos.find_by(id: params[:draft_id])
+      if draft
+        setup_draft_form(draft)
+        return
+      end
+    end
     @match_info = MatchInfo.new
     @match_info.analysis_type = :serve_receive
     @draft_id = nil
@@ -453,21 +460,27 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
   def persist_pattern_records(match_info, game, patterns, game_number)
     patterns.each_with_index do |p, i|
-      spins = p['serve_spins']
-      spins = spins.is_a?(Array) ? spins.map(&:to_i) : []
       match_info.serve_receive_patterns.create!(
-        game_id: game.id,
-        game_number: game_number,
-        sequence_number: i + 1,
-        origin: p['origin'],
-        serve_length: p['serve_length'].presence,
-        serve_spins: spins,
-        receive_style: p['receive_style'].presence,
-        attack_style: p['attack_style'],
-        decided_at: p['decided_at'],
-        won: p['won']
+        build_pattern_attrs(game, game_number, i + 1, p)
       )
     end
+  end
+
+  def build_pattern_attrs(game, game_number, seq, pat)
+    spins = pat['serve_spins']
+    spins = spins.is_a?(Array) ? spins.map(&:to_i) : []
+    {
+      game_id: game.id,
+      game_number: game_number,
+      sequence_number: seq,
+      origin: pat['origin'],
+      serve_length: pat['serve_length'].presence,
+      serve_spins: spins,
+      receive_style: ServeReceivePattern::RECEIVE_STYLE_VALUES[pat['receive_style']&.to_sym],
+      attack_style: pat['attack_style'],
+      decided_at: pat['decided_at'],
+      won: pat['won']
+    }
   end
 
   def basic_match_info_params

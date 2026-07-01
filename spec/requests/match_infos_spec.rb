@@ -459,4 +459,60 @@ RSpec.describe "MatchInfos", type: :request do
       expect(response).to redirect_to(new_serve_receive_match_infos_path(draft_id: draft.id))
     end
   end
+
+  describe "POST /match_infos/interrupt (serve_receive)" do
+    let(:patterns_json) do
+      [{ origin: 'serve', serve_length: 'short', serve_spins: [0], attack_style: 'fore_drive_vs_backspin',
+         decided_at: 'attack_ball', won: true }].to_json
+    end
+    let(:base_params) do
+      {
+        match_info: attributes_for(:match_info).merge(
+          player_name: "選手A", opponent_name: "選手B", analysis_type: 'serve_receive'
+        ),
+        patterns: patterns_json,
+        first_server: 'player'
+      }
+    end
+
+    it "patterns を partial_game_data に保存すること" do
+      post interrupt_match_infos_path, params: base_params
+      draft = MatchInfo.last
+      expect(draft.partial_game_data['patterns']).to eq(patterns_json)
+    end
+
+    it "一覧ページへリダイレクトすること" do
+      post interrupt_match_infos_path, params: base_params
+      expect(response).to redirect_to(match_infos_path)
+    end
+  end
+
+  describe "DELETE /match_infos/undo_game (serve_receive)" do
+    let!(:draft) { create(:match_info, user: user, draft: true, analysis_type: :serve_receive) }
+    let!(:game) do
+      create(:game, match_info: draft, game_number: 1, player_score: 3, opponent_score: 2, first_server: 'player')
+    end
+    let!(:srp) do
+      create(:serve_receive_pattern, match_info: draft, game: game,
+                                     game_number: 1, sequence_number: 1,
+                                     origin: :serve, serve_length: :short, serve_spins: [0],
+                                     attack_style: :fore_drive_vs_backspin, decided_at: :attack_ball, won: true)
+    end
+
+    it "ゲームとパターンが削除されること" do
+      expect do
+        delete undo_game_match_infos_path, params: { draft_id: draft.id }
+      end.to change(Game, :count).by(-1).and change(ServeReceivePattern, :count).by(-1)
+    end
+
+    it "new_serve_receive フォームへリダイレクトすること" do
+      delete undo_game_match_infos_path, params: { draft_id: draft.id }
+      expect(response).to redirect_to(new_serve_receive_match_infos_path(draft_id: draft.id))
+    end
+
+    it "partial_game_data に patterns が保存されること" do
+      delete undo_game_match_infos_path, params: { draft_id: draft.id }
+      expect(draft.reload.partial_game_data).to have_key('patterns')
+    end
+  end
 end

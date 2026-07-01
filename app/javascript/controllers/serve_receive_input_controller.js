@@ -45,7 +45,8 @@ export default class extends Controller {
   ]
 
   static values = {
-    initialFirstServer: String
+    initialFirstServer: String,
+    initialPatterns: String
   }
 
   connect() {
@@ -53,9 +54,10 @@ export default class extends Controller {
     this.firstServer = null
     this.currentStep = null
 
-    // 現在入力中のパターン (ステップ途中の状態)
     this.draft = {}
     this.selectedSpins = []
+
+    this._restoreInitialPatterns()
 
     if (this.hasInitialFirstServerValue && this.initialFirstServerValue) {
       this.firstServer = this.initialFirstServerValue
@@ -67,6 +69,18 @@ export default class extends Controller {
     this.updateEndGameButton()
     this.serializePatterns()
     this.updateServerUI()
+  }
+
+  _restoreInitialPatterns() {
+    if (!this.hasInitialPatternsValue || !this.initialPatternsValue) return
+    try {
+      const parsed = JSON.parse(this.initialPatternsValue)
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        this.patterns = parsed
+      }
+    } catch (_e) {
+      // ignore
+    }
   }
 
   // ========== サーバー選択 ==========

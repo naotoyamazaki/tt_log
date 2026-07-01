@@ -2,6 +2,15 @@
 
 <% if @match_info.serve_receive? %>
   <%= render 'match_infos/serve_receive_analysis', srp_analysis: @srp_analysis %>
+  <% if @advice.present? %>
+    <div class="show-container fade-in-up mb-4">
+      <div class="section-card p-4 shadow-sm">
+        <div class="advice-section">
+          <%= simple_format(@advice) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 <% else %>
   <%= render partial: "match_info_detail", locals: { match_info: @match_info } %>
 

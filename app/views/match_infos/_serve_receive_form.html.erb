@@ -5,12 +5,17 @@
     initial_first_server = if last_game&.first_server
                              last_game.first_server == 'player' ? 'opponent' : 'player'
                            end
+    initial_patterns_json = @partial_scores&.dig('patterns') || '[]'
+    initial_first_server_partial = @partial_scores&.dig('first_server')
   %>
   <%= form_with(model: match_info, url: create_serve_receive_match_infos_path, method: :post,
-      data: { controller: "scoreboard serve-receive-input",
-              "serve-receive-input-initial-first-server-value": initial_first_server.to_s }) do |form| %>
+      data: { controller: "scoreboard auto-save serve-receive-input",
+              auto_save_draft_id_value: draft_id.to_s,
+              "serve-receive-input-initial-patterns-value": initial_patterns_json,
+              "serve-receive-input-initial-first-server-value": (initial_first_server || initial_first_server_partial).to_s }) do |form| %>
 
     <%= hidden_field_tag :draft_id, draft_id if draft_id.present? %>
+    <%= hidden_field_tag 'match_info[analysis_type]', 'serve_receive' %>
 
     <%= render 'shared/error_messages', object: @match_info %>
 
@@ -97,5 +102,12 @@
             class: "btn btn-outline-warning" %>
       </div>
     <% end %>
+
+    <div class="center-text mt-2">
+      <%= form.submit "途中で中断する",
+          formaction: interrupt_match_infos_path,
+          class: "btn btn-outline-secondary",
+          data: { action: "click->auto-save#clearStorage" } %>
+    </div>
   <% end %>
 </div>

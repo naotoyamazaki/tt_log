@@ -1,5 +1,6 @@
 <div class="col-lg-3 col-md-4 col-sm-6 my-3"> <!-- PCでは3列、スマホでは2列で表示 -->
-<a href="<%= match_info.draft? ? new_match_info_path(draft_id: match_info.id) : match_info_path(match_info) %>"
+<% draft_resume_path = match_info.serve_receive? ? new_serve_receive_match_infos_path(draft_id: match_info.id) : new_match_info_path(draft_id: match_info.id) %>
+<a href="<%= match_info.draft? ? draft_resume_path : match_info_path(match_info) %>"
    class="text-decoration-none">
   <div class="card fade-in-up">
     <div class="card-body">
@@ -14,6 +15,9 @@
           <span class="<%= player_wins > opponent_wins ? 'badge-win' : 'badge-lose' %> ms-1">
             <%= player_wins > opponent_wins ? '勝利' : '敗北' %>
           </span>
+        <% end %>
+        <% if match_info.serve_receive? %>
+          <span class="badge bg-info text-dark ms-1">サーブ・レシーブ</span>
         <% end %>
       </h5>
       <p class="card-text">
@@ -30,7 +34,7 @@
         </p>
       <% end %>
       <% if match_info.draft? %>
-        <%= link_to "続きから入力", new_match_info_path(draft_id: match_info.id), class: "btn btn-warning mt-2" %>
+        <%= link_to "続きから入力", draft_resume_path, class: "btn btn-warning mt-2" %>
       <% else %>
         <%= link_to "試合分析詳細", match_info, class: "btn btn-info mt-2" %>
       <% end %>

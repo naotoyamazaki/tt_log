@@ -11,6 +11,14 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     set_match_info_scores
     if @match_info.serve_receive?
       @srp_analysis = ServeReceiveAnalyzer.new(@match_info)
+      if @match_info.advice.present?
+        @advice = @match_info.advice
+      else
+        builder = ServeReceiveContextBuilder.new(@match_info)
+        advice = ChatgptService.get_serve_receive_advice(@match_info, builder)
+        @match_info.update_advice(advice)
+        @advice = advice
+      end
     elsif @match_info.advice.present?
       @advice = @match_info.advice
     else
@@ -51,30 +59,43 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     redirect_to new_match_info_path(draft_id: @match_info.id)
   end
 
-  def interrupt
+  def interrupt # rubocop:disable Metrics/AbcSize
     player, opponent = find_or_create_players
     @match_info = draft_or_new_match_info(player, opponent)
     @match_info.assign_attributes(match_info_params)
     @match_info.draft = true
-    @match_info.partial_game_data = game_score_params.to_h
+    @match_info.partial_game_data = if params[:patterns].present?
+                                      { 'patterns' => params[:patterns], 'first_server' => params[:first_server] }
+                                    else
+                                      game_score_params.to_h
+                                    end
     @match_info.save!(validate: false)
     redirect_to match_infos_path, notice: t('notices.match_info_interrupted')
   end
 
-  def restore_autosave
+  def restore_autosave # rubocop:disable Metrics/AbcSize
     player = Player.find_or_create_by(player_name: params[:player_name].to_s)
     opponent = Player.find_or_create_by(player_name: params[:opponent_name].to_s)
     @match_info = build_autosave_match_info(player, opponent)
     @match_info.save!(validate: false)
-    redirect_to new_match_info_path(draft_id: @match_info.id)
+    if @match_info.serve_receive?
+      redirect_to new_serve_receive_match_infos_path(draft_id: @match_info.id)
+    else
+      redirect_to new_match_info_path(draft_id: @match_info.id)
+    end
   end
 
   def undo_game
     @match_info = current_user.match_infos.find_by(id: params[:draft_id])
     return redirect_to new_match_info_path unless @match_info
 
-    restore_last_game_to_partial_data(@match_info)
-    redirect_to new_match_info_path(draft_id: @match_info.id)
+    if @match_info.serve_receive?
+      restore_last_serve_receive_to_partial_data(@match_info)
+      redirect_to new_serve_receive_match_infos_path(draft_id: @match_info.id)
+    else
+      restore_last_game_to_partial_data(@match_info)
+      redirect_to new_match_info_path(draft_id: @match_info.id)
+    end
   end
 
   def create # rubocop:disable Metrics/AbcSize
@@ -345,6 +366,35 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     match_info.save!(validate: false)
   end
 
+  def restore_last_serve_receive_to_partial_data(match_info) # rubocop:disable Metrics/AbcSize
+    last_game = match_info.games.order(:game_number).last
+    return unless last_game
+
+    patterns = match_info.serve_receive_patterns
+      .where(game_number: last_game.game_number)
+      .order(:sequence_number)
+    match_info.partial_game_data = {
+      'patterns' => patterns.map { |p| extract_pattern_data(p) }.to_json,
+      'first_server' => last_game.first_server
+    }
+    match_info.serve_receive_patterns.where(game_number: last_game.game_number).destroy_all
+    last_game.destroy
+    match_info.save!(validate: false)
+  end
+
+  def extract_pattern_data(pattern)
+    recv_key = ServeReceivePattern::RECEIVE_STYLE_VALUES.key(pattern.receive_style)
+    {
+      'origin' => pattern.origin,
+      'serve_length' => pattern.serve_length,
+      'serve_spins' => pattern.serve_spins || [],
+      'receive_style' => recv_key&.to_s,
+      'attack_style' => pattern.attack_style,
+      'decided_at' => pattern.decided_at,
+      'won' => pattern.won
+    }
+  end
+
   def extract_partial_data_from_game(game)
     if game.rallies.any?
       rally_data = game.rallies.order(:sequence_number).map do |r|
@@ -404,7 +454,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     end
   end
 
-  def build_autosave_match_info(player, opponent)
+  def build_autosave_match_info(player, opponent) # rubocop:disable Metrics/AbcSize
     match_info = current_user.match_infos.new(
       match_date: params[:match_date],
       match_name: params[:match_name],
@@ -414,7 +464,12 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       opponent: opponent,
       draft: true
     )
-    match_info.partial_game_data = JSON.parse(params[:game_scores] || '{}')
+    if params[:patterns].present?
+      match_info.analysis_type = :serve_receive
+      match_info.partial_game_data = { 'patterns' => params[:patterns], 'first_server' => params[:first_server] }
+    else
+      match_info.partial_game_data = JSON.parse(params[:game_scores] || '{}')
+    end
     match_info
   end
 
@@ -484,7 +539,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   def basic_match_info_params
-    params.require(:match_info).permit(:match_date, :match_name, :memo, :match_format)
+    params.require(:match_info).permit(:match_date, :match_name, :memo, :match_format, :analysis_type)
   end
 
   def game_score_params

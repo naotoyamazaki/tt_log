@@ -1,6 +1,18 @@
 class ChatgptService
   API_URL = "https://api.openai.com/v1/chat/completions".freeze
 
+  def self.get_serve_receive_advice(match_info, builder)
+    api_key = ENV.fetch("OPENAI_API_KEY")
+    body = generate_serve_receive_request_body(match_info, builder)
+    headers = generate_headers(api_key)
+
+    response = nil
+    response = send_request(body, headers)
+    process_response(response)
+  rescue StandardError => e
+    handle_error(e, response)
+  end
+
   def self.get_advice(match_info)
     api_key = ENV.fetch("OPENAI_API_KEY")
     body = generate_request_body(match_info)
@@ -165,6 +177,54 @@ class ChatgptService
         game[:techniques].each { |t| lines << "  #{t}" }
       end
       lines.join("\n")
+    end
+
+    def generate_serve_receive_request_body(match_info, builder)
+      messages = [
+        { role: "system", content: serve_receive_system_prompt },
+        { role: "user", content: serve_receive_user_message(match_info, builder) }
+      ]
+      { model: "gpt-5.4-mini", messages: messages, max_completion_tokens: 2500, temperature: 0.7 }
+    end
+
+    def serve_receive_system_prompt
+      "あなたは経験豊富な卓球コーチです。\n" \
+        "提供されるデータはサーブ起点・レシーブ起点の各ラリーについて、技術と得失点を記録したものです。\n" \
+        "重要な前提: 「サーブ起点」データの技術はすべて自分(サーバー)が打った技術です。相手が打った技術のデータは提供されません。\n" \
+        "「レシーブ起点」データも同様に、レシーブ技術・4球目攻撃技術はすべて自分(レシーバー)が打った技術です。\n" \
+        "また、レシーブ起点の「2球目で決着(レシーブエース/ミス)」と「4球目まで続いたラリー」は別々のケースであり、同じラリーではありません。\n" \
+        "提供データにない事象(相手の具体的な技術など)を推測で創作しないでください。\n" \
+        "データを深く分析し、サーブ戦術とレシーブ戦術の改善に特化した具体的なアドバイスを作成してください。\n" \
+        "6項目のアドバイスを出力したら必ず終了してください。追加提案や続きを促す文言は一切出力しないでください。"
+    end
+
+    def serve_receive_user_message(match_info, builder)
+      game_score_text = build_game_score_text(match_info)
+      <<~TEXT
+        以下は卓球の試合のサーブ・レシーブ分析データです。日本語で6項目のアドバイスを作成してください。
+
+        【試合結果】
+        #{match_info.game_count_score}（ゲームスコア: #{game_score_text}）
+
+        #{builder.build_context}
+
+        #{serve_receive_advice_format}
+
+        アドバイス:
+      TEXT
+    end
+
+    def serve_receive_advice_format
+      <<~TEXT.chomp
+        以下の6項目について、具体的なアドバイスを作成してください。
+        各項目は必ず下記のフォーマットで出力し、項目と項目の間は必ず1行空けてください:
+        1.【サーブ戦術の強化】アドバイス文
+        2.【レシーブ戦術の強化】アドバイス文
+        3.【3球目攻撃の改善】アドバイス文（自分のサーブ後、自分自身が3球目で打つ攻撃技術についてのみ言及すること。相手の返球技術には言及しないこと）
+        4.【4球目攻撃の改善】アドバイス文（2球目で決着したケースとは別に、4球目まで続いたラリーにおける自分の攻撃技術について述べること。2球目決着のデータと矛盾する記述をしないこと）
+        5.【得点タイミングの活用】アドバイス文
+        6.【試合全体の戦略的アドバイス】アドバイス文
+      TEXT
     end
 
     def handle_error(error, response = nil)

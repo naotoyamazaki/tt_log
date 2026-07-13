@@ -17,6 +17,7 @@ export default class extends Controller {
     } else {
       this.startAutoSave()
       window.addEventListener("beforeunload", this._boundSaveState = this.saveState.bind(this))
+      document.addEventListener("turbo:before-visit", this._boundSaveState)
     }
   }
 
@@ -25,6 +26,7 @@ export default class extends Controller {
       this.stopAutoSave()
       if (this._boundSaveState) {
         window.removeEventListener("beforeunload", this._boundSaveState)
+        document.removeEventListener("turbo:before-visit", this._boundSaveState)
       }
     }
   }
@@ -55,7 +57,9 @@ export default class extends Controller {
     const opponentNameInput = form.querySelector('input[name="match_info[opponent_name]"]')
     const memoInput = form.querySelector('textarea[name="match_info[memo]"]')
     const matchFormatInput = form.querySelector('select[name="match_info[match_format]"]')
-
+    const patternsInput = form.querySelector('input[name="patterns"]')
+    const firstServerInput = form.querySelector('input[name="first_server"]')
+    const analysisTypeInput = form.querySelector('input[name="match_info[analysis_type]"]')
     const rallies = this._collectRallies()
 
     return {
@@ -66,6 +70,9 @@ export default class extends Controller {
       opponent_name: opponentNameInput ? opponentNameInput.value : "",
       memo: memoInput ? memoInput.value : "",
       match_format: matchFormatInput ? matchFormatInput.value : "5",
+      patterns: patternsInput ? patternsInput.value : null,
+      first_server: firstServerInput ? firstServerInput.value : null,
+      analysis_type: analysisTypeInput ? analysisTypeInput.value : null,
       rallies: rallies
     }
   }
@@ -110,7 +117,10 @@ export default class extends Controller {
 
     if (data.draft_id) {
       localStorage.removeItem(this.STORAGE_KEY)
-      window.location.href = `/match_infos/new?draft_id=${data.draft_id}`
+      const path = data.analysis_type === 'serve_receive'
+        ? `/match_infos/new_serve_receive?draft_id=${data.draft_id}`
+        : `/match_infos/new?draft_id=${data.draft_id}`
+      window.location.href = path
       return
     }
 
@@ -136,11 +146,17 @@ export default class extends Controller {
       form.appendChild(input)
     })
 
-    const ralliesInput = document.createElement("input")
-    ralliesInput.type = "hidden"
-    ralliesInput.name = "rallies_autosave"
-    ralliesInput.value = JSON.stringify(data.rallies || [])
-    form.appendChild(ralliesInput)
+    if (data.patterns) {
+      this._appendHiddenInput(form, "patterns", data.patterns)
+      this._appendHiddenInput(form, "first_server", data.first_server || "")
+      this._appendHiddenInput(form, "analysis_type", "serve_receive")
+    } else {
+      const ralliesInput = document.createElement("input")
+      ralliesInput.type = "hidden"
+      ralliesInput.name = "rallies_autosave"
+      ralliesInput.value = JSON.stringify(data.rallies || [])
+      form.appendChild(ralliesInput)
+    }
 
     localStorage.removeItem(this.STORAGE_KEY)
     document.body.appendChild(form)
@@ -152,5 +168,13 @@ export default class extends Controller {
     localStorage.removeItem(this.STORAGE_KEY)
     const banner = document.getElementById("autosave-banner")
     if (banner) banner.classList.add("d-none")
+  }
+
+  _appendHiddenInput(form, name, value) {
+    const input = document.createElement("input")
+    input.type = "hidden"
+    input.name = name
+    input.value = value
+    form.appendChild(input)
   }
 }

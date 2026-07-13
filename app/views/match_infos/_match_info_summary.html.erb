@@ -18,6 +18,8 @@
         <% end %>
         <% if match_info.serve_receive? %>
           <span class="badge bg-info text-dark ms-1">サーブ・レシーブ</span>
+        <% elsif match_info.technique? %>
+          <span class="badge bg-secondary ms-1">技術別得点率</span>
         <% end %>
       </h5>
       <p class="card-text">

@@ -17,6 +17,7 @@ export default class extends Controller {
     } else {
       this.startAutoSave()
       window.addEventListener("beforeunload", this._boundSaveState = this.saveState.bind(this))
+      document.addEventListener("turbo:before-visit", this._boundSaveState)
     }
   }
 
@@ -25,6 +26,7 @@ export default class extends Controller {
       this.stopAutoSave()
       if (this._boundSaveState) {
         window.removeEventListener("beforeunload", this._boundSaveState)
+        document.removeEventListener("turbo:before-visit", this._boundSaveState)
       }
     }
   }

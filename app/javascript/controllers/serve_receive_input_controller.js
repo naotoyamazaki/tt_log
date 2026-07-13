@@ -32,8 +32,6 @@ const SERVE_LENGTHS = { long: 'ロング', half_long: 'ハーフロング', shor
 
 const SERVE_SPIN_NAMES = { 0: '下回転', 1: '上回転', 2: 'ナックル', 3: '順横回転', 4: '逆横回転' }
 
-const DECIDED_AT_LABELS = { attack_ball: '攻撃', follow_ball: '続球', rally: 'ラリー' }
-
 export default class extends Controller {
   static targets = [
     "serverSelect", "serverIndicator", "firstServerField",
@@ -69,6 +67,8 @@ export default class extends Controller {
     this.updateEndGameButton()
     this.serializePatterns()
     this.updateServerUI()
+    if (this.firstServer) this.showStep('origin')
+    if (this.patterns.length > 0) this.dispatchScoreUpdated()
   }
 
   _restoreInitialPatterns() {
@@ -367,10 +367,10 @@ export default class extends Controller {
       const lengthLabel = p.serve_length ? (SERVE_LENGTHS[p.serve_length] || p.serve_length) : ''
       const spinsLabel = (p.serve_spins || []).map(s => SERVE_SPIN_NAMES[s] || s).join('/')
       const attackLabel = BATTING_STYLE_NAMES[p.attack_style] || p.attack_style
-      const decidedLabel = DECIDED_AT_LABELS[p.decided_at] || p.decided_at
+      const receiveStyleLabel = p.receive_style ? (BATTING_STYLE_NAMES[p.receive_style] || p.receive_style) : ''
       const detail = p.origin === 'serve'
-        ? `${originLabel}(${lengthLabel} ${spinsLabel}) → ${attackLabel} [${decidedLabel}]`
-        : `${originLabel} → ${attackLabel} [${decidedLabel}]`
+        ? `${originLabel}(${lengthLabel} ${spinsLabel}) → ${attackLabel}`
+        : `${originLabel}(${receiveStyleLabel}) → ${attackLabel}`
       const isFirst = revIdx === 0
       return `<div class="rally-item ${wonClass}">
         <span class="rally-item-seq">${idx}本目</span>
@@ -391,8 +391,8 @@ export default class extends Controller {
           'false-attack_ball': '4球目で自分が失点',
           'true-follow_ball': '6球目で自分が得点',
           'false-follow_ball': '6球目で自分が失点',
-          'true-rally': '7球目以降で得点',
-          'false-rally': '7球目以降で失点'
+          'true-rally': '8球目以降で得点',
+          'false-rally': '8球目以降で失点'
         }
       : {
           'true-attack_ball': '3球目で自分が得点',

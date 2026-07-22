@@ -91,7 +91,8 @@
             data: { "serve-receive-input-target": "endGameBtn" } %>
       <% end %>
       <%= form.submit "🚀 試合を分析する",
-          class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow" %>
+          class: "btn btn-success px-4 py-2 mt-4 rounded-pill shadow",
+          data: { action: "click->auto-save#clearStorage" } %>
     </div>
 
     <% if draft_id.present? && saved_games.any? %>

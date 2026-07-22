@@ -11,6 +11,7 @@ export default class extends Controller {
 
   connect() {
     this.STORAGE_KEY = "tt_log_autosave"
+    this.finalizing = false
 
     if (this.pageValue === "index") {
       this.checkAndShowBanner()
@@ -40,11 +41,15 @@ export default class extends Controller {
   }
 
   saveState() {
+    if (this.finalizing) return
+
     const data = this.collectFormData()
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data))
   }
 
   clearStorage() {
+    this.finalizing = true
+    this.stopAutoSave()
     localStorage.removeItem(this.STORAGE_KEY)
   }
 

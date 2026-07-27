@@ -8,7 +8,7 @@ T.T.LOG - AIが卓球の試合を分析し、プレー改善のアドバイス�
 Ruby on Rails 7.1.2 / Ruby 3.2.2 のフルスタックWebアプリケーション。
 
 本番URL: https://www.ttlog.jp
-デプロイ先: Heroku（web + worker dyno）
+デプロイ先: Heroku（web dynoのみ。worker dynoはコスト削減のため2026年2月に廃止済み）
 
 ## 開発コマンド
 
@@ -41,9 +41,11 @@ rails db:schema:load
 ### コアフロー
 1. ユーザーが試合データ（日程/大会名/選手名/技術ごとの得失点）を入力
 2. `MatchInfosController#create` で match_info, scores を保存
-3. `AdviceGenerationJob`（Sidekiq）が非同期で `ChatgptService` を呼び出し
-4. OpenAI GPT-4 が技術統計を分析してアドバイスを生成、`match_info.advice` に保存
-5. フロントエンドは Stimulus の `advice_controller.js` でポーリングして結果を表示
+3. `MatchInfosController#show` / `#update` から `ChatgptService` を同期呼び出し
+4. OpenAI GPT-4o-mini が技術統計を分析してアドバイスを生成し、`match_info.advice` に即時保存
+5. フロントエンドはレスポンスに含まれるアドバイスをそのまま表示（ポーリングなし）
+
+※ 元は `AdviceGenerationJob`（Sidekiq）による非同期処理だったが、gpt-4o-mini移行でAPI応答が高速化されたため2026年2月に同期呼び出しへ変更（PR #113）。worker dynoを削減しHerokuの運用コストを下げる目的も兼ねる。
 
 ### 主要モデル関連
 - **User** → has_many **MatchInfo** → has_many **Score** / has_many **Game**
@@ -53,7 +55,7 @@ rails db:schema:load
 ### 技術スタック
 - **認証**: Sorcery（パスワードリセット、remember-me）
 - **検索**: Ransack
-- **非同期処理**: ActiveJob + Sidekiq（Redis）
+- **非同期処理**: なし（アドバイス生成はコントローラーから同期呼び出し）。Sidekiq（Redis）は `/sidekiq` 管理画面用に構成のみ残存し、ジョブ処理には使用していない
 - **フロントエンド**: Stimulus.js + Turbo（importmap-rails）、Bootstrap 5.3.2（cssbundling-rails）
 - **ページネーション**: Pagy
 - **AI**: OpenAI API（GPT-4、ChatgptService経由）
@@ -73,7 +75,7 @@ rails db:schema:load
 `.env` で管理（`.env.development` でローカル上書き）。主要なキー:
 - `OPENAI_API_KEY` - OpenAI APIキー（gpt-4o-mini）
 - `DATABASE_URL` - 本番DB接続先
-- `REDIS_URL` - Sidekiq用Redis
+- `REDIS_URL` - Sidekiq管理画面用Redis（ジョブ処理には未使用）
 - `RAILS_MASTER_KEY`, `SECRET_KEY_BASE`
 - `TWITTER_*` - Twitter連携
 - `GMAIL_*` - メール送信
@@ -81,7 +83,7 @@ rails db:schema:load
 ## ルーティング構造
 
 - `/` → `homes#top`（ランディングページ）
-- `/match_infos` → CRUD + `/advice_status`（JSON）+ `/autocomplete`
+- `/match_infos` → CRUD + `/autocomplete`
 - `/login`, `/logout` → セッション管理
 - `/password_resets` → パスワードリセットフロー
 - `/sidekiq` → 管理画面（Basic認証付き）

@@ -42,7 +42,7 @@ rails db:schema:load
 1. ユーザーが試合データ（日程/大会名/選手名/技術ごとの得失点）を入力
 2. `MatchInfosController#create` で match_info, scores を保存
 3. `MatchInfosController#show` / `#update` から `ChatgptService` を同期呼び出し
-4. OpenAI GPT-4o-mini が技術統計を分析してアドバイスを生成し、`match_info.advice` に即時保存
+4. OpenAI gpt-5.4-mini が技術統計を分析してアドバイスを生成し、`match_info.advice` に即時保存
 5. フロントエンドはレスポンスに含まれるアドバイスをそのまま表示（ポーリングなし）
 
 ※ 元は `AdviceGenerationJob`（Sidekiq）による非同期処理だったが、gpt-4o-mini移行でAPI応答が高速化されたため2026年2月に同期呼び出しへ変更（PR #113）。worker dynoを削減しHerokuの運用コストを下げる目的も兼ねる。
@@ -58,7 +58,7 @@ rails db:schema:load
 - **非同期処理**: なし（アドバイス生成はコントローラーから同期呼び出し）。Sidekiq（Redis）は `/sidekiq` 管理画面用に構成のみ残存し、ジョブ処理には使用していない
 - **フロントエンド**: Stimulus.js + Turbo（importmap-rails）、Bootstrap 5.3.2（cssbundling-rails）
 - **ページネーション**: Pagy
-- **AI**: OpenAI API（GPT-4、ChatgptService経由）
+- **AI**: OpenAI API（gpt-5.4-mini、ChatgptService経由）
 - **メール**: Gmail SMTP（パスワードリセット用）
 
 ## RuboCop設定
@@ -73,7 +73,7 @@ rails db:schema:load
 ## 環境変数
 
 `.env` で管理（`.env.development` でローカル上書き）。主要なキー:
-- `OPENAI_API_KEY` - OpenAI APIキー（gpt-4o-mini）
+- `OPENAI_API_KEY` - OpenAI APIキー（gpt-5.4-mini）
 - `DATABASE_URL` - 本番DB接続先
 - `REDIS_URL` - Sidekiq管理画面用Redis（ジョブ処理には未使用）
 - `RAILS_MASTER_KEY`, `SECRET_KEY_BASE`

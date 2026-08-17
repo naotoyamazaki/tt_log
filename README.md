@@ -171,34 +171,8 @@ Password : password
 <br>
 
 ## 👨ユーザー機能
-<table>
-<thead>
-<tr>
-<th align="center">会員登録</th>
-<th align="center">ログイン</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
-            src="./app/assets/images/signup.gif"
-            alt="会員登録フローのGIF"
-            width="320"
-            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
-          ></a></td>
-<td align="center"><a target="_blank" rel="noopener noreferrer nofollow"><img
-            src="./app/assets/images/login.gif"
-            alt="ログインフローのGIF"
-            width="320"
-            style="max-width:100%;border-radius:8px;border:1px solid #ddd;"
-          ></a></td>
-</tr>
-<tr>
-<td align="center"><p align="left" dir="auto">名前・メールアドレス・パスワード・パスワード確認を入力し会員登録をします。ご高齢の方も使用してくださっていてパスワードの入力ミスが発生してしまっていたのでパスワード表示切替ボタンを設置しました。</p></td>
-<td align="center"><p align="left" dir="auto">登録したメールアドレスとパスワードでログインします。「ログイン状態を保持する」にチェックを入れることでログイン状態が1ヶ月間継続します。</p></td>
-</tr>
-</tbody>
-</table>
+名前・メールアドレス・パスワード・パスワード確認を入力して会員登録し、登録したメールアドレスとパスワードでログインできます。「ログイン状態を保持する」にチェックを入れることでログイン状態が1ヶ月間継続します。<br>
+ご高齢の方も使用してくださっており、パスワードの入力ミスが発生していたためパスワード表示切替ボタンを設置しました。
 
 <br>
 

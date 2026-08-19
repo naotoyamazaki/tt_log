@@ -3,6 +3,8 @@ source "https://rubygems.org"
 ruby "3.2.10"
 
 gem 'rails', '7.1.2'
+# Ruby 3.2.10のデフォルトerb gem(4.0.2)がactionview 7.1.2と非互換のため固定
+gem 'erb', '~> 2.2'
 gem "sprockets-rails"
 gem "pg", "~> 1.1"
 gem "puma", "~> 7.0"

@@ -1,6 +1,6 @@
 /* トップイメージのスタイル */
 .top-wrapper {
-  background-image: url("top.jpg");
+  background-image: url("top-master.jpg");
   height: calc(100vh - 134px);
   position: relative;
   background-position: center;
@@ -157,6 +157,7 @@ section p {
 
 @media screen and (max-width: 768px) {
   .top-wrapper {
+    background-image: url("top-master-mobile.jpg");
     height: 50vh;
   }
 

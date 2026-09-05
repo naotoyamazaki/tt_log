@@ -166,6 +166,16 @@ section p {
   border-bottom-color: rgba(255, 255, 255, 0.5);
 }
 
+.start-section .btn-register {
+  background: white;
+  color: var(--tt-primary);
+}
+
+.start-section .btn-register:hover {
+  background: var(--tt-bg-muted);
+  color: var(--tt-primary);
+}
+
 .start-section .btn-login {
   color: white;
   border-color: white;

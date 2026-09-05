@@ -16,6 +16,27 @@
   text-align: center;
   font-size: 1.5rem;
   color: white;
+  z-index: 2;
+}
+
+.top-inner-text h1 {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero-login-wrapper {
+  margin-top: 0.25rem;
+}
+
+.hero-login-link {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.hero-login-link:hover {
+  color: white;
 }
 
 section {
@@ -158,7 +179,29 @@ section p {
 @media screen and (max-width: 768px) {
   .top-wrapper {
     background-image: url("top-master-mobile.jpg");
+    background-position: center top;
     height: 50vh;
+  }
+
+  .top-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 58%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.32) 55%, rgba(0, 0, 0, 0) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .top-inner-text {
+    top: 22%;
+    transform: translate(-50%, 0);
+  }
+
+  .hero-login-wrapper {
+    margin-top: 0.5rem;
   }
 
   .fw-bold {
@@ -203,5 +246,18 @@ section p {
 
   .chat-bubble {
     max-width: 90%;
+  }
+
+  .top-inner-text {
+    top: 12%;
+  }
+
+  .top-inner-text .btn-lg {
+    font-size: 0.8rem;
+    padding: .4rem .8rem;
+  }
+
+  .top-inner-text .button-group {
+    gap: 0.5rem !important;
   }
 }

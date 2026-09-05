@@ -7,7 +7,9 @@
       <% else %>
         <div class="button-group d-flex justify-content-center flex-wrap gap-3 mt-4">
           <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg btn-register" %>
-          <%= link_to 'ログイン', login_path, class: "btn btn-lg btn-login" %>
+        </div>
+        <div class="hero-login-wrapper">
+          <%= link_to 'アカウントをお持ちの方はこちら', login_path, class: "hero-login-link" %>
         </div>
       <% end %>
       </h1>

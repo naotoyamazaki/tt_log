@@ -7,7 +7,9 @@
       <% else %>
         <div class="button-group d-flex justify-content-center flex-wrap gap-3 mt-4">
           <%= link_to '今すぐ無料で試してみる', new_user_path, class: "btn btn-lg btn-register" %>
-          <%= link_to 'ログイン', login_path, class: "btn btn-lg btn-login" %>
+        </div>
+        <div class="hero-login-wrapper">
+          <%= link_to 'アカウントをお持ちの方はこちら', login_path, class: "hero-login-link" %>
         </div>
       <% end %>
       </h1>
@@ -21,7 +23,7 @@
       <p>T.T.LOGは、卓球選手のための試合分析ツールです。</p>
       <p>試合ごとに技術別の得失点を記録するだけで、あなたのプレーを数値化。AIが統計データをもとに強み・弱み・改善点を分析し、具体的なアドバイスを自動生成します。</p>
       <p>コーチがいなくても、自分の試合を客観的に振り返れる環境を、あなたに。</p>
-      <%= image_tag 'ttlog_image1.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
+      <%= image_tag 'ttlog_image1-master.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
     </div>
   </section>
 
@@ -32,7 +34,7 @@
       <div class="chat-bubble left-bubble">練習はしてるのに、試合になると勝てない...</div>
       <div class="chat-bubble right-bubble">動画を見ても、何を直せばいいかわからない...</div>
       <div class="chat-bubble left-bubble">コーチがいないから、客観的なアドバイスが欲しい...</div>
-      <%= image_tag 'ttlog_image2.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
+      <%= image_tag 'ttlog_image2-male-video-review-v2.jpg', alt: 'T.T.LOGのイメージ画像', class: 'section-img' %>
     </div>
   </section>
 
@@ -46,6 +48,7 @@
         <li><span class="icon">③</span>ゲームごとの得点推移を確認 — 試合の流れを客観視できる</li>
         <li><span class="icon">④</span>サーブ・レシーブ起点の3球目/4球目パターンまで分析 — 序盤の展開力が一目でわかる</li>
       </ul>
+      <%= image_tag 'serve_receive_analysis.gif', alt: 'サーブ・レシーブ分析のデモ', class: 'section-img' %>
     </div>
   </section>
 

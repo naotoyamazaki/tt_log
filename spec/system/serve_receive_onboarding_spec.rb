@@ -30,4 +30,22 @@ RSpec.describe 'サーブ・レシーブ分析の導線強化（Sprint 1）', ty
     expect(page).to have_content('技術別の得失点を記録')
     expect(page).to have_content('3球目・4球目パターンを分析')
   end
+
+  it 'ヘッダーの文言が更新されている' do
+    visit match_infos_path
+
+    expect(page).to have_content('分析結果一覧')
+    expect(page).to have_content('技術別得点率分析を開始')
+  end
+
+  it 'PC用ドロップダウンとモバイル用直接リンクの両方がDOMに存在する' do
+    visit match_infos_path
+
+    expect(page).to have_css('li.dropdown.d-none.d-lg-block')
+    expect(page).to have_css('li.nav-item.d-lg-none', minimum: 3)
+    within('li.dropdown.d-none.d-lg-block') do
+      expect(page).to have_link('分析結果一覧', href: match_infos_path)
+      expect(page).to have_link('サーブ・レシーブ分析を開始', href: new_serve_receive_match_infos_path)
+    end
+  end
 end

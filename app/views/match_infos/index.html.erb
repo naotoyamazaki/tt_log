@@ -10,6 +10,34 @@
   </div>
 </div>
 
+<div class="d-flex justify-content-center mb-3">
+  <a href="#analysisIntro" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="analysisIntro">
+    2つの分析の違いは？
+  </a>
+</div>
+
+<div class="collapse mb-3" id="analysisIntro">
+  <div class="section-card p-4 shadow-sm">
+    <div class="row">
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <h5>技術別得点率分析</h5>
+        <p class="mb-0">
+          得点・失点した技術を記録しAIが技術面のアドバイスを生成。自分がどの技術で得点してどの技術で失点しているか知りたい選手向け。
+        </p>
+      </div>
+      <div class="col-12 col-md-6">
+        <h5>
+          サーブ・レシーブ分析
+          <span class="badge bg-danger ms-1">NEW</span>
+        </h5>
+        <p class="mb-0">
+          サーブ/レシーブ直後の3球目・4球目をパターン別で記録し、パターンごとの得点率を可視化。それを踏まえてAIが戦術面のアドバイスを生成。より深く試合を分析したい選手におすすめ。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div data-controller="auto-save" data-auto-save-page-value="index"
      data-auto-save-restore-autosave-url-value="<%= restore_autosave_match_infos_path %>">
   <div id="autosave-banner" class="alert alert-info d-flex align-items-center justify-content-between d-none mt-3">

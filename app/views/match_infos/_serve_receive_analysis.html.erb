@@ -1,7 +1,14 @@
 <% if srp_analysis.empty? %>
   <div class="show-container fade-in-up mb-4">
     <div class="section-card p-4 shadow-sm">
-      <p class="text-muted text-center mb-0">まだ得点データがありません</p>
+      <p class="text-muted text-center mb-2">まだ得点データがありません</p>
+      <p class="text-muted text-center mb-2">
+        サーブ・レシーブ分析では、サーブ/レシーブ直後の3球目・4球目パターンごとの得点率を記録・可視化し、
+        AIが戦術面のアドバイスを生成します。
+      </p>
+      <p class="text-center mb-0">
+        <%= link_to "サーブ・レシーブ分析を始める", new_serve_receive_match_infos_path, class: "btn btn-primary" %>
+      </p>
     </div>
   </div>
 <% else %>

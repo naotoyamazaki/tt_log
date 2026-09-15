@@ -102,6 +102,13 @@ RSpec.describe "MatchInfos", type: :request do
         expect(ChatgptService).not_to receive(:get_advice)
         get match_info_path(srp_match_info)
       end
+
+      it "得点データがない場合、機能説明と新規作成ページへの導線が表示されること" do
+        get match_info_path(srp_match_info)
+        expect(response.body).to include("まだ得点データがありません")
+        expect(response.body).to include("3球目・4球目パターンごとの得点率")
+        expect(response.body).to include(new_serve_receive_match_infos_path)
+      end
     end
   end
 
@@ -118,6 +125,11 @@ RSpec.describe "MatchInfos", type: :request do
         get new_match_info_path(draft_id: draft.id)
         expect(response).to have_http_status(:ok)
       end
+    end
+
+    it "機能説明が表示されること" do
+      get new_match_info_path
+      expect(response.body).to include("打法ごとの得点・失点を記録して、AIが技術面のアドバイスを行います")
     end
   end
 
@@ -379,6 +391,11 @@ RSpec.describe "MatchInfos", type: :request do
       delete logout_path
       get new_serve_receive_match_infos_path
       expect(response).to have_http_status(:redirect)
+    end
+
+    it "機能説明が表示されること" do
+      get new_serve_receive_match_infos_path
+      expect(response.body).to include("サーブ/レシーブ直後の3球目・4球目パターンごとの得点率を分析します")
     end
   end
 

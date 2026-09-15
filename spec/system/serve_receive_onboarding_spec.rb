@@ -48,4 +48,19 @@ RSpec.describe 'サーブ・レシーブ分析の導線強化（Sprint 1）', ty
       expect(page).to have_link('サーブ・レシーブ分析を開始', href: new_serve_receive_match_infos_path)
     end
   end
+
+  it '「2つの分析の違いは？」をクリックすると説明カードが表示され両機能の説明文を含む' do
+    visit match_infos_path
+
+    expect(page).to have_css('#analysisIntro.collapse', visible: :all)
+
+    click_link '2つの分析の違いは？'
+
+    within('#analysisIntro') do
+      expect(page).to have_content('技術別得点率分析')
+      expect(page).to have_content('得点・失点した技術を記録しAIが技術面のアドバイスを生成')
+      expect(page).to have_content('サーブ・レシーブ分析')
+      expect(page).to have_content('サーブ/レシーブ直後の3球目・4球目をパターン別で記録し')
+    end
+  end
 end

@@ -12,6 +12,28 @@ RSpec.describe "MatchInfos", type: :request do
       get match_infos_path
       expect(response).to have_http_status(:ok)
     end
+
+    context "下書きが存在する場合" do
+      let!(:draft) { create(:match_info, user: user, draft: true) }
+
+      it "下書きに削除ボタンと確認モーダルが表示されること" do
+        get match_infos_path
+
+        expect(response.body).to include("削除")
+        expect(response.body).to include("deleteDraftModal_#{draft.id}")
+        expect(response.body).to include("この下書きを本当に削除してもよろしいですか？")
+      end
+    end
+
+    context "下書きではない分析データのみの場合" do
+      let!(:match_info) { create(:match_info, user: user) }
+
+      it "削除ボタン用モーダルが表示されないこと" do
+        get match_infos_path
+
+        expect(response.body).not_to include("deleteDraftModal_#{match_info.id}")
+      end
+    end
   end
 
   describe "GET /match_infos/:id" do
@@ -102,6 +124,13 @@ RSpec.describe "MatchInfos", type: :request do
         expect(ChatgptService).not_to receive(:get_advice)
         get match_info_path(srp_match_info)
       end
+
+      it "得点データがない場合、機能説明と新規作成ページへの導線が表示されること" do
+        get match_info_path(srp_match_info)
+        expect(response.body).to include("まだ得点データがありません")
+        expect(response.body).to include("3球目・4球目パターンごとの得点率")
+        expect(response.body).to include(new_serve_receive_match_infos_path)
+      end
     end
   end
 
@@ -118,6 +147,11 @@ RSpec.describe "MatchInfos", type: :request do
         get new_match_info_path(draft_id: draft.id)
         expect(response).to have_http_status(:ok)
       end
+    end
+
+    it "機能説明が表示されること" do
+      get new_match_info_path
+      expect(response.body).to include("自分が得点した技術と相手に得点された技術を記録し、AIが技術面のアドバイスを行います")
     end
   end
 
@@ -367,6 +401,17 @@ RSpec.describe "MatchInfos", type: :request do
       end.to change(MatchInfo, :count).by(-1)
       expect(response).to redirect_to(match_infos_path)
     end
+
+    context "下書きの場合" do
+      let!(:draft) { create(:match_info, user: user, draft: true) }
+
+      it "下書きも削除できること" do
+        expect do
+          delete match_info_path(draft)
+        end.to change(MatchInfo, :count).by(-1)
+        expect(response).to redirect_to(match_infos_path)
+      end
+    end
   end
 
   describe "GET /match_infos/new_serve_receive" do
@@ -379,6 +424,11 @@ RSpec.describe "MatchInfos", type: :request do
       delete logout_path
       get new_serve_receive_match_infos_path
       expect(response).to have_http_status(:redirect)
+    end
+
+    it "機能説明が表示されること" do
+      get new_serve_receive_match_infos_path
+      expect(response.body).to include("サーブ/レシーブ直後の3球目・4球目パターンごとの得点率を分析し、AIが戦術面のアドバイスを行います")
     end
   end
 

@@ -37,10 +37,35 @@
       <% end %>
       <% if match_info.draft? %>
         <%= link_to "続きから入力", draft_resume_path, class: "btn btn-warning mt-2" %>
+        <%= link_to "削除", "#", class: "btn delete-btn mt-2 ms-2",
+              data: { bs_toggle: "modal", bs_target: "#deleteDraftModal_#{match_info.id}" } %>
       <% else %>
         <%= link_to "試合分析詳細", match_info, class: "btn btn-info mt-2" %>
       <% end %>
     </div>
   </div>
 </a>
+
+<% if match_info.draft? %>
+  <div class="modal fade" id="deleteDraftModal_<%= match_info.id %>" tabindex="-1"
+       aria-labelledby="deleteDraftModalLabel_<%= match_info.id %>" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteDraftModalLabel_<%= match_info.id %>">削除の確認</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+        </div>
+        <div class="modal-body">
+          この下書きを本当に削除してもよろしいですか？
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+          <%= button_to "削除する", match_info_path(match_info),
+                method: :delete,
+                class: "btn btn-danger" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
 </div>

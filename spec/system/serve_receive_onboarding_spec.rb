@@ -58,9 +58,31 @@ RSpec.describe 'サーブ・レシーブ分析の導線強化（Sprint 1）', ty
 
     within('#analysisIntro') do
       expect(page).to have_content('技術別得点率分析')
-      expect(page).to have_content('得点・失点した技術を記録しAIが技術面のアドバイスを生成')
+      expect(page).to have_content('自分が得点した技術と相手に得点された技術を記録しAIが技術面のアドバイスを生成')
       expect(page).to have_content('サーブ・レシーブ分析')
       expect(page).to have_content('サーブ/レシーブ直後の3球目・4球目をパターン別で記録し')
     end
+  end
+
+  it '技術別得点率分析の新規作成ページに機能説明が表示される（Sprint 3）' do
+    visit new_match_info_path
+
+    expect(page).to have_content('自分が得点した技術と相手に得点された技術を記録し、AIが技術面のアドバイスを行います')
+  end
+
+  it 'サーブ・レシーブ分析の新規作成ページに機能説明が表示される（Sprint 3）' do
+    visit new_serve_receive_match_infos_path
+
+    expect(page).to have_content('サーブ/レシーブ直後の3球目・4球目パターンごとの得点率を分析し、AIが戦術面のアドバイスを行います')
+  end
+
+  it 'サーブ・レシーブ分析が空状態のとき、機能説明と新規作成ページへの導線が表示される（Sprint 3）' do
+    srp_match_info = create(:match_info, user: user, analysis_type: :serve_receive)
+
+    visit match_info_path(srp_match_info)
+
+    expect(page).to have_content('まだ得点データがありません')
+    expect(page).to have_content('3球目・4球目パターンごとの得点率')
+    expect(page).to have_link('サーブ・レシーブ分析を始める', href: new_serve_receive_match_infos_path)
   end
 end

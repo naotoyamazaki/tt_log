@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   resources :users, only: %i[new create]
   resources :password_resets, only: [:new, :create, :edit, :update]
 
+  resources :growth_dashboards, only: [:index]
+
   resources :match_infos do
     collection do
       get :autocomplete

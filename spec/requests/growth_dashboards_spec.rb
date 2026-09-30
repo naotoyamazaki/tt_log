@@ -38,6 +38,12 @@ RSpec.describe "GrowthDashboards", type: :request do
           expect(response.body).to include("2026-08")
           expect(response.body).to include("growth-chart")
         end
+
+        it "「得点率」ではなく使用率であることが伝わる表記になっていること" do
+          get growth_dashboards_path
+          expect(response.body).to include("使用率")
+          expect(response.body).not_to include("得点率の推移")
+        end
       end
     end
   end

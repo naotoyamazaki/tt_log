@@ -8,6 +8,6 @@ class GrowthDashboardsController < ApplicationController
     @batting_style = FORE_DRIVE_VS_TOPSPIN
     @series = GrowthDashboardAggregator.new(
       match_infos: match_infos, batting_style: @batting_style
-    ).monthly_rate_series
+    ).monthly_usage_share_series
   end
 end

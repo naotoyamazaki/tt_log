@@ -20,7 +20,7 @@ export default class extends Controller {
       data: {
         labels: labels,
         datasets: [{
-          label: "得点率（%）",
+          label: "得点内訳における使用率（%）",
           data: data,
           borderColor: "#2e7d32",
           backgroundColor: "rgba(46, 125, 50, 0.15)",

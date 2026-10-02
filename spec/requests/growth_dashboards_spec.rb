@@ -78,6 +78,39 @@ RSpec.describe "GrowthDashboards", type: :request do
           expect(response.body).not_to include(">レシーブ<")
         end
       end
+
+      context "表示期間切り替え機能" do
+        let!(:match_info) { create(:match_info, user: user, match_date: Date.new(2026, 8, 3)) }
+
+        before do
+          create(:score, match_info: match_info, batting_style: :fore_drive_vs_topspin, score: 6, lost_score: 4)
+        end
+
+        it "periodパラメータがweekの場合は週別で表示すること" do
+          get growth_dashboards_path, params: { period: "week" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("週別")
+        end
+
+        it "periodパラメータがmonthの場合は月別で表示すること" do
+          get growth_dashboards_path, params: { period: "month" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("月別")
+          expect(response.body).to include("2026-08")
+        end
+
+        it "periodパラメータが未指定の場合は月別がデフォルトであること" do
+          get growth_dashboards_path
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("月別")
+        end
+
+        it "不正なperiodが渡された場合は月別にフォールバックすること" do
+          get growth_dashboards_path, params: { period: "not_a_real_period" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("月別")
+        end
+      end
     end
   end
 end

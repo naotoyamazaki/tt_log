@@ -120,4 +120,42 @@ RSpec.describe GrowthDashboardAggregator do
       expect(result.first[:share]).not_to eq(100)
     end
   end
+
+  describe "#monthly_usage_share_series（period: :weekを指定した場合）" do
+    it "週（beginning_of_week）単位でグループ化し使用率を計算すること" do
+      # 2026-08-03(月)と2026-08-04(火)は同じ週、2026-08-12(水)は翌週
+      match_info_with_scores(Date.new(2026, 8, 3), [[:fore_drive_vs_topspin, 6, 4], [:serve, 4, 0]])
+      match_info_with_scores(Date.new(2026, 8, 4), [[:fore_drive_vs_topspin, 4, 2]])
+      match_info_with_scores(Date.new(2026, 8, 12), [[:fore_drive_vs_topspin, 3, 7], [:serve, 7, 0]])
+
+      match_infos = user.match_infos.includes(:scores)
+      result = described_class.new(
+        match_infos: match_infos, batting_style: "fore_drive_vs_topspin", period: :week
+      ).monthly_usage_share_series
+
+      week1_label = Date.new(2026, 8, 3).beginning_of_week.strftime("%Y-%m-%d")
+      week2_label = Date.new(2026, 8, 12).beginning_of_week.strftime("%Y-%m-%d")
+
+      expect(result).to eq(
+        [
+          { period_label: week1_label, share: 71, score: 10, total_score: 14, match_count: 2 },
+          { period_label: week2_label, share: 30, score: 3, total_score: 10, match_count: 1 }
+        ]
+      )
+    end
+
+    it "週の昇順で返すこと" do
+      match_info_with_scores(Date.new(2026, 9, 1), [[:fore_drive_vs_topspin, 1, 1]])
+      match_info_with_scores(Date.new(2026, 6, 1), [[:fore_drive_vs_topspin, 1, 1]])
+      match_info_with_scores(Date.new(2026, 8, 1), [[:fore_drive_vs_topspin, 1, 1]])
+
+      match_infos = user.match_infos.includes(:scores)
+      result = described_class.new(
+        match_infos: match_infos, batting_style: "fore_drive_vs_topspin", period: :week
+      ).monthly_usage_share_series
+
+      expect(result.map { |entry| entry[:period_label] }).to eq(result.map { |entry| entry[:period_label] }.sort)
+      expect(result.size).to eq(3)
+    end
+  end
 end

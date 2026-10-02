@@ -1,0 +1,24 @@
+<h1 class="center-text">📈 成長ダッシュボード</h1>
+
+<div class="show-container fade-in-up mb-4">
+  <div class="section-card p-4 shadow-sm">
+    <h2 class="section-title">対上回転フォアドライブ 得点内訳における使用率の推移（月別）</h2>
+    <p class="text-muted small">
+      ※ この数値は「フォアドライブの成功率」ではなく、その月に自分が取った得点のうちフォアドライブが占める割合（使用率）です。
+    </p>
+
+    <% if @series.empty? %>
+      <p class="text-muted">
+        まだ表示できる試合データがありません。試合を登録すると、フォアドライブ（対上回転）の得点内訳における使用率の推移がここに表示されます。
+      </p>
+    <% else %>
+      <div
+        data-controller="growth-chart"
+        data-growth-chart-labels-value="<%= @series.map { |entry| entry[:period_label] }.to_json %>"
+        data-growth-chart-data-value="<%= @series.map { |entry| entry[:share] }.to_json %>"
+      >
+        <canvas data-growth-chart-target="canvas" height="120"></canvas>
+      </div>
+    <% end %>
+  </div>
+</div>

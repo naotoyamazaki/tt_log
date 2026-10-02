@@ -49,7 +49,12 @@ class GrowthDashboardAggregator
   end
 
   def period_label_for(period_start)
-    period_start.strftime("%Y-%m")
+    case @period
+    when :week
+      period_start.strftime("%Y-%m-%d")
+    else
+      period_start.strftime("%Y-%m")
+    end
   end
 
   def calculate_share(target_score, total_score)

@@ -36,6 +36,9 @@
       <p class="text-muted">
         まだ表示できる試合データがありません。試合を登録すると、<%= Score.human_enum_name(:batting_style, @batting_style) %>の得点内訳における使用率の推移がここに表示されます。
       </p>
+      <p class="text-muted small">
+        試合を重ねるほど、このグラフにあなたの成長の軌跡が積み上がっていきます。
+      </p>
     <% else %>
       <div
         data-controller="growth-chart"

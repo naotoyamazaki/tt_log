@@ -45,6 +45,39 @@ RSpec.describe "GrowthDashboards", type: :request do
           expect(response.body).not_to include("得点率の推移")
         end
       end
+
+      context "技術選択機能" do
+        let!(:match_info) { create(:match_info, user: user, match_date: Date.new(2026, 8, 1)) }
+
+        before do
+          create(:score, match_info: match_info, batting_style: :fore_push, score: 5, lost_score: 1)
+        end
+
+        it "batting_styleパラメータに応じて対象技術を切り替えて表示すること" do
+          get growth_dashboards_path, params: { batting_style: "fore_push" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("フォアツッツキ")
+        end
+
+        it "不正なbatting_styleが渡された場合はデフォルト(fore_drive_vs_topspin)にフォールバックすること" do
+          get growth_dashboards_path, params: { batting_style: "not_a_real_style" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("対上回転フォアドライブ")
+        end
+
+        it "receiveのような選択不可な値が渡された場合もデフォルトにフォールバックすること" do
+          get growth_dashboards_path, params: { batting_style: "receive" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("対上回転フォアドライブ")
+        end
+
+        it "セレクトボックスに全ての選択可能な技術が選択肢として表示されること" do
+          get growth_dashboards_path
+          expect(response.body).to include("<select")
+          expect(response.body).to include("フォアツッツキ")
+          expect(response.body).not_to include(">レシーブ<")
+        end
+      end
     end
   end
 end

@@ -99,10 +99,13 @@ Phase 0は複数スプリントに分割し、CLAUDE.mdのルール通りスプ�
 - スコープ: `GrowthDashboardAggregator` に `period: :week` を追加／月別・週別の切り替えUI
 - 完了条件: 週別・月別を切り替えて表示できる。テスト・Lint緑。
 
-### Sprint 4（任意・優先度低）— 技術別ランキング表示の追加
-- ブランチ: `feature/sprint-4-growth-dashboard`
+### Sprint 4（任意・優先度低）— 技術別ランキング表示の追加 → **見送り（実装しない）**
 - スコープ: ダッシュボード上に技術別得点率ランキングカードを追加（`_batting_score_table.html.erb` や `player_scoring_techniques` ヘルパーの複数試合横断向け拡張）
-- 完了条件: ダッシュボードにランキングテーブルが表示される。テスト・Lint緑。
+- **判断（2026-10-02）**: plannerによる事前検討の結果、見送りに決定した。理由は以下の通り。
+  - 本文中の「得点率」という指標はSprint 1で「このデータ構造では測定不能」と結論づけた破綻指標の記述が、指標変更後も取り残されたもの。実装するなら必然的に使用率（share）になるが、それは試合詳細画面（`app/views/match_infos/_match_info_detail.html.erb`）の`player_scoring_techniques`ヘルパーがすでに1試合単位で提供している指標・UIとほぼ重複する。
+  - Phase 0の目的は「積み上げ分析はユーザーに刺さるか」を最安コストで検証することであり、Sprint 1-3（技術選択＋月別/週別の使用率推移グラフ）で検証に必要な最小機能は揃っている。
+  - 代替案（技術選択導線の改善として上位技術リスト＋クリックでグラフ切替、等にスコープ縮小する案）も検討したが、「Sprint 1-3を実際に使ってみて技術選択に迷いを感じるか」を見てから判断する方が無駄がないとの結論になり、現時点では着手しないこととした。
+  - 必要性を再検討する場合は、本セクションの検討経緯を起点にすること。
 
 ## 検証方法（end-to-end）
 
@@ -119,7 +122,11 @@ Phase 0は複数スプリントに分割し、CLAUDE.mdのルール通りスプ�
 - `app/javascript/controllers/rally_input_controller.js` — 踏襲するJSON受け渡しパターン
 - `app/views/shared/_header.html.erb` — ナビリンク追加箇所
 
-## 次回セッション開始時のアクション
+## Phase 0 完了状況
 
-1. このファイルを読み直し、Sprint 1のブランチ（`feature/sprint-1-growth-dashboard`）を切って着手
-2. Sprint 1完了後、RSpec/RuboCop確認 → PR作成（ユーザー指示があれば）→ マージ完了後にSprint 2へ
+Sprint 1〜3まで実装・検証・PRマージが完了（Sprint 4は上記の通り見送り）。Phase 0はこれで完了とする。
+
+- Sprint 1: PR #154 マージ済み
+- Sprint 2: PR #155 マージ済み
+- Sprint 3: PR #156 マージ済み
+- Sprint 4: 見送り（実装しない）

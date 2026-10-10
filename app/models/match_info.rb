@@ -12,6 +12,8 @@ class MatchInfo < ApplicationRecord
 
   enum :analysis_type, { technique: 0, serve_receive: 1 }
 
+  scope :completed, -> { where(draft: false) }
+
   validates :match_date, presence: true
   validates :match_name, presence: true
   validates :memo, length: { maximum: 500, message: I18n.t('errors.messages.memo_too_long') }, allow_blank: true

@@ -97,6 +97,15 @@ RSpec.describe MatchInfo, type: :model do
     end
   end
 
+  describe ".completed" do
+    it "draft: falseの試合のみを返すこと" do
+      completed_match_info = FactoryBot.create(:match_info, draft: false)
+      FactoryBot.create(:match_info, draft: true)
+
+      expect(MatchInfo.completed).to eq([completed_match_info])
+    end
+  end
+
   describe "serve_receive_patterns関連" do
     it "has_many serve_receive_patternsを持つこと" do
       match_info = FactoryBot.create(:match_info)

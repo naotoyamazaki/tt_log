@@ -46,6 +46,34 @@ RSpec.describe "GrowthDashboards", type: :request do
         end
       end
 
+      context "下書き（draft: true）の試合がある場合" do
+        it "下書き試合単独では集計対象がなく空状態メッセージが表示されること" do
+          draft_match_info = create(:match_info, user: user, draft: true, match_date: Date.new(2026, 8, 1))
+          create(:score, match_info: draft_match_info, batting_style: :fore_drive_vs_topspin, score: 6, lost_score: 4)
+
+          get growth_dashboards_path
+
+          expect(response.body).to include("まだ表示できる試合データがありません")
+          expect(response.body).not_to include("2026-08")
+        end
+
+        it "完了試合と同月に下書き試合が混在しても下書き分が集計に加算されないこと" do
+          completed_match_info = create(:match_info, user: user, match_date: Date.new(2026, 8, 1))
+          create(:score, match_info: completed_match_info, batting_style: :fore_drive_vs_topspin,
+                         score: 6, lost_score: 4)
+          create(:score, match_info: completed_match_info, batting_style: :fore_push, score: 4, lost_score: 0)
+          draft_match_info = create(:match_info, user: user, draft: true, match_date: Date.new(2026, 8, 10))
+          create(:score, match_info: draft_match_info, batting_style: :fore_drive_vs_topspin, score: 94, lost_score: 0)
+
+          get growth_dashboards_path
+
+          # 下書きを含めると share は (6+94)/(6+4+94)=96% になるが、除外されれば 6/(6+4)=60% のはず
+          expect(response.body).to include("2026-08")
+          expect(response.body).to include("[60]")
+          expect(response.body).not_to include("[96]")
+        end
+      end
+
       context "技術選択機能" do
         let!(:match_info) { create(:match_info, user: user, match_date: Date.new(2026, 8, 1)) }
 

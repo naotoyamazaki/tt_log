@@ -6,7 +6,7 @@ class GrowthDashboardsController < ApplicationController
   ALLOWED_PERIODS = %w[month week].freeze
 
   def index
-    match_infos = current_user.match_infos.includes(:scores)
+    match_infos = current_user.match_infos.completed.includes(:scores)
     @batting_style = resolve_batting_style(params[:batting_style])
     @period = resolve_period(params[:period])
     @series = GrowthDashboardAggregator.new(

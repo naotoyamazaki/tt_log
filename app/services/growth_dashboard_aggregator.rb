@@ -1,10 +1,10 @@
-# 複数試合を横断して技術別の「得点内訳における使用率（シェア）」推移を集計するサービス。
+# 複数試合を横断して技術別の「得点内訳における得点構成比（シェア）」推移を集計するサービス。
 # RallyContextBuilder と同様に「対象データを受け取り集計結果の配列を返す」パターンを踏襲する。
 #
 # 注意: Score#score/#lost_score は「1ポイントを決定づけた技術」を勝敗で振り分けているだけであり、
 # 「その技術を使った際の成功率」を測れるデータではない（rally_input_controller.js の記録仕様に起因する
 # 構造的な制約）。そのため本サービスは成功率（得点率）ではなく、当月の自分の全得点（receiveを除く）に
-# 対して対象技術が占める割合＝使用率（シェア）を算出する。
+# 対して対象技術が占める割合＝得点構成比（シェア）を算出する。
 class GrowthDashboardAggregator
   def initialize(match_infos:, batting_style:, period: :month)
     @match_infos = match_infos

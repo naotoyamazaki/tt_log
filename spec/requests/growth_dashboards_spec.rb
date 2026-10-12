@@ -74,6 +74,28 @@ RSpec.describe "GrowthDashboards", type: :request do
         end
       end
 
+      context "期間別明細テーブル" do
+        it "期間ごとの得点構成比・得点数・総得点数・試合数が表に表示されること" do
+          match_info = create(:match_info, user: user, match_date: Date.new(2026, 8, 5))
+          create(:score, match_info: match_info, batting_style: :fore_drive_vs_topspin, score: 6, lost_score: 4)
+          create(:score, match_info: match_info, batting_style: :serve, score: 4, lost_score: 0)
+
+          get growth_dashboards_path
+
+          expect(response.body).to include("2026-08")
+          expect(response.body).to include("60%")
+          expect(response.body).to include("対象技術の得点数")
+          expect(response.body).to include("総得点数")
+          expect(response.body).to include("集計試合数")
+        end
+
+        it "試合データが0件の場合はテーブルが表示されないこと" do
+          get growth_dashboards_path
+
+          expect(response.body).not_to include("対象技術の得点数")
+        end
+      end
+
       context "技術選択機能" do
         let!(:match_info) { create(:match_info, user: user, match_date: Date.new(2026, 8, 1)) }
 

@@ -1080,6 +1080,28 @@ select {
   transition: width 0.3s ease;
 }
 
+.scroll-hint-text {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.scroll-hint-arrow {
+  display: inline-block;
+  animation: scroll-hint-nudge 1.2s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-nudge {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: 1;
+  }
+}
+
 .ranking-section-header {
   display: flex;
   align-items: center;

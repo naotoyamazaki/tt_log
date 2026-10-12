@@ -1,0 +1,57 @@
+<div class="overflow-auto d-md-none">
+  <table class="table text-nowrap mb-0">
+    <thead class="ranking-table-player-header">
+      <tr>
+        <th>期間</th>
+        <th class="text-center">得点構成比</th>
+        <th class="text-center">対象技術の得点数</th>
+        <th class="text-center">総得点数</th>
+        <th class="text-center">集計試合数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% series.each do |entry| %>
+        <tr>
+          <td><%= entry[:period_label] %></td>
+          <td class="text-center"><strong><%= entry[:share] %>%</strong></td>
+          <td class="text-center"><%= entry[:score] %></td>
+          <td class="text-center"><%= entry[:total_score] %></td>
+          <td class="text-center"><%= entry[:match_count] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<p class="scroll-hint-text text-muted small d-md-none mb-2" aria-hidden="true">
+  <span class="scroll-hint-arrow">→</span> 横にスクロールできます
+</p>
+
+<table class="table d-none d-md-table mb-0">
+  <thead class="ranking-table-player-header">
+    <tr>
+      <th>期間</th>
+      <th class="text-end">対象技術の得点数</th>
+      <th class="text-end">総得点数</th>
+      <th class="text-end">集計試合数</th>
+      <th class="rate-bar-col text-end">得点構成比</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% series.each do |entry| %>
+      <tr>
+        <td><%= entry[:period_label] %></td>
+        <td class="text-end"><%= entry[:score] %></td>
+        <td class="text-end"><%= entry[:total_score] %></td>
+        <td class="text-end"><%= entry[:match_count] %></td>
+        <td class="align-middle">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rate-bar-container flex-grow-1">
+              <div class="rate-bar-fill-player" style="width: <%= entry[:share] %>%;"></div>
+            </div>
+            <span class="rate-bar-pct"><%= entry[:share] %>%</span>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

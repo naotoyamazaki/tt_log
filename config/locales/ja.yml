@@ -14,6 +14,31 @@ ja:
         player_name: "選手名"
         opponent_name: "対戦相手名"
         memo: "メモ"
+        opponent_playstyle_other: "戦型（その他・自由入力）"
+        opponent_handedness:
+          right: 右利き
+          left: 左利き
+        opponent_racket:
+          shakehand: シェークハンド
+          penholder: ペンホルダー
+        opponent_rubber_forehand:
+          backside: 裏ソフト
+          pips_out: 表ソフト
+          pips_long: 粒高
+          anti: アンチ
+        opponent_rubber_backhand:
+          backside: 裏ソフト
+          pips_out: 表ソフト
+          pips_long: 粒高
+          anti: アンチ
+          none: なし
+        opponent_playstyle:
+          front_drive: 前陣ドライブ型
+          mid_drive: 中陣ドライブ型
+          front_hit: 前陣ミート型
+          blocker: ブロック型
+          cutman: カットマン
+          other: その他
       score:
         batting_style:
           serve: サーブ

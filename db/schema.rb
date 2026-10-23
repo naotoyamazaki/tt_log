@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_18_060001) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_23_150350) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -39,6 +39,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_18_060001) do
     t.boolean "draft", default: false, null: false
     t.jsonb "partial_game_data"
     t.integer "analysis_type", default: 0, null: false
+    t.integer "opponent_handedness"
+    t.integer "opponent_racket"
+    t.integer "opponent_rubber_forehand"
+    t.integer "opponent_rubber_backhand"
+    t.integer "opponent_playstyle"
+    t.string "opponent_playstyle_other"
     t.index ["opponent_id"], name: "index_match_infos_on_opponent_id"
     t.index ["player_id"], name: "index_match_infos_on_player_id"
     t.index ["user_id"], name: "index_match_infos_on_user_id"

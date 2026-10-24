@@ -11,6 +11,13 @@ class MatchInfo < ApplicationRecord
   attr_accessor :player_name, :opponent_name
 
   enum :analysis_type, { technique: 0, serve_receive: 1 }
+  enum :opponent_handedness, { right: 0, left: 1 }, prefix: :opponent_handedness
+  enum :opponent_racket, { shakehand: 0, penholder: 1 }, prefix: :opponent_racket
+  enum :opponent_rubber_forehand, { backside: 0, pips_out: 1, pips_long: 2, anti: 3 }, prefix: :opponent_rubber_forehand
+  enum :opponent_rubber_backhand, { backside: 0, pips_out: 1, pips_long: 2, anti: 3, none: 4 },
+       prefix: :opponent_rubber_backhand
+  enum :opponent_playstyle, { front_drive: 0, mid_drive: 1, front_hit: 2, blocker: 3, cutman: 4, other: 5 },
+       prefix: :opponent_playstyle
 
   scope :completed, -> { where(draft: false) }
 
@@ -37,6 +44,10 @@ class MatchInfo < ApplicationRecord
     [:opponent_player_name_cont]
   end
 
+  def self.human_enum_name(enum_name, key)
+    I18n.t("activerecord.attributes.match_info.#{enum_name}.#{key}")
+  end
+
   def self.opponent_player_name_cont(query)
     joins(:opponent).where("players.player_name LIKE ?", "%#{query}%")
   end
@@ -51,6 +62,16 @@ class MatchInfo < ApplicationRecord
     player_wins = games.count { |g| g.player_score > g.opponent_score }
     opponent_wins = games.count { |g| g.player_score < g.opponent_score }
     "#{player_wins}-#{opponent_wins}"
+  end
+
+  def result
+    return nil if games.none?
+
+    player_wins = games.count { |g| g.player_score > g.opponent_score }
+    opponent_wins = games.count { |g| g.player_score < g.opponent_score }
+    return nil if player_wins == opponent_wins
+
+    player_wins > opponent_wins ? :win : :lose
   end
 
   def game_by_game_score_data

@@ -539,7 +539,11 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   def basic_match_info_params
-    params.require(:match_info).permit(:match_date, :match_name, :memo, :match_format, :analysis_type)
+    params.require(:match_info).permit(
+      :match_date, :match_name, :memo, :match_format, :analysis_type,
+      :opponent_handedness, :opponent_racket, :opponent_rubber_forehand,
+      :opponent_rubber_backhand, :opponent_playstyle, :opponent_playstyle_other
+    )
   end
 
   def game_score_params
@@ -549,6 +553,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   def match_info_params
     params.require(:match_info).permit(
       :match_date, :match_name, :memo, :match_format,
+      :opponent_handedness, :opponent_racket, :opponent_rubber_forehand,
+      :opponent_rubber_backhand, :opponent_playstyle, :opponent_playstyle_other,
       scores_attributes: [:id, :batting_style, :score, :lost_score, :_destroy],
       games_attributes: [
         :id,

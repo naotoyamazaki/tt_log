@@ -61,6 +61,8 @@
       </div>
     </div>
 
+    <%= render 'match_infos/opponent_attributes_fields', form: form %>
+
     <div class="mb-4">
       <%= form.label :memo, "🗒️メモ" %>
       <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm",

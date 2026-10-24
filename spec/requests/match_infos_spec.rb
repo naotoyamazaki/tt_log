@@ -537,6 +537,121 @@ RSpec.describe "MatchInfos", type: :request do
     end
   end
 
+  describe "対戦相手タイプ属性のパラメータ許可（Sprint 2）" do
+    let(:opponent_attributes) do
+      {
+        opponent_handedness: "left",
+        opponent_racket: "penholder",
+        opponent_rubber_forehand: "pips_long",
+        opponent_rubber_backhand: "anti",
+        opponent_playstyle: "cutman",
+        opponent_playstyle_other: "参考用メモ"
+      }
+    end
+
+    describe "POST /match_infos" do
+      let(:params) do
+        {
+          match_info: attributes_for(:match_info).merge(
+            player_name: "選手A", opponent_name: "選手B"
+          ).merge(opponent_attributes),
+          game_scores: { "serve" => { "score" => "1", "lost_score" => "0" } }
+        }
+      end
+
+      it "全属性ありで作成できること" do
+        post match_infos_path, params: params
+        match_info = MatchInfo.last
+        expect(match_info.opponent_handedness).to eq("left")
+        expect(match_info.opponent_racket).to eq("penholder")
+        expect(match_info.opponent_rubber_forehand).to eq("pips_long")
+        expect(match_info.opponent_rubber_backhand).to eq("anti")
+        expect(match_info.opponent_playstyle).to eq("cutman")
+        expect(match_info.opponent_playstyle_other).to eq("参考用メモ")
+      end
+
+      it "未設定（空）でも作成できること" do
+        params[:match_info].except!(:opponent_handedness, :opponent_racket, :opponent_rubber_forehand,
+                                    :opponent_rubber_backhand, :opponent_playstyle, :opponent_playstyle_other)
+        expect do
+          post match_infos_path, params: params
+        end.to change(MatchInfo, :count).by(1)
+        expect(MatchInfo.last.opponent_playstyle).to be_nil
+      end
+
+      it "戦型がother以外でもopponent_playstyle_otherに値があれば保存できること" do
+        params[:match_info][:opponent_playstyle] = "cutman"
+        params[:match_info][:opponent_playstyle_other] = "使われないはずの値"
+        post match_infos_path, params: params
+        match_info = MatchInfo.last
+        expect(match_info.opponent_playstyle).to eq("cutman")
+        expect(match_info.opponent_playstyle_other).to eq("使われないはずの値")
+      end
+    end
+
+    describe "POST /match_infos/end_game" do
+      let(:match_info_params) do
+        attributes_for(:match_info).merge(player_name: "選手A", opponent_name: "選手B").merge(opponent_attributes)
+      end
+      let(:game_scores) { { "serve" => { "score" => "5", "lost_score" => "2" } } }
+
+      it "全属性ありで保存できること" do
+        post end_game_match_infos_path, params: { match_info: match_info_params, game_scores: game_scores }
+        draft = MatchInfo.last
+        expect(draft.opponent_handedness).to eq("left")
+        expect(draft.opponent_playstyle).to eq("cutman")
+      end
+    end
+
+    describe "POST /match_infos/create_serve_receive" do
+      let(:patterns_data) do
+        [{ 'origin' => 'serve', 'serve_length' => 'short', 'serve_spins' => [0],
+           'receive_style' => nil, 'attack_style' => 'fore_drive_vs_backspin',
+           'decided_at' => 'attack_ball', 'won' => true }]
+      end
+      let(:params) do
+        {
+          match_info: attributes_for(:match_info).merge(
+            player_name: "選手A", opponent_name: "選手B"
+          ).merge(opponent_attributes),
+          patterns: patterns_data.to_json,
+          first_server: 'player'
+        }
+      end
+
+      it "全属性ありで作成できること" do
+        post create_serve_receive_match_infos_path, params: params
+        match_info = MatchInfo.last
+        expect(match_info.opponent_racket).to eq("penholder")
+        expect(match_info.opponent_playstyle).to eq("cutman")
+      end
+    end
+
+    describe "PATCH /match_infos/:id" do
+      let(:match_info) { create(:match_info, user: user) }
+
+      it "全属性ありで更新できること" do
+        patch match_info_path(match_info), params: {
+          match_info: { player_name: "選手A", opponent_name: "選手B" }.merge(opponent_attributes)
+        }
+        match_info.reload
+        expect(match_info.opponent_handedness).to eq("left")
+        expect(match_info.opponent_racket).to eq("penholder")
+        expect(match_info.opponent_rubber_forehand).to eq("pips_long")
+        expect(match_info.opponent_rubber_backhand).to eq("anti")
+        expect(match_info.opponent_playstyle).to eq("cutman")
+        expect(match_info.opponent_playstyle_other).to eq("参考用メモ")
+      end
+
+      it "未設定（空）でも更新できること" do
+        patch match_info_path(match_info), params: {
+          match_info: { player_name: "選手A", opponent_name: "選手B" }
+        }
+        expect(response).to redirect_to(match_info_path(match_info))
+      end
+    end
+  end
+
   describe "DELETE /match_infos/undo_game (serve_receive)" do
     let!(:draft) { create(:match_info, user: user, draft: true, analysis_type: :serve_receive) }
     let!(:game) do

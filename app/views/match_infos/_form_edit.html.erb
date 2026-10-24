@@ -56,6 +56,8 @@
       </div>
     </div>
 
+    <%= render 'match_infos/opponent_attributes_fields', form: form %>
+
     <div class="mb-4">
       <%= form.label :"🗒️メモ" %>
       <%= form.text_area :memo, class: "wide-textarea form-control rounded-pill shadow-sm", placeholder: "対戦相手の戦型や使用用具、分析していて気になったプレーなどを入力" %>

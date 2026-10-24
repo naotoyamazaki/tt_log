@@ -1,0 +1,53 @@
+<div class="row mb-3">
+  <div class="column">
+    <%= form.label :opponent_handedness, "利き手" %>
+    <%= form.select :opponent_handedness,
+        MatchInfo.opponent_handednesses.keys.map { |k| [MatchInfo.human_enum_name(:opponent_handedness, k), k] },
+        { include_blank: "未設定" },
+        class: "form-select" %>
+  </div>
+
+  <div class="column">
+    <%= form.label :opponent_racket, "ラケット" %>
+    <%= form.select :opponent_racket,
+        MatchInfo.opponent_rackets.keys.map { |k| [MatchInfo.human_enum_name(:opponent_racket, k), k] },
+        { include_blank: "未設定" },
+        class: "form-select" %>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="column">
+    <%= form.label :opponent_rubber_forehand, "ラバー（フォア）" %>
+    <%= form.select :opponent_rubber_forehand,
+        MatchInfo.opponent_rubber_forehands.keys.map { |k| [MatchInfo.human_enum_name(:opponent_rubber_forehand, k), k] },
+        { include_blank: "未設定" },
+        class: "form-select" %>
+  </div>
+
+  <div class="column">
+    <%= form.label :opponent_rubber_backhand, "ラバー（バック）" %>
+    <%= form.select :opponent_rubber_backhand,
+        MatchInfo.opponent_rubber_backhands.keys.map { |k| [MatchInfo.human_enum_name(:opponent_rubber_backhand, k), k] },
+        { include_blank: "未設定" },
+        class: "form-select" %>
+  </div>
+</div>
+
+<div class="row mb-3" data-controller="other-text-toggle" data-other-text-toggle-show-value-value="other">
+  <div class="column">
+    <%= form.label :opponent_playstyle, "戦型" %>
+    <%= form.select :opponent_playstyle,
+        MatchInfo.opponent_playstyles.keys.map { |k| [MatchInfo.human_enum_name(:opponent_playstyle, k), k] },
+        { include_blank: "未設定" },
+        class: "form-select",
+        data: { other_text_toggle_target: "select", action: "change->other-text-toggle#toggle" } %>
+  </div>
+
+  <div class="column d-none" data-other-text-toggle-target="text">
+    <%= form.label :opponent_playstyle_other, "戦型（その他・自由入力）" %>
+    <%= form.text_field :opponent_playstyle_other,
+        class: "form-control rounded-pill shadow-sm",
+        placeholder: "対戦相手の戦型を入力" %>
+  </div>
+</div>

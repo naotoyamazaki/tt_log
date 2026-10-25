@@ -22,7 +22,7 @@
           <span class="badge bg-secondary ms-1">技術別得点率</span>
         <% end %>
         <% if match_info.opponent_playstyle.present? %>
-          <span class="badge bg-light text-dark border ms-1">
+          <span class="badge bg-light text-dark border d-block mt-1" style="width: fit-content;">
             <%= MatchInfo.human_enum_name(:opponent_playstyle, match_info.opponent_playstyle) %>
           </span>
         <% end %>

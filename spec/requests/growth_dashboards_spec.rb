@@ -129,6 +129,85 @@ RSpec.describe "GrowthDashboards", type: :request do
         end
       end
 
+      context "戦型フィルタ機能" do
+        let!(:cutman_match_info) do
+          create(:match_info, user: user, opponent_playstyle: :cutman, match_date: Date.new(2026, 8, 1))
+        end
+        let!(:front_drive_match_info) do
+          create(:match_info, user: user, opponent_playstyle: :front_drive, match_date: Date.new(2026, 8, 1))
+        end
+
+        before do
+          create(:score, match_info: cutman_match_info, batting_style: :fore_drive_vs_topspin, score: 6, lost_score: 4)
+          create(:score, match_info: cutman_match_info, batting_style: :serve, score: 4, lost_score: 0)
+          create(:score, match_info: front_drive_match_info, batting_style: :fore_drive_vs_topspin,
+                         score: 2, lost_score: 8)
+          create(:score, match_info: front_drive_match_info, batting_style: :serve, score: 18, lost_score: 0)
+        end
+
+        it "戦型パラメータが未指定の場合は全件を対象に集計すること（後方互換）" do
+          get growth_dashboards_path
+
+          # 絞り込みなし: (6+2)/(6+4+2+18) = 26.666...% => 27%
+          expect(response.body).to include("[27]")
+        end
+
+        it "戦型パラメータを指定すると、その戦型の試合のみに絞り込まれること" do
+          get growth_dashboards_path, params: { opponent_playstyle: "cutman" }
+
+          # cutmanのみ: 6/(6+4) = 60%
+          expect(response.body).to include("[60]")
+        end
+
+        it "セレクトボックスに戦型の選択肢が和名で表示されること" do
+          get growth_dashboards_path
+
+          expect(response.body).to include("カットマン")
+          expect(response.body).to include("前陣ドライブ型")
+        end
+
+        it "不正な戦型が渡された場合は絞り込みが無視され全件が対象になること" do
+          get growth_dashboards_path, params: { opponent_playstyle: "not_a_real_playstyle" }
+
+          expect(response.body).to include("[27]")
+        end
+      end
+
+      context "戦型別勝率テーブル" do
+        it "試合データがない場合は空状態メッセージが表示されること" do
+          get growth_dashboards_path
+
+          expect(response.body).to include("戦型別の勝率を表示できる試合データがありません")
+        end
+
+        it "戦型が設定された試合がある場合、戦型別勝率テーブルが表示されること" do
+          match_info = create(:match_info, user: user, opponent_playstyle: :cutman)
+          create(:game, match_info: match_info, game_number: 1, player_score: 11, opponent_score: 5)
+          create(:game, match_info: match_info, game_number: 2, player_score: 11, opponent_score: 9)
+
+          get growth_dashboards_path
+
+          expect(response.body).to include("戦型別勝率")
+          expect(response.body).to include("カットマン")
+          expect(response.body).to include("100%")
+        end
+
+        it "戦型フィルタの選択に関わらず全戦型の勝率が表示されること" do
+          cutman_match_info = create(:match_info, user: user, opponent_playstyle: :cutman)
+          create(:game, match_info: cutman_match_info, game_number: 1, player_score: 11, opponent_score: 5)
+          create(:game, match_info: cutman_match_info, game_number: 2, player_score: 11, opponent_score: 9)
+
+          front_drive_match_info = create(:match_info, user: user, opponent_playstyle: :front_drive)
+          create(:game, match_info: front_drive_match_info, game_number: 1, player_score: 5, opponent_score: 11)
+          create(:game, match_info: front_drive_match_info, game_number: 2, player_score: 9, opponent_score: 11)
+
+          get growth_dashboards_path, params: { opponent_playstyle: "cutman" }
+
+          expect(response.body).to include("カットマン")
+          expect(response.body).to include("前陣ドライブ型")
+        end
+      end
+
       context "表示期間切り替え機能" do
         let!(:match_info) { create(:match_info, user: user, match_date: Date.new(2026, 8, 3)) }
 

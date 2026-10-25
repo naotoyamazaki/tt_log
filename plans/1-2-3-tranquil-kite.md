@@ -144,6 +144,10 @@ CLAUDE.mdルール準拠（スプリントごとにブランチ・PR、各スプ
 - `growth_dashboards_controller.rb`: 戦型フィルタ・勝率集計の呼び出し追加
 - `growth_dashboards/index.html.erb`: 戦型フィルタselect・勝率テーブルセクション追加
 - service spec、既存`growth_dashboards`のrequest/system spec拡張（フィルタなし時に全件を返す後方互換を確認）
+- **実装時の判断（2026-10-24）**: 戦型別勝率テーブルは「戦型ごとの内訳」を一覧で見せることが目的のため、
+  技術別グラフ側の戦型フィルタ（`opponent_playstyle`パラメータ）の影響を受けず、常に全戦型・全期間を対象に
+  集計する（フィルタで絞り込むと自分自身1行だけになり意味がなくなるため）。将来的な期間別推移テーブルへの
+  拡張可能性は仕様通りアグリゲーター設計で担保済み。
 
 ### Sprint 4 — #77との掛け合わせ（`feature/sprint-4-opponent-type-serve-receive`）
 - `serve_receive_analyzer.rb`: `patterns:`キーワード引数対応へのリファクタ（既存呼び出し元`MatchInfosController#show`が無変更で動作することをspecで確認）

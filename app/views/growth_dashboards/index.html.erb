@@ -21,6 +21,16 @@
               class: "form-select",
               onchange: "this.form.requestSubmit()" %>
         </div>
+        <div class="column">
+          <% playstyle_options = MatchInfo.opponent_playstyles.keys.map do |key|
+               [MatchInfo.human_enum_name(:opponent_playstyle, key), key]
+             end %>
+          <%= label_tag :opponent_playstyle, "🤝戦型で絞り込み" %>
+          <%= select_tag :opponent_playstyle,
+              options_for_select([["すべて", ""]] + playstyle_options, @opponent_playstyle),
+              class: "form-select",
+              onchange: "this.form.requestSubmit()" %>
+        </div>
       </div>
     <% end %>
 
@@ -50,6 +60,46 @@
 
       <div class="mt-4">
         <%= render "period_detail_table", series: @series %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="show-container fade-in-up mb-4">
+  <div class="section-card p-4 shadow-sm">
+    <h2 class="section-title">🏆 戦型別勝率</h2>
+    <p class="text-muted small">
+      ※ 全期間を対象に、対戦相手の戦型ごとの勝率を集計しています（戦型が未設定の試合は集計対象外です）。
+    </p>
+
+    <% if @opponent_type_win_rates.empty? %>
+      <p class="text-muted">
+        戦型別の勝率を表示できる試合データがありません。試合登録時に対戦相手の戦型を設定すると、ここに表示されます。
+      </p>
+    <% else %>
+      <div class="overflow-auto">
+        <table class="table text-nowrap mb-0">
+          <thead class="ranking-table-player-header">
+            <tr>
+              <th>戦型</th>
+              <th class="text-center">試合数</th>
+              <th class="text-center">勝数</th>
+              <th class="text-center">敗数</th>
+              <th class="text-center">勝率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @opponent_type_win_rates.each do |entry| %>
+              <tr>
+                <td><%= entry[:type_label] %></td>
+                <td class="text-center"><%= entry[:match_count] %></td>
+                <td class="text-center"><%= entry[:win_count] %></td>
+                <td class="text-center"><%= entry[:lose_count] %></td>
+                <td class="text-center"><strong><%= entry[:win_rate] %>%</strong></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
       </div>
     <% end %>
   </div>

@@ -1,5 +1,7 @@
 <h1 class="center-text">📝 試合分析詳細</h1>
 
+<%= render partial: "opponent_attributes_summary", locals: { match_info: @match_info } %>
+
 <% if @match_info.serve_receive? %>
   <%= render 'match_infos/serve_receive_analysis', srp_analysis: @srp_analysis %>
   <% if @advice.present? %>

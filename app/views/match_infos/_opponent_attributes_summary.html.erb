@@ -1,0 +1,36 @@
+<%
+  opponent_playstyle_display = nil
+  if match_info.opponent_playstyle.present?
+    opponent_playstyle_display = MatchInfo.human_enum_name(:opponent_playstyle, match_info.opponent_playstyle)
+    if match_info.opponent_playstyle == "other" && match_info.opponent_playstyle_other.present?
+      opponent_playstyle_display += "（#{match_info.opponent_playstyle_other}）"
+    end
+  end
+
+  opponent_attribute_rows = [
+    ["利き手", match_info.opponent_handedness.present? ?
+      MatchInfo.human_enum_name(:opponent_handedness, match_info.opponent_handedness) : nil],
+    ["ラケット", match_info.opponent_racket.present? ?
+      MatchInfo.human_enum_name(:opponent_racket, match_info.opponent_racket) : nil],
+    ["ラバー（フォア）", match_info.opponent_rubber_forehand.present? ?
+      MatchInfo.human_enum_name(:opponent_rubber_forehand, match_info.opponent_rubber_forehand) : nil],
+    ["ラバー（バック）", match_info.opponent_rubber_backhand.present? ?
+      MatchInfo.human_enum_name(:opponent_rubber_backhand, match_info.opponent_rubber_backhand) : nil],
+    ["戦型", opponent_playstyle_display]
+  ].select { |_label, value| value.present? }
+%>
+<% if opponent_attribute_rows.any? %>
+  <div class="show-container fade-in-up mb-4">
+    <div class="section-card p-4 shadow-sm mb-4">
+      <h2 class="section-title mb-3">対戦相手情報</h2>
+      <% opponent_attribute_rows.each do |label, value| %>
+        <div class="row mb-2">
+          <div class="column">
+            <strong><%= label %>:</strong>
+            <%= value %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

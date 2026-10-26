@@ -89,6 +89,76 @@ RSpec.describe '試合情報の投稿', type: :system do
     end
   end
 
+  describe '対戦相手タイプ属性の表示（一覧カード・詳細ページ）' do
+    let(:match_info) do
+      create(:match_info, user: user,
+                          opponent_handedness: :left,
+                          opponent_racket: :penholder,
+                          opponent_rubber_forehand: :pips_long,
+                          opponent_rubber_backhand: :anti,
+                          opponent_playstyle: :other,
+                          opponent_playstyle_other: '異質型')
+    end
+
+    before do
+      allow(ChatgptService).to receive(:get_advice).and_return('テストアドバイス')
+      page.driver.post login_path, email: user.email, password: 'password'
+    end
+
+    it '詳細ページに対戦相手の属性が全て表示される' do
+      visit match_info_path(match_info)
+
+      expect(page).to have_content('対戦相手情報')
+      expect(page).to have_content('左利き')
+      expect(page).to have_content('ペンホルダー')
+      expect(page).to have_content('粒高')
+      expect(page).to have_content('アンチ')
+      expect(page).to have_content('その他（異質型）')
+    end
+
+    it '一覧カードに戦型バッジが表示される' do
+      match_info
+      visit match_infos_path
+
+      expect(page).to have_content('その他')
+    end
+
+    context '対戦相手タイプ属性が未設定の場合' do
+      let(:match_info) { create(:match_info, user: user) }
+
+      it '詳細ページに対戦相手情報セクションが表示されない' do
+        visit match_info_path(match_info)
+
+        expect(page).to have_no_content('対戦相手情報')
+      end
+
+      it '一覧カードに戦型バッジが表示されない' do
+        match_info
+        visit match_infos_path
+
+        expect(page).to have_no_css('.badge.bg-light.text-dark.border')
+      end
+    end
+
+    context 'サーブレシーブ分析の試合の場合' do
+      let(:match_info) do
+        create(:match_info, user: user,
+                            analysis_type: :serve_receive,
+                            advice: '保存済みアドバイス',
+                            opponent_handedness: :right,
+                            opponent_playstyle: :cutman)
+      end
+
+      it '詳細ページに対戦相手情報セクションが表示される' do
+        visit match_info_path(match_info)
+
+        expect(page).to have_content('対戦相手情報')
+        expect(page).to have_content('右利き')
+        expect(page).to have_content('カットマン')
+      end
+    end
+  end
+
   it 'ユーザーが試合情報を投稿し、詳細ページに表示される' do
     # rack_test ドライバで直接 POST してセッションを維持したまま詳細ページを確認する
     page.driver.post login_path, email: user.email, password: 'password'

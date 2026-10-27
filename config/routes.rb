@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :password_resets, only: [:new, :create, :edit, :update]
 
   resources :growth_dashboards, only: [:index]
+  resource :opponent_type_analysis, only: [:show]
 
   resources :match_infos do
     collection do

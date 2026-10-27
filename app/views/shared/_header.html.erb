@@ -22,13 +22,17 @@
               <% end %>
               <%= link_to new_serve_receive_match_infos_path, class: 'dropdown-item' do %>
                 サーブ・レシーブ分析を開始
-                <span class='badge bg-danger ms-1'>NEW</span>
                 <span class='d-block small text-muted'>3球目・4球目パターンを分析</span>
               <% end %>
               <%= link_to growth_dashboards_path, class: 'dropdown-item' do %>
                 成長ダッシュボード
                 <span class='badge bg-danger ms-1'>NEW</span>
                 <span class='d-block small text-muted'>技術別の得点構成比の月別推移を確認</span>
+              <% end %>
+              <%= link_to opponent_type_analysis_path, class: 'dropdown-item' do %>
+                対戦相手タイプ別分析
+                <span class='badge bg-danger ms-1'>NEW</span>
+                <span class='d-block small text-muted'>戦型ごとの勝率と3球目パターンを確認</span>
               <% end %>
             </div>
           </li>
@@ -45,7 +49,6 @@
           <li class='nav-item d-lg-none'>
             <%= link_to new_serve_receive_match_infos_path, class: 'nav-link' do %>
               サーブ・レシーブ分析を開始
-              <span class='badge bg-danger ms-1'>NEW</span>
               <span class='d-block small text-muted'>3球目・4球目パターンを分析</span>
             <% end %>
           </li>
@@ -54,6 +57,13 @@
               成長ダッシュボード
               <span class='badge bg-danger ms-1'>NEW</span>
               <span class='d-block small text-muted'>技術別の得点構成比の月別推移を確認</span>
+            <% end %>
+          </li>
+          <li class='nav-item d-lg-none'>
+            <%= link_to opponent_type_analysis_path, class: 'nav-link' do %>
+              対戦相手タイプ別分析
+              <span class='badge bg-danger ms-1'>NEW</span>
+              <span class='d-block small text-muted'>戦型ごとの勝率と3球目パターンを確認</span>
             <% end %>
           </li>
 

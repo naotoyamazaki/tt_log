@@ -150,10 +150,107 @@ CLAUDE.mdルール準拠（スプリントごとにブランチ・PR、各スプ
   拡張可能性は仕様通りアグリゲーター設計で担保済み。
 
 ### Sprint 4 — #77との掛け合わせ（`feature/sprint-4-opponent-type-serve-receive`）
-- `serve_receive_analyzer.rb`: `patterns:`キーワード引数対応へのリファクタ（既存呼び出し元`MatchInfosController#show`が無変更で動作することをspecで確認）
-- 新規`OpponentTypeAnalysesController#show`・ルーティング・ビュー（得点構成比グラフ＋テーブル／勝率テーブル／決定率テーブルの3セクション）
-- request/system spec新規、`ServeReceiveAnalyzer`既存specの後方互換確認
-- **注記**: このスプリントの詳細設計（既存クラス拡張か新規クラスかの判断等）はSprint 1〜3の実装・レビューを経て、着手前に改めて確認する（Phase 0でもSprint進行中に計画を見直した実績に合わせる）
+- `serve_receive_analyzer.rb`: `patterns:`キーワード引数対応への拡張（既存呼び出し元が無変更で動作することをspecで確認）
+- 新規`OpponentTypeAnalysesController#show`・ルーティング・ビュー（対戦成績サマリー／#77決定率テーブル群の2セクション＋成長ダッシュボードへの導線）
+- 既存`match_infos/_serve_receive_analysis.html.erb`から表部分を共有partialへ抽出
+- ヘッダーナビへの導線追加
+- request/system spec新規、`ServeReceiveAnalyzer`・`MatchInfosController#show`既存specの後方互換確認
+
+#### 詳細設計（2026-10-26 確定・着手前レビュー結果）
+
+Sprint 1〜3の実装を確認した上で、プラン策定時に「要判断」としていた論点に以下の結論を出す。
+この節は「タイプ別分析の実装方針」3.（117〜121行目）を具体化するものであり、齟齬がある場合はこの節を優先する。
+
+**(a) `ServeReceiveAnalyzer`は新規クラスを作らず既存クラスを拡張する**
+
+現状の呼び出しは`ServeReceiveAnalyzer.new(@match_info)`（`MatchInfosController#show`）と
+`ServeReceiveAnalyzer.new(match_info)`（`ServeReceiveContextBuilder#initialize`）の2箇所で、
+いずれも**位置引数**（プラン本文の「既存の`match_info:`呼び出し」という記述は実装と異なっていた）。
+集計ロジック（`serve_length_stats`等）は`@patterns`の中身にしか依存せず、複数試合分のパターンを
+渡しても意味のある集計になるため、別クラスを立てるとロジックが丸ごと重複する。したがって：
+
+```ruby
+def initialize(match_info = nil, patterns: nil)
+  raise ArgumentError, "match_info または patterns のいずれかが必要です" if match_info.nil? && patterns.nil?
+
+  @patterns = (patterns || match_info.serve_receive_patterns).to_a
+  @serve_patterns   = @patterns.select(&:origin_serve?)
+  @receive_patterns = @patterns.select(&:origin_receive?)
+end
+```
+
+位置引数は任意化するのみで、既存2箇所の呼び出し元・既存specは**無変更**。
+他のpublic/privateメソッドにも変更は入らない。
+
+**(b) 新規ページは単数リソースのコントローラ1本＋専用ビューとする**
+
+- ルーティング: `resource :opponent_type_analysis, only: [:show]`（`resources :growth_dashboards`の直後に追加）。
+  単数形リソースとし、URLは`/opponent_type_analysis?opponent_playstyle=cutman`、コントローラは
+  `OpponentTypeAnalysesController`。戦型はパスではなくクエリパラメータで受けることで、Sprint 3で採用した
+  「`select_tag` + `onchange: "this.form.requestSubmit()"`」のフィルタUIパターンをそのまま流用できる。
+- 選択戦型の決定: `params[:opponent_playstyle]`が`MatchInfo.opponent_playstyles`のキーに一致する場合のみ採用。
+  未指定・不正値の場合は**完了試合数が最も多い戦型**にフォールバックする（同数の場合はenum定義順の先頭、
+  該当データが0件の場合は`front_drive`）。初回アクセスで空ページを見せないための決定論的なデフォルト。
+- 対象試合の絞り込み: 戦型が1つに確定しているため、Sprint 3の`OPPONENT_ATTRIBUTE_FILTERS`ハッシュのような
+  汎用フィルタ機構は**導入しない**（絞り込み軸が1つしかない段階での早すぎる抽象化を避ける）。
+  許可値チェックの3行は`GrowthDashboardsController#resolve_opponent_playstyle`と同等のものを
+  新コントローラにも置き、共通化は3箇所目が出てきた時点で検討する。
+- 集計対象:
+  - 対戦成績サマリー: `current_user.match_infos.completed.includes(:games)`（`analysis_type`は問わない）
+  - 決定率: 上記に加えて`.where(analysis_type: :serve_receive, opponent_playstyle: @opponent_playstyle)`で
+    絞った試合IDに対し、`ServeReceivePattern.where(match_info_id: ids).order(:game_number, :sequence_number)`で
+    1クエリまとめて取得し、`ServeReceiveAnalyzer.new(patterns: patterns)`へ渡す（N+1回避）。
+
+**(c) 勝率は`OpponentTypeWinRateAggregator`を再利用し、新規サービスは作らない**
+
+Sprint 3で実装済みの`OpponentTypeWinRateAggregator.new(match_infos:, attribute: :opponent_playstyle)`は
+「渡された集合を集計するだけ」の設計になっているため、全戦型の集計結果から選択戦型の行を
+`find`で取り出すだけでサマリーが作れる。決定率側の新規サービスも不要（(a)の`ServeReceiveAnalyzer`で足りる）。
+**Sprint 4で新規追加するサービスクラスは無し**とする。
+
+**(d) 得点構成比セクションは新規ページに持たず、成長ダッシュボードへのリンクで代替する**
+
+プラン本文121行目では新規ページに「①得点構成比（グラフ＋テーブル）」を含める想定だったが、
+Sprint 3で`/growth_dashboards`に戦型フィルタを実装済みであり、同じグラフ＋期間別テーブルを
+新規ページに再実装すると技術セレクト・期間セレクトごと重複する。したがって新規ページの構成は：
+
+1. 戦型セレクト（ページ共通フィルタ）
+2. 「この戦型との対戦成績」— 試合数／勝数／敗数／勝率の数値表示
+3. 「サーブ・レシーブ分析（3球目・4球目）」— サーブ長さ別／サーブ→3球目／レシーブエース・ミス／
+   レシーブ→4球目／得点タイミング分布の5表
+4. 「この戦型の得点構成比の推移を見る」→ `growth_dashboards_path(opponent_playstyle: @opponent_playstyle)`へのリンク
+
+とし、得点構成比は既存ダッシュボードに戦型を引き継いで遷移させる形で担保する。
+
+**(e) 表の描画は既存partialから共有partialを抽出して再利用する**
+
+`match_infos/_serve_receive_analysis.html.erb`は5つの表に加えて単一試合向けの空状態
+（「サーブ・レシーブ分析を始める」ボタン）を含むため、そのままでは流用できない。
+表部分（3セクション分のカード）を`app/views/match_infos/_serve_receive_stats_sections.html.erb`として
+抽出し、`srp_analysis`をローカル変数で受け取る形にする。空状態の文言は呼び出し側それぞれが持つ：
+
+- 既存`_serve_receive_analysis.html.erb`: 現状の文言・ボタンを維持（表示結果は変わらないこと）
+- 新規`opponent_type_analyses/show.html.erb`: 「この戦型のサーブ・レシーブ分析データがまだありません」＋
+  `new_serve_receive_match_infos_path`への導線
+
+表自体は既存`match_infos/_serve_receive_score_table`をそのまま使う（変更なし）。
+
+**(f) 導線**
+
+`app/views/shared/_header.html.erb`の「試合分析」ドロップダウン（PC）とモバイル用`nav-item`の両方に
+「対戦相手タイプ別分析」（`NEW`バッジ・補足文「戦型ごとの勝率と3球目パターンを確認」）を
+成長ダッシュボードの直後に追加する。
+
+**(g) テスト**
+
+- `spec/services/serve_receive_analyzer_spec.rb`（既存ファイルに追記）: `patterns:`で複数試合のパターンを
+  渡すと合算集計されること、位置引数の既存呼び出しが従来通り動くこと、両方未指定で`ArgumentError`
+- `spec/requests/opponent_type_analyses_spec.rb`（新規）: 未ログイン時のリダイレクト、デフォルト戦型の決定、
+  不正パラメータのフォールバック、他ユーザーの試合が混ざらないこと、下書き（`draft: true`）が除外されること、
+  `analysis_type: technique`の試合が決定率セクションに含まれないこと、データ0件時の空状態
+- `spec/system/opponent_type_analyses_spec.rb`（新規）: ヘッダーから遷移できること、戦型セレクトを切り替えると
+  表示内容が切り替わること
+- 後方互換: `spec/requests/match_infos_spec.rb`の`@srp_analysis`期待と既存system specが無修正で通ること
 
 依存関係: Sprint 1は全ての前提。Sprint 2はSprint 1完了後。Sprint 3・4はSprint 2完了後ならどちらでも着手可能だが、Sprint 4はSprint 3のフィルタ実装パターンを再利用できるため3→4の順を推奨。
 
@@ -165,7 +262,7 @@ CLAUDE.mdルール準拠（スプリントごとにブランチ・PR、各スプ
 
 - **Sprint 2完了後**: `/match_infos/new`・`/match_infos/new_serve_receive`で対戦相手名欄の下に「利き手」「ラケット」「ラバー（フォア/バック）」「戦型」のselectが順番に表示され、戦型で「その他」を選ぶとテキスト欄が出ること、値を設定して保存→`show`/`edit`で保持されることを確認。未設定のまま保存してもエラーにならないことを確認。
 - **Sprint 3完了後**: 複数試合（カットマン相手2件、前陣ドライブ型相手1件等）を登録し、`/growth_dashboards`で戦型フィルタを使って得点構成比グラフが絞り込まれること、戦型別勝率テーブルが手計算と一致することを確認。
-- **Sprint 4完了後**: `analysis_type: serve_receive`でカットマン相手の試合を複数登録し、新規ページで3球目決定率テーブル等が複数試合をまとめて集計されること、既存の単一試合`show`ページ（#77の分析表示）が壊れていないことを確認。
+- **Sprint 4完了後**: `analysis_type: serve_receive`でカットマン相手の試合を複数登録し、`/opponent_type_analysis`で3球目決定率テーブル等が複数試合をまとめて集計されること（手計算と一致すること）、戦型セレクトの切り替えで集計対象が変わること、得点構成比リンクから戦型を引き継いで`/growth_dashboards`へ遷移できること、既存の単一試合`show`ページ（#77の分析表示）が壊れていないことを確認。
 
 ### Critical Files
 - `app/models/match_info.rb`
@@ -176,3 +273,9 @@ CLAUDE.mdルール準拠（スプリントごとにブランチ・PR、各スプ
 - `config/locales/ja.yml`
 - `app/views/match_infos/_form.html.erb` / `_serve_receive_form.html.erb` / `_form_edit.html.erb`
 - `app/javascript/controllers/other_text_toggle_controller.js`（新規）
+- `app/services/opponent_type_win_rate_aggregator.rb`
+- `app/controllers/opponent_type_analyses_controller.rb`（Sprint 4で新規）
+- `app/views/opponent_type_analyses/show.html.erb`（Sprint 4で新規）
+- `app/views/match_infos/_serve_receive_analysis.html.erb` / `_serve_receive_stats_sections.html.erb`（Sprint 4で抽出）
+- `app/views/shared/_header.html.erb`
+- `config/routes.rb`

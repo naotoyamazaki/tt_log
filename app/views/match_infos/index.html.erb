@@ -3,10 +3,7 @@
 <div class="d-flex justify-content-center mb-3">
   <div class="d-flex flex-column flex-sm-row gap-2">
     <%= link_to "技術別得点率分析を開始", new_match_info_path, class: "btn btn-success" %>
-    <%= link_to new_serve_receive_match_infos_path, class: "btn btn-primary" do %>
-      サーブ・レシーブ分析を開始
-      <span class="badge bg-danger ms-1">NEW</span>
-    <% end %>
+    <%= link_to "サーブ・レシーブ分析を開始", new_serve_receive_match_infos_path, class: "btn btn-primary" %>
   </div>
 </div>
 
@@ -26,10 +23,7 @@
         </p>
       </div>
       <div class="col-12 col-md-6 px-3 px-md-2">
-        <h5>
-          サーブ・レシーブ分析
-          <span class="badge bg-danger ms-1">NEW</span>
-        </h5>
+        <h5>サーブ・レシーブ分析</h5>
         <p class="mb-0">
           サーブ/レシーブ直後の3球目・4球目をパターン別で記録し、パターンごとの得点率を可視化。それを踏まえてAIが戦術面のアドバイスを生成。より深く試合を分析したい選手におすすめ。
         </p>

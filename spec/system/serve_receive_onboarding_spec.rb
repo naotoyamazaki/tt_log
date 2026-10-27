@@ -9,11 +9,11 @@ RSpec.describe 'サーブ・レシーブ分析の導線強化（Sprint 1）', ty
     page.driver.post login_path, email: user.email, password: 'password'
   end
 
-  it '一覧ページのサーブ・レシーブ分析ボタンにNEWバッジが表示される' do
+  it '一覧ページのサーブ・レシーブ分析ボタンにNEWバッジが表示されない（リリースから十分期間が経過したため）' do
     visit match_infos_path
 
     serve_receive_button = find('a.btn.btn-primary', text: 'サーブ・レシーブ分析を開始')
-    expect(serve_receive_button).to have_content('NEW')
+    expect(serve_receive_button).not_to have_content('NEW')
   end
 
   it 'ヘッダーのドロップダウンからサーブ・レシーブ分析の新規作成ページへ遷移できる' do

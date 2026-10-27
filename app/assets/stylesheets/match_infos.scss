@@ -240,6 +240,28 @@ body {
   flex: 1;
 }
 
+/* 戦型別分析ページの対戦成績サマリー（4項目を常に横並びで表示） */
+.stat-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.stat-summary-column {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-summary-value {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .stat-summary-value {
+    font-size: 1.1rem;
+  }
+}
+
 select {
   text-align: center;
   text-align-last: center;

@@ -19,22 +19,22 @@
 
     <h2 class="section-title">この戦型との対戦成績</h2>
     <% if @win_rate_entry %>
-      <div class="row">
-        <div class="column">
+      <div class="stat-summary-row">
+        <div class="stat-summary-column">
           <p class="mb-1 text-muted small">試合数</p>
-          <p class="fs-4 mb-0"><%= @win_rate_entry[:match_count] %></p>
+          <p class="stat-summary-value mb-0"><%= @win_rate_entry[:match_count] %></p>
         </div>
-        <div class="column">
+        <div class="stat-summary-column">
           <p class="mb-1 text-muted small">勝数</p>
-          <p class="fs-4 mb-0"><%= @win_rate_entry[:win_count] %></p>
+          <p class="stat-summary-value mb-0"><%= @win_rate_entry[:win_count] %></p>
         </div>
-        <div class="column">
+        <div class="stat-summary-column">
           <p class="mb-1 text-muted small">敗数</p>
-          <p class="fs-4 mb-0"><%= @win_rate_entry[:lose_count] %></p>
+          <p class="stat-summary-value mb-0"><%= @win_rate_entry[:lose_count] %></p>
         </div>
-        <div class="column">
+        <div class="stat-summary-column">
           <p class="mb-1 text-muted small">勝率</p>
-          <p class="fs-4 mb-0"><strong><%= @win_rate_entry[:win_rate] %>%</strong></p>
+          <p class="stat-summary-value mb-0"><strong><%= @win_rate_entry[:win_rate] %>%</strong></p>
         </div>
       </div>
     <% else %>

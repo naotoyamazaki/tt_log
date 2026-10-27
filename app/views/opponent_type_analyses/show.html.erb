@@ -1,0 +1,67 @@
+<h1 class="center-text">🤝 対戦相手タイプ別分析</h1>
+
+<div class="show-container fade-in-up mb-4">
+  <div class="section-card p-4 shadow-sm">
+    <%= form_with url: opponent_type_analysis_path, method: :get, local: true, class: "mb-3" do %>
+      <div class="row">
+        <div class="column">
+          <% playstyle_options = MatchInfo.opponent_playstyles.keys.map do |key|
+               [MatchInfo.human_enum_name(:opponent_playstyle, key), key]
+             end %>
+          <%= label_tag :opponent_playstyle, "🤝戦型を選択" %>
+          <%= select_tag :opponent_playstyle,
+              options_for_select(playstyle_options, @opponent_playstyle),
+              class: "form-select",
+              onchange: "this.form.requestSubmit()" %>
+        </div>
+      </div>
+    <% end %>
+
+    <h2 class="section-title">この戦型との対戦成績</h2>
+    <% if @win_rate_entry %>
+      <div class="row">
+        <div class="column">
+          <p class="mb-1 text-muted small">試合数</p>
+          <p class="fs-4 mb-0"><%= @win_rate_entry[:match_count] %></p>
+        </div>
+        <div class="column">
+          <p class="mb-1 text-muted small">勝数</p>
+          <p class="fs-4 mb-0"><%= @win_rate_entry[:win_count] %></p>
+        </div>
+        <div class="column">
+          <p class="mb-1 text-muted small">敗数</p>
+          <p class="fs-4 mb-0"><%= @win_rate_entry[:lose_count] %></p>
+        </div>
+        <div class="column">
+          <p class="mb-1 text-muted small">勝率</p>
+          <p class="fs-4 mb-0"><strong><%= @win_rate_entry[:win_rate] %>%</strong></p>
+        </div>
+      </div>
+    <% else %>
+      <p class="text-muted">まだこの戦型との対戦データがありません。</p>
+    <% end %>
+  </div>
+</div>
+
+<% if @srp_analysis.empty? %>
+  <div class="show-container fade-in-up mb-4">
+    <div class="section-card p-4 shadow-sm">
+      <p class="text-muted text-center mb-2">この戦型のサーブ・レシーブ分析データがまだありません</p>
+      <p class="text-center mb-0">
+        <%= link_to "サーブ・レシーブ分析を始める", new_serve_receive_match_infos_path, class: "btn btn-primary" %>
+      </p>
+    </div>
+  </div>
+<% else %>
+  <%= render 'match_infos/serve_receive_stats_sections', srp_analysis: @srp_analysis %>
+<% end %>
+
+<div class="show-container fade-in-up mb-4">
+  <div class="section-card p-4 shadow-sm">
+    <p class="mb-0">
+      <%= link_to "この戦型の得点構成比の推移を見る →",
+          growth_dashboards_path(opponent_playstyle: @opponent_playstyle),
+          class: "btn btn-outline-primary" %>
+    </p>
+  </div>
+</div>

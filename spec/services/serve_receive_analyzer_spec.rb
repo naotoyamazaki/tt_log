@@ -221,6 +221,37 @@ RSpec.describe ServeReceiveAnalyzer do
     end
   end
 
+  describe 'patterns: キーワード引数' do
+    let(:other_match_info) { create(:match_info, user: user, analysis_type: :serve_receive) }
+    let(:other_game) { create(:game, match_info: other_match_info, game_number: 1) }
+
+    it '複数試合のパターンを渡すと合算集計されること' do
+      create_serve_pattern(serve_length: :short, won: true)
+      create(:serve_receive_pattern, match_info: other_match_info, game: other_game, game_number: 1,
+                                     sequence_number: 1, origin: :serve, serve_length: :short,
+                                     serve_spins: [0], attack_style: :fore_drive_vs_backspin,
+                                     decided_at: :attack_ball, won: false)
+
+      patterns = ServeReceivePattern.where(match_info_id: [match_info.id, other_match_info.id])
+      analyzer = described_class.new(patterns: patterns)
+      short_stat = analyzer.serve_length_stats.find { |s| s[:label] == 'ショート' }
+
+      expect(short_stat[:score]).to eq(1)
+      expect(short_stat[:lost_score]).to eq(1)
+    end
+
+    it '位置引数（match_info）の既存呼び出しが従来通り動くこと' do
+      create_serve_pattern(serve_length: :short, won: true)
+      analyzer = described_class.new(match_info)
+
+      expect(analyzer.serve_length_stats.find { |s| s[:label] == 'ショート' }[:score]).to eq(1)
+    end
+
+    it 'match_info も patterns も未指定の場合は ArgumentError になること' do
+      expect { described_class.new }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '#empty?' do
     context 'patternがゼロのとき' do
       it 'true を返すこと' do

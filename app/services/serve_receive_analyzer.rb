@@ -2,8 +2,10 @@ class ServeReceiveAnalyzer
   RECEIVE_STYLE_VALUES_USED = ServeReceivePattern::RECEIVE_STYLE_VALUES
   RECEIVE_DIRECT_STYLES = %w[receive_ace receive_miss].freeze
 
-  def initialize(match_info)
-    @patterns = match_info.serve_receive_patterns.to_a
+  def initialize(match_info = nil, patterns: nil)
+    raise ArgumentError, "match_info または patterns のいずれかが必要です" if match_info.nil? && patterns.nil?
+
+    @patterns = (patterns || match_info.serve_receive_patterns).to_a
     @serve_patterns   = @patterns.select(&:origin_serve?)
     @receive_patterns = @patterns.select(&:origin_receive?)
   end

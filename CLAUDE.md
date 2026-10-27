@@ -99,6 +99,7 @@ rails db:schema:load
 - **plansファイルは実装コミットと一緒にコミットする** — PR作成時に未コミットのplansファイルが残らないよう、実装コミットと同時にコミットすること。
 - プランに基づいた実装の際は、必ず新たなブランチを切ってから作業を開始すること
 - 実装後は必ず RSpec テストと RuboCop Lint チェックを両方実行し、すべてパスしていることを確認すること
+- **マイグレーションを含むPRをマージしたら、本番DBへの適用を忘れない** — `git push heroku main` だけではマイグレーションは実行されない。`heroku run bin/rails db:migrate` を必ず実行し、`heroku run bin/rails db:migrate:status` で全て `up` になっていることを確認すること。適用を忘れると、新しいenum/カラムを参照する画面が本番で500エラーになる（2026-10-27、Sprint4デプロイ後に発生した実際のインシデント）。
 
 ```bash
 bundle exec rspec && bundle exec rubocop --parallel

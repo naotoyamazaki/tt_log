@@ -100,6 +100,7 @@ rails db:schema:load
 - プランに基づいた実装の際は、必ず新たなブランチを切ってから作業を開始すること
 - 実装後は必ず RSpec テストと RuboCop Lint チェックを両方実行し、すべてパスしていることを確認すること
 - **マイグレーションを含むPRをマージしたら、本番DBへの適用を忘れない** — `git push heroku main` だけではマイグレーションは実行されない。`heroku run bin/rails db:migrate` を必ず実行し、`heroku run bin/rails db:migrate:status` で全て `up` になっていることを確認すること。適用を忘れると、新しいenum/カラムを参照する画面が本番で500エラーになる（2026-10-27、Sprint4デプロイ後に発生した実際のインシデント）。
+  - **マイグレーション適用後は web dyno の再起動も必要** — 稼働中のdynoはプロセス起動時にスキーマ情報をキャッシュするため、`db:migrate` が成功しても起動中のdynoには新しいカラムが反映されない。`heroku ps:restart web` で再起動し、エラーが解消したことを確認すること（同インシデントで、マイグレーション適用だけでは500エラーが続いた）。
 
 ```bash
 bundle exec rspec && bundle exec rubocop --parallel

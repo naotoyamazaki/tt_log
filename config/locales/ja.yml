@@ -61,6 +61,8 @@ ja:
           fore_smash: フォアスマッシュ
           back_smash: バックスマッシュ
           net_or_edge: ネットorエッジ
+          lobbing: ロビング
+          serve_miss: サーブミス
       serve_receive_pattern:
         origin:
           serve: 自分のサーブ

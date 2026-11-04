@@ -20,7 +20,9 @@ const BATTING_STYLE_NAMES = {
   back_counter: 'バックカウンター',
   fore_smash: 'フォアスマッシュ',
   back_smash: 'バックスマッシュ',
-  net_or_edge: 'ネットorエッジ'
+  net_or_edge: 'ネットorエッジ',
+  lobbing: 'ロビング',
+  serve_miss: 'サーブミス'
 }
 
 const BATTING_STYLES_PRIMARY = [

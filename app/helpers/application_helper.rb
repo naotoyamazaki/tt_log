@@ -21,7 +21,9 @@ module ApplicationHelper
     'back_counter' => { abbr: 'BC',  label: 'バックカウンター' },
     'fore_smash' => { abbr: 'FSm', label: 'フォアスマッシュ' },
     'back_smash' => { abbr: 'BSm', label: 'バックスマッシュ' },
-    'net_or_edge' => { abbr: 'N/E', label: 'ネット/エッジ' }
+    'net_or_edge' => { abbr: 'N/E', label: 'ネット/エッジ' },
+    'lobbing' => { abbr: 'Lob', label: 'ロビング' },
+    'serve_miss' => { abbr: 'SM', label: 'サーブミス' }
   }.freeze
 
   def batting_style_abbr_info(style_key)

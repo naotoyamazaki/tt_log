@@ -1,5 +1,5 @@
 class RallyContextBuilder # rubocop:disable Metrics/ClassLength
-  NET_OR_EDGE_STYLE = 'net_or_edge'.freeze
+  EXCLUDED_STYLES = %w[net_or_edge serve_miss].freeze
 
   BATTING_STYLE_NAMES = {
     'serve' => 'サーブ',
@@ -21,7 +21,9 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
     'back_counter' => 'バックカウンター',
     'fore_smash' => 'フォアスマッシュ',
     'back_smash' => 'バックスマッシュ',
-    'net_or_edge' => 'ネットorエッジ'
+    'net_or_edge' => 'ネットorエッジ',
+    'lobbing' => 'ロビング',
+    'serve_miss' => 'サーブミス'
   }.freeze
 
   SITUATION_KEYS = %i[tied close_one close_two leading trailing deuce].freeze
@@ -86,9 +88,13 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
 
   private
 
+  def excluded_style?(style)
+    EXCLUDED_STYLES.include?(style.to_s)
+  end
+
   def sorted_technique_stats
     raw = @rallies.group_by(&:batting_style)
-      .reject { |style, _| style.to_s == NET_OR_EDGE_STYLE }
+      .reject { |style, _| excluded_style?(style) }
       .map { |style, rs| technique_stat(style, rs) }
     raw.sort_by { |_, _, _, rate| -rate }
   end
@@ -128,7 +134,7 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
 
   def technique_top3(game_rallies, winner_side)
     game_rallies
-      .select { |r| r.winner == winner_side && r.batting_style.to_s != NET_OR_EDGE_STYLE }
+      .select { |r| r.winner == winner_side && !excluded_style?(r.batting_style) }
       .group_by(&:batting_style)
       .map { |s, rs| [style_name(s), rs.size] }
       .sort_by { |_, n| -n }
@@ -150,7 +156,7 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
       situation = classify_granular_situation(p_score, o_score)
       if rally.winner == 'player'
         stats[situation][0] += 1
-        stats[situation][2][style_name(rally.batting_style)] += 1 unless rally.batting_style.to_s == NET_OR_EDGE_STYLE
+        stats[situation][2][style_name(rally.batting_style)] += 1 unless excluded_style?(rally.batting_style)
       else
         stats[situation][1] += 1
       end
@@ -200,9 +206,7 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
         local_streak += 1
         max_streak = [max_streak, local_streak].max
       else
-        if local_streak >= 2 && rally.batting_style.to_s != NET_OR_EDGE_STYLE
-          breakers[style_name(rally.batting_style)] += 1
-        end
+        breakers[style_name(rally.batting_style)] += 1 if local_streak >= 2 && !excluded_style?(rally.batting_style)
         local_streak = 0
       end
     end

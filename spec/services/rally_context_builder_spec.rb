@@ -33,6 +33,20 @@ RSpec.describe RallyContextBuilder do
       result = described_class.new(match_info).technique_efficiency_text
       expect(result).to include("自分得点 3 / 相手得点 1")
     end
+
+    it "ネットorエッジとサーブミスは技術別効率から除外すること" do
+      create_rally(8, :player, :net_or_edge)
+      create_rally(9, :opponent, :serve_miss)
+      result = described_class.new(match_info).technique_efficiency_text
+      expect(result).not_to include("ネットorエッジ")
+      expect(result).not_to include("サーブミス")
+    end
+
+    it "ロビングは技術別効率に含めること" do
+      create_rally(8, :player, :lobbing)
+      result = described_class.new(match_info).technique_efficiency_text
+      expect(result).to include("ロビング")
+    end
   end
 
   describe "#serve_situation_text" do

@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationHelper, type: :helper do
+  describe '#batting_style_abbr_info' do
+    it 'ロビングとサーブミスの略称とラベルを返す' do
+      expect(helper.batting_style_abbr_info('lobbing')).to eq(abbr: 'Lob', label: 'ロビング')
+      expect(helper.batting_style_abbr_info('serve_miss')).to eq(abbr: 'SM', label: 'サーブミス')
+    end
+  end
+
   describe '#player_scoring_techniques' do
     it 'sorts by player score and removes empty score rows' do
       scores = [

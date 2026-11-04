@@ -14,7 +14,8 @@ class Rally < ApplicationRecord
     back_block: 12, fore_counter: 13,
     back_counter: 14,
     fore_smash: 19, back_smash: 20,
-    net_or_edge: 21
+    net_or_edge: 21,
+    lobbing: 22, serve_miss: 23
   }
 
   validates :winner, presence: true

@@ -18,7 +18,9 @@
   'back_counter'           => 'バックカウンター',
   'fore_smash'             => 'フォアスマッシュ',
   'back_smash'             => 'バックスマッシュ',
-  'net_or_edge'            => 'ネットorエッジ'
+  'net_or_edge'            => 'ネットorエッジ',
+  'lobbing'                => 'ロビング',
+  'serve_miss'             => 'サーブミス'
 } %>
 
 <div class="form-container fade-in-up">
@@ -76,7 +78,7 @@
       fore_block back_block
       fore_counter back_counter
       fore_smash back_smash
-      net_or_edge
+      net_or_edge lobbing serve_miss
     ] %>
 
     <% batting_style_options = [
@@ -90,7 +92,8 @@
       ['バックブロック', 'back_block'], ['フォアカウンター', 'fore_counter'],
       ['バックカウンター', 'back_counter'],
       ['フォアスマッシュ', 'fore_smash'], ['バックスマッシュ', 'back_smash'],
-      ['ネットorエッジ', 'net_or_edge']
+      ['ネットorエッジ', 'net_or_edge'],
+      ['ロビング', 'lobbing'], ['サーブミス', 'serve_miss']
     ] %>
 
     <% if games.any? %>
@@ -175,7 +178,8 @@
                   "fore_flick", "back_flick", "chiquita",
                   "fore_block", "back_block",
                   "fore_counter", "back_counter",
-                  "fore_smash", "back_smash", "net_or_edge" %>
+                  "fore_smash", "back_smash", "net_or_edge",
+                  "lobbing", "serve_miss" %>
               <%= render 'scores/score_fields', score_form: score_form, score: score %>
             <% end %>
           </div>

@@ -90,5 +90,13 @@ RSpec.describe Rally, type: :model do
     it 'chiquita が 10 に対応する' do
       expect(Rally.batting_styles[:chiquita]).to eq(10)
     end
+
+    it 'lobbing が 22 に対応する' do
+      expect(Rally.batting_styles[:lobbing]).to eq(22)
+    end
+
+    it 'serve_miss が 23 に対応する' do
+      expect(Rally.batting_styles[:serve_miss]).to eq(23)
+    end
   end
 end

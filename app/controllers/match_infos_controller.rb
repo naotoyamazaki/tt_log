@@ -271,11 +271,15 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     scores_data = game_score_params
     game_number = match_info.games.count + 1
     player_total = scores_data.values.sum { |s| s["score"].to_i }
-    opponent_total = scores_data.values.sum { |s| s["lost_score"].to_i }
+    opponent_total = scores_data.values.sum { |s| opponent_points(s) }
     game = match_info.games.create!(
       game_number: game_number, player_score: player_total, opponent_score: opponent_total
     )
     persist_game_scores(match_info, game, scores_data)
+  end
+
+  def opponent_points(values)
+    values["lost_score"].to_i + values["own_error_count"].to_i
   end
 
   def persist_game_scores(match_info, game, scores_data)
@@ -286,7 +290,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
         game_id: game.id,
         batting_style: batting_style,
         score: values["score"].to_i,
-        lost_score: values["lost_score"].to_i
+        lost_score: values["lost_score"].to_i,
+        own_error_count: values["own_error_count"].to_i
       )
     end
   end
@@ -398,7 +403,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   def extract_partial_data_from_game(game)
     if game.rallies.any?
       rally_data = game.rallies.order(:sequence_number).map do |r|
-        { 'winner' => r.winner, 'batting_style' => r.batting_style }
+        { 'winner' => r.winner, 'batting_style' => r.batting_style, 'point_type' => r.point_type }
       end
       { 'rallies' => rally_data, 'first_server' => game.first_server }
     else
@@ -428,19 +433,26 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     rallies_data.each_with_index do |r, i|
       match_info.rallies.create!(
         game_id: game.id, game_number: game.game_number,
-        sequence_number: i + 1, winner: r['winner'], batting_style: r['batting_style']
+        sequence_number: i + 1, winner: r['winner'], batting_style: r['batting_style'],
+        point_type: normalize_point_type(r)
       )
     end
+  end
+
+  # 凡ミスは相手得点のラリーでのみ有効。不正値・player勝ちは normal にフォールバックする
+  def normalize_point_type(rally_data)
+    rally_data['point_type'] == 'own_error' && rally_data['winner'] == 'opponent' ? 'own_error' : 'normal'
   end
 
   def aggregate_scores_from_rallies(match_info, game)
     grouped = game.rallies.group_by(&:batting_style)
     grouped.each do |style, rs|
-      player_wins = rs.count { |r| r.winner == 'player' }
-      opponent_wins = rs.count { |r| r.winner == 'opponent' }
+      opponent_rallies = rs.select(&:opponent?)
       match_info.scores.create!(
         game_id: game.id, batting_style: style,
-        score: player_wins, lost_score: opponent_wins
+        score: rs.count(&:player?),
+        lost_score: opponent_rallies.count(&:normal?),
+        own_error_count: opponent_rallies.count(&:own_error?)
       )
     end
   end
@@ -449,7 +461,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     game.scores.each_with_object({}) do |score, hash|
       hash[score.batting_style] = {
         'score' => score.score,
-        'lost_score' => score.lost_score
+        'lost_score' => score.lost_score,
+        'own_error_count' => score.own_error_count
       }
     end
   end
@@ -555,10 +568,10 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       :match_date, :match_name, :memo, :match_format,
       :opponent_handedness, :opponent_racket, :opponent_rubber_forehand,
       :opponent_rubber_backhand, :opponent_playstyle, :opponent_playstyle_other,
-      scores_attributes: [:id, :batting_style, :score, :lost_score, :_destroy],
+      scores_attributes: [:id, :batting_style, :score, :lost_score, :own_error_count, :_destroy],
       games_attributes: [
         :id,
-        { scores_attributes: [:id, :batting_style, :score, :lost_score] }
+        { scores_attributes: [:id, :batting_style, :score, :lost_score, :own_error_count] }
       ]
     )
   end

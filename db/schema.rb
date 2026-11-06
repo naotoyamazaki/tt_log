@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_23_150350) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_07_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,6 +65,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_23_150350) do
     t.integer "batting_style", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "point_type", default: 0, null: false
     t.index ["game_id"], name: "index_rallies_on_game_id"
     t.index ["match_info_id", "game_number", "sequence_number"], name: "index_rallies_on_match_info_game_sequence", unique: true
     t.index ["match_info_id"], name: "index_rallies_on_match_info_id"
@@ -78,6 +79,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_23_150350) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "batting_style", null: false
+    t.integer "own_error_count", default: 0, null: false
     t.index ["game_id"], name: "index_scores_on_game_id"
     t.index ["match_info_id"], name: "index_scores_on_match_info_id"
   end

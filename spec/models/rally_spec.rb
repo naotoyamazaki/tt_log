@@ -66,6 +66,22 @@ RSpec.describe Rally, type: :model do
     end
   end
 
+  describe 'point_type' do
+    it 'デフォルトは normal' do
+      expect(Rally.new.point_type).to eq('normal')
+    end
+
+    it 'opponent 勝ちの own_error は有効' do
+      expect(build(:rally, winner: :opponent, point_type: :own_error)).to be_valid
+    end
+
+    it 'player 勝ちの own_error は無効' do
+      rally = build(:rally, winner: :player, point_type: :own_error)
+      expect(rally).not_to be_valid
+      expect(rally.errors[:point_type]).to be_present
+    end
+  end
+
   describe 'enum: batting_style' do
     it 'serve が 0 に対応する' do
       expect(Rally.batting_styles[:serve]).to eq(0)

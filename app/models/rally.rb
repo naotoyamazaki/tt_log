@@ -3,6 +3,7 @@ class Rally < ApplicationRecord
   belongs_to :game, optional: true
 
   enum :winner, { player: 0, opponent: 1 }
+  enum :point_type, { normal: 0, own_error: 1 }
   enum :batting_style, {
     serve: 0, receive: 1,
     fore_drive_vs_topspin: 15, back_drive_vs_topspin: 16,
@@ -22,4 +23,12 @@ class Rally < ApplicationRecord
   validates :batting_style, presence: true
   validates :game_number, presence: true
   validates :sequence_number, presence: true
+  validate :own_error_only_for_opponent_win
+
+  private
+
+  # 自分の凡ミスは相手の得点としてのみ記録できる
+  def own_error_only_for_opponent_win
+    errors.add(:point_type, :invalid) if own_error? && !opponent?
+  end
 end

@@ -333,6 +333,51 @@ RSpec.describe "MatchInfos", type: :request do
     end
   end
 
+  describe "POST /match_infos（rallies に point_type あり）" do
+    let(:rallies_data) do
+      [
+        { 'winner' => 'opponent', 'batting_style' => 'fore_drive_vs_topspin', 'point_type' => 'normal' },
+        { 'winner' => 'opponent', 'batting_style' => 'fore_drive_vs_topspin', 'point_type' => 'own_error' },
+        { 'winner' => 'opponent', 'batting_style' => 'serve_miss', 'point_type' => 'own_error' },
+        { 'winner' => 'opponent', 'batting_style' => 'fore_push', 'point_type' => 'invalid' },
+        { 'winner' => 'player', 'batting_style' => 'fore_push', 'point_type' => 'own_error' }
+      ]
+    end
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(player_name: "選手A", opponent_name: "選手B"),
+        rallies: rallies_data.to_json
+      }
+    end
+
+    before { post match_infos_path, params: params }
+
+    let(:match_info) { MatchInfo.last }
+
+    it 'lost_score と own_error_count が分離して保存される' do
+      fd = match_info.scores.find_by(batting_style: :fore_drive_vs_topspin)
+      expect(fd.lost_score).to eq(1)
+      expect(fd.own_error_count).to eq(1)
+      expect(match_info.scores.find_by(batting_style: :serve_miss).own_error_count).to eq(1)
+    end
+
+    it '不正値や player 勝ちの own_error は normal にフォールバックする' do
+      push = match_info.scores.find_by(batting_style: :fore_push)
+      expect(push.score).to eq(1)
+      expect(push.lost_score).to eq(1)
+      expect(push.own_error_count).to eq(0)
+      expect(match_info.rallies.where(point_type: :own_error).count).to eq(2)
+    end
+
+    it 'Game の opponent_score に凡ミスが含まれる' do
+      game = match_info.games.first
+      expect(game.player_score).to eq(1)
+      expect(game.opponent_score).to eq(4)
+      game.recalculate_scores
+      expect(game.reload.opponent_score).to eq(4)
+    end
+  end
+
   describe "POST /match_infos（rallies パラメータなし ＝ 後方互換）" do
     let(:params) do
       {

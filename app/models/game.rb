@@ -9,7 +9,7 @@ class Game < ApplicationRecord
   def recalculate_scores
     update(
       player_score: scores.sum(:score),
-      opponent_score: scores.sum(:lost_score)
+      opponent_score: scores.sum(:lost_score) + scores.sum(:own_error_count)
     )
   end
 end

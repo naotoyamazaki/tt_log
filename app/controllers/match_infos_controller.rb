@@ -67,7 +67,7 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
     @match_info.partial_game_data = if params[:patterns].present?
                                       { 'patterns' => params[:patterns], 'first_server' => params[:first_server] }
                                     else
-                                      game_score_params.to_h
+                                      rally_partial_data(params[:rallies]) || game_score_params.to_h
                                     end
     @match_info.save!(validate: false)
     redirect_to match_infos_path, notice: t('notices.match_info_interrupted')
@@ -254,15 +254,18 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   def restore_rally_params_to_partial_scores
-    return if params[:rallies].blank?
+    partial = rally_partial_data(params[:rallies])
+    @partial_scores = partial if partial
+  end
 
-    rallies = JSON.parse(params[:rallies])
+  # 中断・自動保存用に rallies(point_type 含む)と first_server を partial_game_data 形式にする
+  def rally_partial_data(raw_rallies)
+    return if raw_rallies.blank?
+
+    rallies = JSON.parse(raw_rallies)
     return unless rallies.is_a?(Array) && rallies.any?
 
-    @partial_scores = {
-      'rallies' => rallies,
-      'first_server' => params[:first_server].presence
-    }
+    { 'rallies' => rallies, 'first_server' => params[:first_server].presence }
   rescue JSON::ParserError
     nil
   end
@@ -481,7 +484,8 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       match_info.analysis_type = :serve_receive
       match_info.partial_game_data = { 'patterns' => params[:patterns], 'first_server' => params[:first_server] }
     else
-      match_info.partial_game_data = JSON.parse(params[:game_scores] || '{}')
+      match_info.partial_game_data =
+        rally_partial_data(params[:rallies_autosave]) || JSON.parse(params[:game_scores] || '{}')
     end
     match_info
   end

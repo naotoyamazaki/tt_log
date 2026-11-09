@@ -49,9 +49,32 @@
     </div>
   </div>
 
+  <%# ステップ1.5: 相手の得点は「好プレー / 自分の凡ミス」 %>
+  <div class="rally-step rally-step-point-type d-none" data-rally-input-target="stepPointType">
+    <div class="rally-step-title mb-2">どんな得点？</div>
+    <div class="rally-winner-buttons">
+      <button type="button" class="btn rally-winner-btn rally-winner-opponent"
+              data-action="click->rally-input#selectPointType"
+              data-point-type="normal">
+        相手の好プレー
+      </button>
+      <button type="button" class="btn rally-winner-btn rally-point-own-error"
+              data-action="click->rally-input#selectPointType"
+              data-point-type="own_error">
+        自分の凡ミス
+      </button>
+    </div>
+    <div class="mt-2">
+      <button type="button" class="btn rally-cancel-btn"
+              data-action="click->rally-input#cancelSelection">
+        ← 戻る
+      </button>
+    </div>
+  </div>
+
   <%# ステップ2: どの技術で？ %>
   <div class="rally-step rally-step2 d-none" data-rally-input-target="step2">
-    <div class="rally-step-title mb-2">どの技術で得点した？</div>
+    <div class="rally-step-title mb-2" data-rally-input-target="step2Title">どの技術で得点した？</div>
     <div class="rally-style-buttons" data-rally-input-target="styleButtons">
       <%# JS で動的に描画 %>
     </div>
@@ -64,7 +87,7 @@
     </div>
     <div class="mt-2">
       <button type="button" class="btn rally-cancel-btn"
-              data-action="click->rally-input#undo">
+              data-action="click->rally-input#cancelSelection">
         ← 戻る
       </button>
     </div>

@@ -784,6 +784,18 @@ select {
   }
 }
 
+// 自分の凡ミス（相手の好プレーの赤と区別するためアンバー系）
+.rally-point-own-error {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #d97706;
+
+  &:hover {
+    background: #d97706;
+    color: #fff;
+  }
+}
+
 .rally-style-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -888,6 +900,11 @@ select {
 .rally-item-opponent {
   background: #fee2e2;
   border-left: 3px solid #ef4444;
+}
+
+.rally-item-own-error {
+  background: #fef3c7;
+  border-left: 3px solid #d97706;
 }
 
 .rally-item-seq {

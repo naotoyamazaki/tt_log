@@ -8,6 +8,28 @@ RSpec.describe '試合情報の投稿', type: :system do
     driven_by(:rack_test)
   end
 
+  describe '凡ミス入力UI' do
+    before do
+      visit login_path
+      fill_in 'メールアドレス', with: user.email
+      fill_in 'パスワード', with: 'password'
+      click_button 'ログイン'
+    end
+
+    it '新規入力画面に「相手の好プレー / 自分の凡ミス」の選択ステップがある' do
+      visit new_match_info_path
+      expect(page).to have_button('相手の好プレー', visible: :all)
+      expect(page).to have_button('自分の凡ミス', visible: :all)
+    end
+
+    it '編集画面に凡ミス数の入力欄がある' do
+      match_info = create(:match_info, user: user)
+      create(:score, match_info: match_info, own_error_count: 3)
+      visit edit_match_info_path(match_info)
+      expect(page).to have_field('凡ミス数', with: '3', visible: :all)
+    end
+  end
+
   describe 'ゲーム別スコア表示（F8/F9）' do
     let(:match_info) { create(:match_info, user: user) }
 

@@ -15,4 +15,12 @@
       <button type="button" onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));" class="minus">-</button>
     </div>
   </div>
+  <div class="column">
+    <%= score_form.label :own_error_count, "凡ミス数", class: "score-label-lose" %>
+    <div class="number-input d-flex align-items-center">
+      <button type="button" onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepUp(); input.dispatchEvent(new Event('input', { bubbles: true }));" class="plus">+</button>
+      <%= score_form.number_field :own_error_count, class: "form-control small-input", min: 0, value: score.own_error_count || 0 %>
+      <button type="button" onclick="const input = this.parentNode.querySelector('input[type=number]'); input.stepDown(); input.dispatchEvent(new Event('input', { bubbles: true }));" class="minus">-</button>
+    </div>
+  </div>
 </div>

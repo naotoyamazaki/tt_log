@@ -35,7 +35,7 @@ const BATTING_STYLES_ALL = Object.keys(BATTING_STYLE_NAMES).filter(s => s !== 'r
 
 export default class extends Controller {
   static targets = [
-    "step1", "step2", "styleButtons", "rallyList",
+    "step1", "stepPointType", "step2", "step2Title", "styleButtons", "rallyList",
     "endGameBtn", "serialized", "currentScore",
     "showMore", "serverSelect", "serverIndicator", "firstServerField"
   ]
@@ -48,6 +48,7 @@ export default class extends Controller {
   connect() {
     this.rallies = []
     this.selectedWinner = null
+    this.selectedPointType = null
     this.showingAll = false
     this.firstServer = null
 
@@ -87,19 +88,54 @@ export default class extends Controller {
 
   selectWinner(event) {
     this.selectedWinner = event.currentTarget.dataset.winner
+    this.selectedPointType = this.selectedWinner === 'opponent' ? null : 'normal'
     if (this.hasStep1Target) this.step1Target.classList.add("d-none")
+    // 相手の得点は「好プレー / 自分の凡ミス」を先に選ぶ
+    if (this.selectedWinner === 'opponent' && this.hasStepPointTypeTarget) {
+      this.stepPointTypeTarget.classList.remove("d-none")
+    } else {
+      this.showStyleStep()
+    }
+  }
+
+  selectPointType(event) {
+    this.selectedPointType = event.currentTarget.dataset.pointType
+    if (this.hasStepPointTypeTarget) this.stepPointTypeTarget.classList.add("d-none")
+    this.showStyleStep()
+  }
+
+  showStyleStep() {
+    const ownError = this.selectedPointType === 'own_error'
+    if (this.hasStep2TitleTarget) {
+      this.step2TitleTarget.textContent = ownError ? 'どの技術をミスした？' : 'どの技術で得点した？'
+    }
+    this.renderStyleButtons()
     if (this.hasStep2Target) this.step2Target.classList.remove("d-none")
+  }
+
+  // 技術選択・点種別選択ステップから、取り消さずに最初のステップへ戻る
+  cancelSelection() {
+    this.resetSelection()
+  }
+
+  resetSelection() {
+    this.selectedWinner = null
+    this.selectedPointType = null
+    if (this.hasStepPointTypeTarget) this.stepPointTypeTarget.classList.add("d-none")
+    if (this.hasStep2Target) this.step2Target.classList.add("d-none")
+    if (this.hasStep1Target) this.step1Target.classList.remove("d-none")
   }
 
   selectStyle(event) {
     const battingStyle = event.currentTarget.dataset.style
     if (!this.selectedWinner || !battingStyle) return
 
-    this.rallies.push({ winner: this.selectedWinner, batting_style: battingStyle })
-    this.selectedWinner = null
-
-    if (this.hasStep2Target) this.step2Target.classList.add("d-none")
-    if (this.hasStep1Target) this.step1Target.classList.remove("d-none")
+    this.rallies.push({
+      winner: this.selectedWinner,
+      batting_style: battingStyle,
+      point_type: this.selectedPointType || 'normal'
+    })
+    this.resetSelection()
 
     this.renderRallyList()
     this.updateScore()
@@ -112,9 +148,7 @@ export default class extends Controller {
     if (this.rallies.length === 0) return
     this.rallies.pop()
 
-    this.selectedWinner = null
-    if (this.hasStep2Target) this.step2Target.classList.add("d-none")
-    if (this.hasStep1Target) this.step1Target.classList.remove("d-none")
+    this.resetSelection()
 
     this.renderRallyList()
     this.updateScore()
@@ -165,7 +199,11 @@ export default class extends Controller {
 
   renderStyleButtons() {
     if (!this.hasStyleButtonsTarget) return
-    const styles = this.showingAll ? BATTING_STYLES_ALL : BATTING_STYLES_PRIMARY
+    let styles = this.showingAll ? BATTING_STYLES_ALL : BATTING_STYLES_PRIMARY
+    // サーブミスは相手の好プレーではないため、相手の好プレー選択時は除外する
+    if (this.selectedWinner === 'opponent' && this.selectedPointType === 'normal') {
+      styles = styles.filter(s => s !== 'serve_miss')
+    }
     this.styleButtonsTarget.innerHTML = styles.map(style => {
       const name = BATTING_STYLE_NAMES[style] || style
       return `<button type="button" class="btn rally-style-btn"
@@ -186,10 +224,13 @@ export default class extends Controller {
       const winnerLabel = rally.winner === 'player' ? '自分' : '相手'
       const winnerClass = rally.winner === 'player' ? 'rally-item-player' : 'rally-item-opponent'
       const styleName = BATTING_STYLE_NAMES[rally.batting_style] || rally.batting_style
+      const isOwnError = rally.point_type === 'own_error'
+      const detail = isOwnError ? `相手の得点（自分のミス: ${styleName}）` : `${winnerLabel} ← ${styleName}`
+      const itemClass = isOwnError ? 'rally-item-own-error' : winnerClass
       const isFirst = revIdx === 0
-      return `<div class="rally-item ${winnerClass}">
+      return `<div class="rally-item ${itemClass}">
         <span class="rally-item-seq">${idx}本目</span>
-        <span class="rally-item-detail">${winnerLabel} ← ${styleName}</span>
+        <span class="rally-item-detail">${detail}</span>
         ${isFirst ? '<button type="button" class="btn btn-sm rally-undo-btn" data-action="click->rally-input#undo">↩ 取り消し</button>' : ''}
       </div>`
     }).join('')

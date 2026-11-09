@@ -77,7 +77,7 @@ export default class extends Controller {
     panel.querySelectorAll('input[name*="[score]"]').forEach(input => {
       playerTotal += parseInt(input.value) || 0
     })
-    panel.querySelectorAll('input[name*="[lost_score]"]').forEach(input => {
+    panel.querySelectorAll('input[name*="[lost_score]"], input[name*="[own_error_count]"]').forEach(input => {
       opponentTotal += parseInt(input.value) || 0
     })
 
@@ -135,7 +135,7 @@ export default class extends Controller {
     this.element.querySelectorAll('input[name*="[score]"]').forEach(input => {
       playerTotal += parseInt(input.value) || 0
     })
-    this.element.querySelectorAll('input[name*="[lost_score]"]').forEach(input => {
+    this.element.querySelectorAll('input[name*="[lost_score]"], input[name*="[own_error_count]"]').forEach(input => {
       opponentTotal += parseInt(input.value) || 0
     })
 

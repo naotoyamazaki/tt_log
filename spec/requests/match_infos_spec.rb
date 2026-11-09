@@ -555,6 +555,44 @@ RSpec.describe "MatchInfos", type: :request do
     end
   end
 
+  describe "POST /match_infos/interrupt（rallies あり）" do
+    let(:rallies) do
+      [
+        { 'winner' => 'player', 'batting_style' => 'serve', 'point_type' => 'normal' },
+        { 'winner' => 'opponent', 'batting_style' => 'fore_push', 'point_type' => 'own_error' }
+      ]
+    end
+    let(:params) do
+      {
+        match_info: attributes_for(:match_info).merge(player_name: "選手A", opponent_name: "選手B"),
+        rallies: rallies.to_json,
+        first_server: 'opponent'
+      }
+    end
+
+    it "rallies（point_type 含む）と first_server を partial_game_data に保存すること" do
+      post interrupt_match_infos_path, params: params
+      expect(MatchInfo.last.partial_game_data).to eq('rallies' => rallies, 'first_server' => 'opponent')
+    end
+
+    it "再開画面で凡ミスが復元用データとして渡されること" do
+      post interrupt_match_infos_path, params: params
+      get new_match_info_path(draft_id: MatchInfo.last.id)
+      expect(response.body).to include('own_error')
+    end
+  end
+
+  describe "POST /match_infos/restore_autosave（rallies_autosave あり）" do
+    it "rallies と first_server を partial_game_data に復元すること" do
+      rallies = [{ 'winner' => 'opponent', 'batting_style' => 'serve_miss', 'point_type' => 'own_error' }]
+      post restore_autosave_match_infos_path, params: {
+        match_date: Time.zone.today.to_s, match_name: "大会", player_name: "選手A", opponent_name: "選手B",
+        match_format: 5, rallies_autosave: rallies.to_json, first_server: 'player'
+      }
+      expect(MatchInfo.last.partial_game_data).to eq('rallies' => rallies, 'first_server' => 'player')
+    end
+  end
+
   describe "POST /match_infos/interrupt (serve_receive)" do
     let(:patterns_json) do
       [{ origin: 'serve', serve_length: 'short', serve_spins: [0], attack_style: 'fore_drive_vs_backspin',

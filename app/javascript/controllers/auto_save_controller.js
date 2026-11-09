@@ -161,6 +161,7 @@ export default class extends Controller {
       ralliesInput.name = "rallies_autosave"
       ralliesInput.value = JSON.stringify(data.rallies || [])
       form.appendChild(ralliesInput)
+      this._appendHiddenInput(form, "first_server", data.first_server || "")
     }
 
     localStorage.removeItem(this.STORAGE_KEY)

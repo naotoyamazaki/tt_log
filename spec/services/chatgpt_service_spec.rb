@@ -70,6 +70,40 @@ RSpec.describe ChatgptService do
           expect(body["max_completion_tokens"]).to eq(2500)
         end
       end
+
+      it "凡ミスがなければ【自分の凡ミス】セクションを出力しないこと" do
+        described_class.get_advice(match_info)
+        expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
+          content = JSON.parse(body_json).dig("messages", 1, "content")
+          expect(content).not_to include("【自分の凡ミス（ミスが多い")
+        end
+      end
+
+      context "凡ミスのラリーがある場合" do
+        before do
+          create(:rally, match_info: match_info, game: game, game_number: 1, sequence_number: 3,
+                         winner: :opponent, point_type: :own_error, batting_style: :serve_miss)
+        end
+
+        it "凡ミスセクションを含め、サーブミスも対象に含めること" do
+          described_class.get_advice(match_info)
+          expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
+            content = JSON.parse(body_json).dig("messages", 1, "content")
+            expect(content).to include("【自分の凡ミス（ミスが多い上位3技術。相手の好プレーとは別）】")
+            expect(content).to include("サーブミス: 1件（凡ミス全体の100%）")
+          end
+        end
+
+        it "システムプロンプトで原因を推測しない方針を伝えること" do
+          described_class.get_advice(match_info)
+          expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
+            system = JSON.parse(body_json).dig("messages", 0, "content")
+            expect(system).to include("相手の好プレー")
+            expect(system).to include("原因")
+            expect(system).to include("推測してはいけません")
+          end
+        end
+      end
     end
   end
 end

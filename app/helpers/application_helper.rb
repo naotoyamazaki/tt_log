@@ -56,6 +56,18 @@ module ApplicationHelper
     append_share(entries, :lost_score)
   end
 
+  # 自分の凡ミス技術ランキング（ミス数降順、同数は技術の固定順）。
+  # 使用回数が不明なためミス率は出さず、全凡ミスに占める割合(share)のみ返す。
+  def own_error_techniques(batting_scores)
+    order = BATTING_STYLE_ABBR_MAP.keys
+    entries = batting_scores.group_by(&:batting_style).map do |batting_style, scores|
+      { batting_style: batting_style, own_error_count: scores.sum(&:own_error_count) }
+    end
+    entries = entries.reject { |e| e[:own_error_count].zero? }
+      .sort_by { |e| [-e[:own_error_count], order.index(e[:batting_style]) || order.size] }
+    append_share(entries, :own_error_count)
+  end
+
   private
 
   def aggregate_entries(batting_scores, builder)

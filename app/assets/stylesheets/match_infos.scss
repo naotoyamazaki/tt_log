@@ -1162,6 +1162,36 @@ select {
   border-left: 3px solid #ef4444;
 }
 
+.ranking-section-header-own-error {
+  background-color: #fef3c7;
+  color: #b45309;
+  border-left: 3px solid #d97706;
+}
+
+.ranking-table-own-error-header th {
+  background-color: #fef3c7 !important;
+  color: #b45309 !important;
+  border-bottom: 2px solid #d97706 !important;
+}
+
+.rank-badge-own-error {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #d97706;
+}
+
+.rate-bar-fill-own-error {
+  height: 100%;
+  background: #d97706;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.abbr-own-error-mark {
+  color: #b45309;
+  font-weight: bold;
+}
+
 /* 得点推移表 */
 .score-progression-game {
   overflow: hidden;
@@ -1269,6 +1299,11 @@ select {
   color: #ef4444;
   font-weight: bold;
   font-size: 0.75rem;
+}
+
+.score-progression-cell-own-error {
+  background-color: #fef3c7;
+  color: #b45309;
 }
 
 @media (max-width: 768px) {

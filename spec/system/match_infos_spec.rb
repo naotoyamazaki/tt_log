@@ -30,6 +30,43 @@ RSpec.describe '試合情報の投稿', type: :system do
     end
   end
 
+  describe '凡ミス表示（Sprint 3）' do
+    let(:match_info) { create(:match_info, user: user) }
+    let(:game) { create(:game, match_info: match_info, game_number: 1, player_score: 1, opponent_score: 2) }
+
+    before do
+      create(:rally, match_info: match_info, game: game, game_number: 1, sequence_number: 1,
+                     winner: :player, batting_style: :serve)
+      create(:rally, match_info: match_info, game: game, game_number: 1, sequence_number: 2,
+                     winner: :opponent, batting_style: :fore_push)
+      create(:rally, match_info: match_info, game: game, game_number: 1, sequence_number: 3,
+                     winner: :opponent, point_type: :own_error, batting_style: :fore_drive_vs_topspin)
+      create(:score, match_info: match_info, game: game, batting_style: :serve, score: 1, lost_score: 0)
+      create(:score, match_info: match_info, game: game, batting_style: :fore_push, score: 0, lost_score: 1)
+      create(:score, match_info: match_info, game: game, batting_style: :fore_drive_vs_topspin,
+                     score: 0, lost_score: 0, own_error_count: 1)
+      allow(ChatgptService).to receive(:get_advice).and_return('テストアドバイス')
+      visit login_path
+      fill_in 'メールアドレス', with: user.email
+      fill_in 'パスワード', with: 'password'
+      click_button 'ログイン'
+    end
+
+    it '試合全体とゲーム別に自分の凡ミス技術ランキングが表示される' do
+      visit match_info_path(match_info)
+      expect(page).to have_content('自分の凡ミス技術ランキング')
+      expect(page).to have_content('自分の凡ミス技術')
+      expect(page).to have_content('ミス数')
+    end
+
+    it '得点推移表で凡ミスのラリーに✕が付き、凡例が表示される' do
+      visit match_info_path(match_info)
+      expect(page).to have_css('.score-progression-cell-own-error', text: 'FD+✕')
+      expect(page).to have_css('.score-progression-cell-opponent:not(.score-progression-cell-own-error)', text: 'FT')
+      expect(page).to have_content('自分の凡ミス（相手の好プレーではなく')
+    end
+  end
+
   describe 'ゲーム別スコア表示（F8/F9）' do
     let(:match_info) { create(:match_info, user: user) }
 

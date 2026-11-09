@@ -63,6 +63,16 @@
           <%= render partial: "batting_score_table",
                      locals: { data: opponent_scoring_techniques(@batting_scores),
                                theme: :opponent } %>
+
+          <% own_error_data = own_error_techniques(@batting_scores) %>
+          <% if own_error_data.any? %>
+            <div class="ranking-section-header ranking-section-header-own-error mt-4 mb-2">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>自分の凡ミス技術ランキング
+            </div>
+            <%= render partial: "batting_score_table",
+                       locals: { data: own_error_data,
+                                 theme: :own_error } %>
+          <% end %>
         <% else %>
           <% ranked_data = calculate_batting_score_data(@batting_scores) %>
           <%= render partial: "batting_score_table",

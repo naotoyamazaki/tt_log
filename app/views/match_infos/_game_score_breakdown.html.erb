@@ -5,7 +5,8 @@
   <% ranked_data = calculate_batting_score_data(game_scores).reject { |data| data[:score].zero? && data[:lost_score].zero? } %>
   <% player_ranked_data = player_scoring_techniques(game_scores) %>
   <% opponent_ranked_data = opponent_scoring_techniques(game_scores) %>
-  <% next if has_rally_data ? player_ranked_data.empty? && opponent_ranked_data.empty? : ranked_data.empty? %>
+  <% own_error_ranked_data = own_error_techniques(game_scores) %>
+  <% next if has_rally_data ? player_ranked_data.empty? && opponent_ranked_data.empty? && own_error_ranked_data.empty? : ranked_data.empty? %>
 
   <% won = game.player_score > game.opponent_score %>
   <div class="game-breakdown-card mb-4">
@@ -28,6 +29,15 @@
       <%= render partial: "batting_score_table",
                  locals: { data: opponent_ranked_data,
                            theme: :opponent } %>
+
+      <% if own_error_ranked_data.any? %>
+        <div class="ranking-section-header ranking-section-header-own-error mt-3 mb-2">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i>自分の凡ミス技術
+        </div>
+        <%= render partial: "batting_score_table",
+                   locals: { data: own_error_ranked_data,
+                             theme: :own_error } %>
+      <% end %>
     <% else %>
       <%= render partial: "batting_score_table",
                  locals: { data: ranked_data,

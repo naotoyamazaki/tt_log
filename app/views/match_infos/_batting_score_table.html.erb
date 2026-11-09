@@ -3,6 +3,7 @@
   is_new     = %i[player opponent own_error].include?(theme)
   own_error  = theme == :own_error
   count_label = own_error ? 'ミス数' : '得点数'
+  share_label = own_error ? '割合' : '使用率'
   rate_key   = local_assigns.fetch(:rate_key, nil)
   rate_label = local_assigns.fetch(:rate_label, nil)
   bar_class  = { opponent: 'rate-bar-fill-opponent', own_error: 'rate-bar-fill-own-error' }.fetch(theme, 'rate-bar-fill-player')
@@ -23,7 +24,7 @@
         <th>技術</th>
         <th class="text-center"><%= count_label %></th>
         <% if is_new %>
-          <th class="text-center">使用率</th>
+          <th class="text-center"><%= share_label %></th>
         <% else %>
           <th class="text-center">失点数</th>
           <th class="text-center"><%= rate_label %></th>
@@ -58,7 +59,7 @@
         <th class="text-end">失点数</th>
         <th class="text-end"><%= rate_label %></th>
       <% end %>
-      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? '使用率' : '' %></th>
+      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? share_label : '' %></th>
     </tr>
   </thead>
   <tbody>

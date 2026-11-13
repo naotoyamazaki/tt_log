@@ -24,7 +24,7 @@
         <th>技術</th>
         <th class="text-center"><%= count_label %></th>
         <% if is_new %>
-          <th class="text-center"><%= share_label %></th>
+          <th class="text-center"><%= share_label %><%= share_help_button(theme) %></th>
         <% else %>
           <th class="text-center">失点数</th>
           <th class="text-center"><%= rate_label %></th>
@@ -59,7 +59,7 @@
         <th class="text-end">失点数</th>
         <th class="text-end"><%= rate_label %></th>
       <% end %>
-      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? share_label : '' %></th>
+      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? share_label : '' %><%= share_help_button(theme) if is_new %></th>
     </tr>
   </thead>
   <tbody>

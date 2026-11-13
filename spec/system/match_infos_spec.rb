@@ -59,6 +59,20 @@ RSpec.describe '試合情報の投稿', type: :system do
       expect(page).to have_content('ミス数')
     end
 
+    it '3つのランキングの割合列に説明つきの「?」ボタンがある' do
+      visit match_info_path(match_info)
+      buttons = all('.share-help-btn', visible: :all)
+      texts = buttons.map { |b| b['data-tap-tooltip'] }
+      expect(texts).to include(a_string_including('自分の得点のうち'))
+      expect(texts).to include(a_string_including('相手の得点（好プレー）のうち'))
+      expect(texts).to include(a_string_including('自分の凡ミス全体のうち'))
+    end
+
+    it '得点推移表のセルにツールチップ用の説明が付く' do
+      visit match_info_path(match_info)
+      expect(page).to have_css('.score-progression-cell-own-error[data-tap-tooltip*="自分の凡ミス"]')
+    end
+
     it '得点推移表で凡ミスのラリーに✕が付き、凡例が表示される' do
       visit match_info_path(match_info)
       expect(page).to have_css('.score-progression-cell-own-error', text: 'FD+✕')

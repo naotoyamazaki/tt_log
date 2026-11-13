@@ -26,6 +26,21 @@ module ApplicationHelper
     'serve_miss' => { abbr: 'SM', label: 'サーブミス' }
   }.freeze
 
+  SHARE_HELP_TEXTS = {
+    player: '自分の得点のうち、その技術で取った点の割合です',
+    opponent: '相手の得点（好プレー）のうち、その技術で取られた点の割合です。自分の凡ミスは含みません',
+    own_error: '自分の凡ミス全体のうち、その技術でのミスの割合です。その技術を使った回数に対するミス率ではありません'
+  }.freeze
+
+  # ランキング表の割合列の見出しに付ける「?」ボタン（タップで説明を表示）
+  def share_help_button(theme)
+    text = SHARE_HELP_TEXTS[theme]
+    return if text.blank?
+
+    tag.button('?', type: 'button', class: 'share-help-btn', 'aria-label': '数値の説明',
+                    data: { tap_tooltip: text, tap_tooltip_sticky: 'true' })
+  end
+
   def batting_style_abbr_info(style_key)
     BATTING_STYLE_ABBR_MAP[style_key] || { abbr: style_key, label: style_key }
   end

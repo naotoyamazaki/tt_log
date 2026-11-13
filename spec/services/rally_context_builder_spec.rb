@@ -48,9 +48,28 @@ RSpec.describe RallyContextBuilder do
       expect(lines.join).not_to include("ネット")
     end
 
-    it "凡ミスで連続得点が止まっても、止まった要因技術に数えないこと" do
+    it "凡ミスで連続得点が止まった場合は、自分の凡ミスと注記して止まった要因技術に数えること" do
+      create_rally(8, :player, :serve)
+      create_rally(9, :player, :serve)
+      create_own_error(10, :fore_push)
       result = described_class.new(match_info).streak_and_pattern_text
-      expect(result).not_to include("止まった要因技術: 対上回転フォアドライブ(")
+      expect(result).to include("止まった要因技術: フォアツッツキ（自分の凡ミス）(1回)")
+    end
+
+    it "相手の好プレーで止まった場合は注記なしで数え、凡ミスと区別すること" do
+      create_rally(8, :player, :serve)
+      create_rally(9, :player, :serve)
+      create_rally(10, :opponent, :fore_push)
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).to include("止まった要因技術: フォアツッツキ(1回)")
+    end
+
+    it "ネットorエッジの凡ミスで連続得点が止まっても数えないこと" do
+      create_rally(8, :player, :serve)
+      create_rally(9, :player, :serve)
+      create_own_error(10, :net_or_edge)
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).not_to include("ネット")
     end
 
     it "凡ミスがなければ own_error_text は nil を返すこと" do

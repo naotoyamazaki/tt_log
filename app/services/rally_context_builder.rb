@@ -232,16 +232,24 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
         local_streak += 1
         max_streak = [max_streak, local_streak].max
       else
-        breakers[style_name(rally.batting_style)] += 1 if breaker_counted?(rally, local_streak)
+        breakers[breaker_name(rally)] += 1 if breaker_counted?(rally, local_streak)
         local_streak = 0
       end
     end
     [max_streak, breakers]
   end
 
-  # 自分の凡ミスで連続得点が止まった場合は、相手の技術が要因ではないため除外する
+  # 自分の凡ミスで連続得点を止めた場合も反省点として数える（凡ミスは自分のサーブミスも対象）
   def breaker_counted?(rally, local_streak)
-    local_streak >= 2 && !rally.own_error? && !excluded_style?(rally.batting_style)
+    return false if local_streak < 2
+
+    excluded = rally.own_error? ? OWN_ERROR_EXCLUDED_STYLES : EXCLUDED_STYLES
+    excluded.exclude?(rally.batting_style.to_s)
+  end
+
+  # 相手の好プレーで止められた技術と区別するため、凡ミスには注記を付ける
+  def breaker_name(rally)
+    rally.own_error? ? "#{style_name(rally.batting_style)}（自分の凡ミス）" : style_name(rally.batting_style)
   end
 
   def game_result_patterns

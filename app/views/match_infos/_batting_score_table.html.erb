@@ -1,15 +1,19 @@
 <%
   theme      = local_assigns.fetch(:theme, :legacy)
-  is_new     = theme == :player || theme == :opponent
+  is_new     = %i[player opponent own_error].include?(theme)
+  own_error  = theme == :own_error
+  count_label = own_error ? 'ミス数' : '得点数'
+  share_label = own_error ? '割合' : '使用率'
   rate_key   = local_assigns.fetch(:rate_key, nil)
   rate_label = local_assigns.fetch(:rate_label, nil)
-  bar_class  = theme == :opponent ? 'rate-bar-fill-opponent' : 'rate-bar-fill-player'
-  rank_cls   = theme == :opponent ? 'rank-badge-opponent'    : 'rank-badge-player'
+  bar_class  = { opponent: 'rate-bar-fill-opponent', own_error: 'rate-bar-fill-own-error' }.fetch(theme, 'rate-bar-fill-player')
+  rank_cls   = { opponent: 'rank-badge-opponent', own_error: 'rank-badge-own-error' }.fetch(theme, 'rank-badge-player')
   header_cls = case theme
                when :player   then 'ranking-table-player-header'
                when :opponent then 'ranking-table-opponent-header'
+               when :own_error then 'ranking-table-own-error-header'
                end
-  score_key  = theme == :opponent ? :lost_score : :score
+  score_key  = { opponent: :lost_score, own_error: :own_error_count }.fetch(theme, :score)
 %>
 
 <div class="overflow-auto d-md-none">
@@ -18,9 +22,9 @@
       <tr>
         <th class="text-center rank-col">#</th>
         <th>技術</th>
-        <th class="text-center">得点数</th>
+        <th class="text-center"><%= count_label %></th>
         <% if is_new %>
-          <th class="text-center">使用率</th>
+          <th class="text-center"><%= share_label %><%= share_help_button(theme) %></th>
         <% else %>
           <th class="text-center">失点数</th>
           <th class="text-center"><%= rate_label %></th>
@@ -50,12 +54,12 @@
     <tr>
       <th class="text-center rank-col">#</th>
       <th>技術名</th>
-      <th class="text-end">得点数</th>
+      <th class="text-end"><%= count_label %></th>
       <% unless is_new %>
         <th class="text-end">失点数</th>
         <th class="text-end"><%= rate_label %></th>
       <% end %>
-      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? '使用率' : '' %></th>
+      <th class="rate-bar-col <%= is_new ? 'text-end' : '' %>"><%= is_new ? share_label : '' %><%= share_help_button(theme) if is_new %></th>
     </tr>
   </thead>
   <tbody>

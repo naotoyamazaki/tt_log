@@ -10,6 +10,81 @@ RSpec.describe RallyContextBuilder do
                    sequence_number: seq_num, winner: winner, batting_style: batting_style)
   end
 
+  describe "自分の凡ミスの扱い" do
+    def create_own_error(seq_num, batting_style)
+      create(:rally, match_info: match_info, game: game, game_number: 1, sequence_number: seq_num,
+                     winner: :opponent, point_type: :own_error, batting_style: batting_style)
+    end
+
+    before do
+      create_rally(1, :player, :fore_drive_vs_topspin)
+      create_rally(2, :opponent, :fore_drive_vs_topspin)
+      create_own_error(3, :fore_drive_vs_topspin)
+      create_own_error(4, :fore_drive_vs_topspin)
+      create_own_error(5, :serve_miss)
+      create_own_error(6, :net_or_edge)
+      create_rally(7, :player, :serve)
+    end
+
+    it "技術別効率の相手得点に凡ミスを含めないこと" do
+      result = described_class.new(match_info).technique_efficiency_text
+      expect(result).to include("対上回転フォアドライブ: 自分得点 1 / 相手得点 1（自分の得点率 50%）")
+    end
+
+    it "凡ミスのみの技術は技術別効率に出さないこと" do
+      result = described_class.new(match_info).technique_efficiency_text
+      expect(result).not_to include("サーブミス")
+    end
+
+    it "ゲームごとの相手の得点技術に凡ミスを含めないこと" do
+      result = described_class.new(match_info).game_flow_text
+      expect(result).to include("相手の得点技術: 対上回転フォアドライブ(1)")
+    end
+
+    it "凡ミスの上位技術を件数と割合つきで返し、サーブミスは含め、ネットorエッジは除外すること" do
+      lines = described_class.new(match_info).own_error_text.split("\n")
+      expect(lines.first).to eq("対上回転フォアドライブ: 2件（凡ミス全体の50%）")
+      expect(lines).to include("サーブミス: 1件（凡ミス全体の25%）")
+      expect(lines.join).not_to include("ネット")
+    end
+
+    it "凡ミスで連続得点が止まった場合は、自分の凡ミスと注記して止まった要因技術に数えること" do
+      create_rally(8, :player, :serve)
+      create_rally(9, :player, :serve)
+      create_own_error(10, :fore_push)
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).to include("止まった要因技術: フォアツッツキ（自分の凡ミス）(1回)")
+    end
+
+    it "相手の好プレーで止まった場合は注記なしで数え、凡ミスと区別すること" do
+      create_rally(8, :player, :serve)
+      create_rally(9, :player, :serve)
+      create_rally(10, :opponent, :fore_push)
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).to include("止まった要因技術: フォアツッツキ(1回)")
+    end
+
+    it "ネットorエッジの凡ミスで連続得点が止まっても数えないこと" do
+      create_rally(8, :player, :serve)
+      create_rally(9, :player, :serve)
+      create_own_error(10, :net_or_edge)
+      result = described_class.new(match_info).streak_and_pattern_text
+      expect(result).not_to include("ネット")
+    end
+
+    it "凡ミスがなければ own_error_text は nil を返すこと" do
+      other = create(:match_info, user: user)
+      expect(described_class.new(other).own_error_text).to be_nil
+    end
+
+    it "凡ミス上位は3技術までに絞ること" do
+      create_own_error(8, :fore_push)
+      create_own_error(9, :back_push)
+      create_own_error(10, :fore_stop)
+      expect(described_class.new(match_info).own_error_text.split("\n").size).to eq(3)
+    end
+  end
+
   describe "#technique_efficiency_text" do
     before do
       create_rally(1, :player, :fore_drive_vs_topspin)

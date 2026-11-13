@@ -102,7 +102,8 @@ class MatchInfo < ApplicationRecord
     grouped_data = group_scores_by_technique(score_records)
 
     grouped_data.map do |technique, result|
-      "#{technique}：得点 #{result[:score]} 失点 #{result[:lost_score]}"
+      line = "#{technique}：得点 #{result[:score]} 失点 #{result[:lost_score]}"
+      result[:own_error_count].positive? ? "#{line} 凡ミス #{result[:own_error_count]}" : line
     end
   end
 
@@ -112,9 +113,10 @@ class MatchInfo < ApplicationRecord
     score_records.each do |score|
       name = translated_batting_style_name(score.batting_style)
 
-      data[name] ||= { score: 0, lost_score: 0 }
+      data[name] ||= { score: 0, lost_score: 0, own_error_count: 0 }
       data[name][:score] += score.score
       data[name][:lost_score] += score.lost_score
+      data[name][:own_error_count] += score.own_error_count
     end
 
     data

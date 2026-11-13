@@ -26,6 +26,9 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
     'serve_miss' => 'サーブミス'
   }.freeze
 
+  # 自分の凡ミスでは、自分のミスなのでサーブミスも対象にする（ネットorエッジのみ偶発的として除外）
+  OWN_ERROR_EXCLUDED_STYLES = %w[net_or_edge].freeze
+
   SITUATION_KEYS = %i[tied close_one close_two leading trailing deuce].freeze
 
   def initialize(match_info)
@@ -76,6 +79,15 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
     ].compact.join("\n")
   end
 
+  # 凡ミスが0件の試合では nil を返し、セクション自体を出力しない
+  def own_error_text
+    own_errors = @rallies.select(&:own_error?)
+    top = own_error_top3(own_errors)
+    return nil if top.empty?
+
+    top.map { |name, n| "#{name}: #{n}件（凡ミス全体の#{(n * 100.0 / own_errors.size).round}%）" }.join("\n")
+  end
+
   def streak_and_pattern_text
     win_max, win_stoppers = streak_data('player')
     loss_max, loss_recoverers = streak_data('opponent')
@@ -88,6 +100,13 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
 
   private
 
+  def own_error_top3(own_errors)
+    own_errors.reject { |r| OWN_ERROR_EXCLUDED_STYLES.include?(r.batting_style.to_s) }
+      .group_by(&:batting_style)
+      .map { |style, rs| [style_name(style), rs.size] }
+      .sort_by { |_, n| -n }.first(3)
+  end
+
   def excluded_style?(style)
     EXCLUDED_STYLES.include?(style.to_s)
   end
@@ -96,14 +115,21 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
     raw = @rallies.group_by(&:batting_style)
       .reject { |style, _| excluded_style?(style) }
       .map { |style, rs| technique_stat(style, rs) }
+      .reject { |_, wins, losses, _| (wins + losses).zero? }
     raw.sort_by { |_, _, _, rate| -rate }
   end
 
+  # 相手得点は「相手の好プレー」のみ。自分の凡ミスは相手の技術ではないため含めない
   def technique_stat(style, rallies)
     wins = rallies.count { |r| r.winner == 'player' }
-    losses = rallies.count { |r| r.winner == 'opponent' }
-    rate = rallies.size.positive? ? (wins * 100.0 / rallies.size).round : 0
+    losses = rallies.count { |r| opponent_normal?(r) }
+    total = wins + losses
+    rate = total.positive? ? (wins * 100.0 / total).round : 0
     [style_name(style), wins, losses, rate]
+  end
+
+  def opponent_normal?(rally)
+    rally.winner == 'opponent' && rally.normal?
   end
 
   def tally_serve_situations
@@ -134,7 +160,7 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
 
   def technique_top3(game_rallies, winner_side)
     game_rallies
-      .select { |r| r.winner == winner_side && !excluded_style?(r.batting_style) }
+      .select { |r| r.winner == winner_side && !r.own_error? && !excluded_style?(r.batting_style) }
       .group_by(&:batting_style)
       .map { |s, rs| [style_name(s), rs.size] }
       .sort_by { |_, n| -n }
@@ -206,11 +232,24 @@ class RallyContextBuilder # rubocop:disable Metrics/ClassLength
         local_streak += 1
         max_streak = [max_streak, local_streak].max
       else
-        breakers[style_name(rally.batting_style)] += 1 if local_streak >= 2 && !excluded_style?(rally.batting_style)
+        breakers[breaker_name(rally)] += 1 if breaker_counted?(rally, local_streak)
         local_streak = 0
       end
     end
     [max_streak, breakers]
+  end
+
+  # 自分の凡ミスで連続得点を止めた場合も反省点として数える（凡ミスは自分のサーブミスも対象）
+  def breaker_counted?(rally, local_streak)
+    return false if local_streak < 2
+
+    excluded = rally.own_error? ? OWN_ERROR_EXCLUDED_STYLES : EXCLUDED_STYLES
+    excluded.exclude?(rally.batting_style.to_s)
+  end
+
+  # 相手の好プレーで止められた技術と区別するため、凡ミスには注記を付ける
+  def breaker_name(rally)
+    rally.own_error? ? "#{style_name(rally.batting_style)}（自分の凡ミス）" : style_name(rally.batting_style)
   end
 
   def game_result_patterns

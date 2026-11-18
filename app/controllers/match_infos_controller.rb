@@ -1,6 +1,6 @@
 class MatchInfosController < ApplicationController # rubocop:disable Metrics/ClassLength
   before_action :require_login
-  before_action :set_match_info, only: %i[show edit update destroy]
+  before_action :set_match_info, only: %i[show edit update destroy generate_advice]
 
   def index
     @q = current_user.match_infos.ransack(params[:q])
@@ -9,22 +9,16 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
 
   def show
     set_match_info_scores
-    if @match_info.serve_receive?
-      @srp_analysis = ServeReceiveAnalyzer.new(@match_info)
-      if @match_info.advice.present?
-        @advice = @match_info.advice
-      else
-        builder = ServeReceiveContextBuilder.new(@match_info)
-        advice = ChatgptService.get_serve_receive_advice(@match_info, builder)
-        @match_info.update_advice(advice)
-        @advice = advice
-      end
-    elsif @match_info.advice.present?
-      @advice = @match_info.advice
-    else
-      advice = ChatgptService.get_advice(@match_info)
-      @match_info.update_advice(advice)
-      @advice = advice
+    @srp_analysis = ServeReceiveAnalyzer.new(@match_info) if @match_info.serve_receive?
+    prepare_advice
+  end
+
+  # 明示的な再試行（失敗後の「もう一度生成する」ボタン）
+  def generate_advice
+    case AdviceGenerator.call(@match_info)
+    when :busy then redirect_to @match_info, alert: t('notices.advice_busy')
+    when :failed then redirect_to @match_info, alert: t('notices.advice_failed')
+    else redirect_to @match_info
     end
   end
 
@@ -318,6 +312,18 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
       .where(match_infos: { user_id: current_user.id })
       .where("players.player_name ILIKE ?", query)
       .distinct.pluck(:player_name)
+  end
+
+  # 有効なアドバイスがあれば再利用。無く、失敗記録も無ければ自動生成（失敗済みは自動再生成しない）
+  def prepare_advice
+    @advice_status = if @match_info.advice_available?
+                       :existing
+                     elsif @match_info.advice_failed_at.present?
+                       :failed
+                     else
+                       AdviceGenerator.call(@match_info)
+                     end
+    @advice = @match_info.advice if @match_info.advice_available?
   end
 
   def set_match_info_scores

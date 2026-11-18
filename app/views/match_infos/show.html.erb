@@ -4,15 +4,7 @@
 
 <% if @match_info.serve_receive? %>
   <%= render 'match_infos/serve_receive_analysis', srp_analysis: @srp_analysis %>
-  <% if @advice.present? %>
-    <div class="show-container fade-in-up mb-4">
-      <div class="section-card p-4 shadow-sm">
-        <div class="advice-section">
-          <%= simple_format(@advice) %>
-        </div>
-      </div>
-    </div>
-  <% end %>
+  <%= render 'match_infos/advice_section', advice: @advice, status: @advice_status, match_info: @match_info %>
 <% else %>
   <%= render partial: "match_info_detail", locals: { match_info: @match_info } %>
 
@@ -31,13 +23,7 @@
     </div>
   <% end %>
 
-  <div class="show-container fade-in-up mb-4">
-    <div class="section-card p-4 shadow-sm">
-      <div class="advice-section">
-        <%= simple_format(@advice) %>
-      </div>
-    </div>
-  </div>
+  <%= render 'match_infos/advice_section', advice: @advice, status: @advice_status, match_info: @match_info %>
 <% end %>
 
 <div class="center-button">

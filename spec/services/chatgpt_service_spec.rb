@@ -4,18 +4,19 @@ RSpec.describe ChatgptService do
   describe ".get_advice" do
     let(:user) { create(:user) }
     let(:match_info) { create(:match_info, user: user) }
-    let(:success_body) do
-      {
-        "choices" => [
-          { "message" => { "content" => "テストアドバイス" } }
-        ]
-      }.to_json
-    end
-    let(:mock_response) { instance_double(Net::HTTPSuccess, is_a?: true, body: success_body) }
+    let(:ok_result) { OpenaiClient::Result.new(content: "テストアドバイス", duration_ms: 10) }
 
-    before do
-      allow(Net::HTTP).to receive(:post).and_return(mock_response)
-      allow(mock_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+    before { allow(OpenaiClient).to receive(:chat).and_return(ok_result) }
+
+    context "APIが失敗した場合" do
+      before do
+        allow(OpenaiClient).to receive(:chat)
+          .and_return(OpenaiClient::Result.new(error_kind: "timeout", duration_ms: 10))
+      end
+
+      it "失敗文言ではなく nil を返すこと" do
+        expect(described_class.get_advice(match_info)).to be_nil
+      end
     end
 
     context "ralliesが空（旧来データのみ）の場合" do
@@ -26,8 +27,8 @@ RSpec.describe ChatgptService do
 
       it "旧来プロンプトを使用すること" do
         described_class.get_advice(match_info)
-        expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
-          content = JSON.parse(body_json).dig("messages", 1, "content")
+        expect(OpenaiClient).to have_received(:chat) do |**kwargs|
+          content = kwargs[:user_prompt]
           expect(content).to include("得点数と失点数データ")
         end
       end
@@ -53,8 +54,8 @@ RSpec.describe ChatgptService do
 
       it "ラリーベースのプロンプトを使用すること" do
         described_class.get_advice(match_info)
-        expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
-          content = JSON.parse(body_json).dig("messages", 1, "content")
+        expect(OpenaiClient).to have_received(:chat) do |**kwargs|
+          content = kwargs[:user_prompt]
           expect(content).to include("技術別得点効率")
           expect(content).to include("サーブ・レシーブ局面分析")
           expect(content).to include("ゲームごとの技術の流れ")
@@ -65,16 +66,15 @@ RSpec.describe ChatgptService do
 
       it "max_completion_tokensが2500であること" do
         described_class.get_advice(match_info)
-        expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
-          body = JSON.parse(body_json)
-          expect(body["max_completion_tokens"]).to eq(2500)
+        expect(OpenaiClient).to have_received(:chat) do |**kwargs|
+          expect(kwargs[:max_completion_tokens]).to eq(2500)
         end
       end
 
       it "凡ミスがなければ【自分の凡ミス】セクションを出力しないこと" do
         described_class.get_advice(match_info)
-        expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
-          content = JSON.parse(body_json).dig("messages", 1, "content")
+        expect(OpenaiClient).to have_received(:chat) do |**kwargs|
+          content = kwargs[:user_prompt]
           expect(content).not_to include("【自分の凡ミス（ミスが多い")
         end
       end
@@ -87,8 +87,8 @@ RSpec.describe ChatgptService do
 
         it "凡ミスセクションを含め、サーブミスも対象に含めること" do
           described_class.get_advice(match_info)
-          expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
-            content = JSON.parse(body_json).dig("messages", 1, "content")
+          expect(OpenaiClient).to have_received(:chat) do |**kwargs|
+            content = kwargs[:user_prompt]
             expect(content).to include("【自分の凡ミス（ミスが多い上位3技術。相手の好プレーとは別）】")
             expect(content).to include("サーブミス: 1件（凡ミス全体の100%）")
           end
@@ -96,8 +96,8 @@ RSpec.describe ChatgptService do
 
         it "システムプロンプトで原因を推測しない方針を伝えること" do
           described_class.get_advice(match_info)
-          expect(Net::HTTP).to have_received(:post) do |_uri, body_json, _headers|
-            system = JSON.parse(body_json).dig("messages", 0, "content")
+          expect(OpenaiClient).to have_received(:chat) do |**kwargs|
+            system = kwargs[:system]
             expect(system).to include("相手の好プレー")
             expect(system).to include("原因")
             expect(system).to include("推測してはいけません")

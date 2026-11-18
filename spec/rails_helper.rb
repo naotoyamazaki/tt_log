@@ -1,5 +1,7 @@
 require 'spec_helper'
 ENV['RAILS_ENV'] = 'test'
+# テストが誤って本物のOpenAI APIを叩かないよう、接続先を到達不能なローカルへ向ける
+ENV['OPENAI_API_URL'] = 'http://127.0.0.1:9/v1/chat/completions'
 require_relative '../config/environment'
 
 abort("The Rails environment is running in production mode!") if Rails.env.production?

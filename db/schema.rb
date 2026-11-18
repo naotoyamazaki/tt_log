@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_07_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_18_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ai_usage_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "match_info_id"
+    t.string "feature", null: false
+    t.string "model"
+    t.boolean "success", default: false, null: false
+    t.string "error_kind"
+    t.integer "duration_ms"
+    t.integer "prompt_tokens"
+    t.integer "completion_tokens"
+    t.integer "total_tokens"
+    t.datetime "created_at", null: false
+    t.index ["user_id", "feature", "created_at"], name: "index_ai_usage_logs_on_user_id_and_feature_and_created_at"
+  end
 
   create_table "games", force: :cascade do |t|
     t.bigint "match_info_id"
@@ -45,6 +60,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_07_000001) do
     t.integer "opponent_rubber_backhand"
     t.integer "opponent_playstyle"
     t.string "opponent_playstyle_other"
+    t.datetime "advice_generating_at"
+    t.datetime "advice_failed_at"
     t.index ["opponent_id"], name: "index_match_infos_on_opponent_id"
     t.index ["player_id"], name: "index_match_infos_on_player_id"
     t.index ["user_id"], name: "index_match_infos_on_user_id"
@@ -120,6 +137,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_07_000001) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "ai_usage_logs", "users", on_delete: :nullify
   add_foreign_key "games", "match_infos"
   add_foreign_key "match_infos", "players"
   add_foreign_key "match_infos", "players", column: "opponent_id"

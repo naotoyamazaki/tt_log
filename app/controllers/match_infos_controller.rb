@@ -34,7 +34,6 @@ class MatchInfosController < ApplicationController # rubocop:disable Metrics/Cla
   end
 
   def edit
-    @match_info = MatchInfo.find(params[:id])
     @match_info.player_name = @match_info.player.player_name
     @match_info.opponent_name = @match_info.opponent.player_name
   end

@@ -70,3 +70,21 @@ RSpec.describe "アドバイスの表示と再試行", type: :request do
     end
   end
 end
+
+RSpec.describe "GET /match_infos/:id/edit のユーザースコープ", type: :request do
+  let(:user) { create(:user) }
+
+  before { login_as(user) }
+
+  it "他ユーザーの試合の編集画面は開けず一覧へリダイレクトされること" do
+    other = create(:match_info, match_name: "他人の大会")
+    get edit_match_info_path(other)
+    expect(response).to redirect_to(match_infos_path)
+    expect(response.body).not_to include("他人の大会")
+  end
+
+  it "自分の試合の編集画面は開けること" do
+    get edit_match_info_path(create(:match_info, user: user))
+    expect(response).to have_http_status(:ok)
+  end
+end

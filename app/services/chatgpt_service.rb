@@ -1,46 +1,22 @@
 class ChatgptService
-  API_URL = "https://api.openai.com/v1/chat/completions".freeze
-
+  # 失敗時は nil を返す（失敗文言は返さない・保存させない）
   def self.get_serve_receive_advice(match_info, builder)
-    api_key = ENV.fetch("OPENAI_API_KEY")
-    body = generate_serve_receive_request_body(match_info, builder)
-    headers = generate_headers(api_key)
-
-    response = nil
-    response = send_request(body, headers)
-    process_response(response)
-  rescue StandardError => e
-    handle_error(e, response)
+    OpenaiClient.chat(
+      feature: "serve_receive_advice", system: serve_receive_system_prompt,
+      user_prompt: serve_receive_user_message(match_info, builder),
+      max_completion_tokens: 2500, temperature: 0.7, user: match_info.user, match_info: match_info
+    ).content
   end
 
   def self.get_advice(match_info)
-    api_key = ENV.fetch("OPENAI_API_KEY")
-    body = generate_request_body(match_info)
-    headers = generate_headers(api_key)
-
-    response = nil
-    response = send_request(body, headers)
-    process_response(response)
-  rescue StandardError => e
-    handle_error(e, response)
+    OpenaiClient.chat(
+      feature: "match_advice", system: system_prompt, user_prompt: generate_user_message(match_info),
+      max_completion_tokens: 2500, temperature: 0.7, user: match_info.user, match_info: match_info
+    ).content
   end
 
   class << self
     private
-
-    def generate_request_body(match_info)
-      messages = [
-        { role: "system", content: system_prompt },
-        { role: "user", content: generate_user_message(match_info) }
-      ]
-
-      {
-        model: "gpt-5.4-mini",
-        messages: messages,
-        max_completion_tokens: 2500,
-        temperature: 0.7
-      }
-    end
 
     def system_prompt
       "あなたは経験豊富な卓球コーチです。\n" \
@@ -56,34 +32,6 @@ class ChatgptService
         "なお、ネットorエッジはラッキー・アンラッキーな偶発的ポイント、相手のサーブミス（自分得点側のサーブミス）は技術以外の要因によるポイントであるため、アドバイスの内容には含めないでください。" \
         "ただし【自分の凡ミス】に含まれるサーブミスは自分のミスなので、改善アドバイスの対象にしてかまいません。\n" \
         "6項目のアドバイスを出力したら必ず終了してください。追加提案や続きを促す文言は一切出力しないでください。"
-    end
-
-    def generate_headers(api_key)
-      {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Bearer #{api_key}"
-      }
-    end
-
-    def send_request(body, headers)
-      uri = URI(API_URL)
-      Rails.logger.info("Sending data to ChatGPT API: #{body}")
-
-      Net::HTTP.post(uri, body.to_json, headers)
-    end
-
-    def process_response(response)
-      Rails.logger.info("ChatGPT API Response: #{response.body}")
-
-      unless response.is_a?(Net::HTTPSuccess)
-        Rails.logger.error("ChatGPT API Error: #{response.code} #{response.message}")
-        return "アドバイスの取得に失敗しました。"
-      end
-
-      parsed_response = JSON.parse(response.body)
-      parsed_response.dig("choices", 0, "message", "content")&.strip || "アドバイスの取得に失敗しました。"
-    rescue JSON::ParserError => e
-      handle_error(e, response)
     end
 
     def generate_user_message(match_info)
@@ -195,14 +143,6 @@ class ChatgptService
       lines.join("\n")
     end
 
-    def generate_serve_receive_request_body(match_info, builder)
-      messages = [
-        { role: "system", content: serve_receive_system_prompt },
-        { role: "user", content: serve_receive_user_message(match_info, builder) }
-      ]
-      { model: "gpt-5.4-mini", messages: messages, max_completion_tokens: 2500, temperature: 0.7 }
-    end
-
     def serve_receive_system_prompt
       "あなたは経験豊富な卓球コーチです。\n" \
         "提供されるデータはサーブ起点・レシーブ起点の各ラリーについて、技術と得失点を記録したものです。\n" \
@@ -241,12 +181,6 @@ class ChatgptService
         5.【得点タイミングの活用】アドバイス文
         6.【試合全体の戦略的アドバイス】アドバイス文
       TEXT
-    end
-
-    def handle_error(error, response = nil)
-      Rails.logger.error("ChatGPT API Error: #{error.message}")
-      Rails.logger.error("Response that caused error: #{response.body}") if response
-      "アドバイスの取得に失敗しました。"
     end
   end
 end

@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   resource :opponent_type_analysis, only: [:show]
 
   resources :match_infos do
+    member do
+      post :generate_advice
+    end
     collection do
       get :autocomplete
       post :end_game

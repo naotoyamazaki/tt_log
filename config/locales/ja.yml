@@ -118,6 +118,8 @@ ja:
     match_info_updated: "試合分析データが更新されました。"
     match_info_deleted: "試合分析データが削除されました。"
     match_info_not_found: "指定された投稿が見つかりません。"
+    advice_busy: "アドバイスを生成中です。しばらくしてから再読み込みしてください。"
+    advice_failed: "アドバイスの生成に失敗しました。時間をおいてもう一度お試しください。"
     match_info_interrupted: "分析を中断しました。下書きに保存されています。"
     password_reset_sent: "パスワードリセットのメールを送信しました"
     password_reset_success: "パスワードがリセットされました"

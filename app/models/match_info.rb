@@ -21,6 +21,9 @@ class MatchInfo < ApplicationRecord
 
   scope :completed, -> { where(draft: false) }
 
+  # 過去にAPI失敗時に保存されてしまった文言。未生成・失敗として扱う（読み取り時判定）
+  LEGACY_FAILURE_ADVICE = "アドバイスの取得に失敗しました。".freeze
+
   validates :match_date, presence: true
   validates :match_name, presence: true
   validates :memo, length: { maximum: 500, message: I18n.t('errors.messages.memo_too_long') }, allow_blank: true
@@ -89,11 +92,8 @@ class MatchInfo < ApplicationRecord
     end
   end
 
-  def update_advice(advice)
-    self.advice = advice
-    save!(validate: false)
-  rescue StandardError => e
-    Rails.logger.error("Failed to update advice: #{e.message}")
+  def advice_available?
+    advice.present? && advice != LEGACY_FAILURE_ADVICE
   end
 
   private
